@@ -99,9 +99,6 @@ func _unhandled_key_input(event: InputEvent) -> void:
 
 func _close() -> void:
 	closed.emit()
-	if get_tree().paused:
-		get_tree().paused = false
-	queue_free()
 
 
 func _gui_input(event: InputEvent) -> void:
