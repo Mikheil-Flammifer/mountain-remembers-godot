@@ -9,6 +9,14 @@ enum State {
 	DEAD
 }
 
+@export_group("Attack")
+@export var attack_damage: int = 8
+@export var attack_range: float = 75.0
+@export var attack_height: float = 70.0
+@export var attack_cooldown: float = 1.2
+
+var _attack_timer: float = 0.0
+
 @export_group("Movement")
 @export var patrol_speed: float = 65.0
 @export var chase_speed: float = 135.0
@@ -22,7 +30,7 @@ enum State {
 @export var stop_distance: float = 40.0
 
 @export_group("Health")
-@export var max_health: int = 3
+@export var max_health: int = 35
 @export var hurt_duration: float = 0.28
 
 @onready var visual: Polygon2D = $Visual
@@ -37,12 +45,20 @@ var player: Node2D
 var hurt_timer: float = 0.0
 var dead: bool = false
 
+var _health_ui: VBoxContainer
+var _health_bar: ProgressBar
+var _health_label: Label
+
 var _home_position: Vector2
 var _patrol_distance: float = 160.0
 
 
 func _ready() -> void:
 	health = max_health
+
+	_build_health_bar()
+	_update_health_bar()
+
 	_home_position = global_position
 	_update_rays()
 
@@ -55,9 +71,17 @@ func _physics_process(delta: float) -> void:
 	if dead:
 		return
 
+	# Update the attack cooldown.
+	_attack_timer = maxf(
+		_attack_timer - delta,
+		0.0
+	)
+
+	# Apply gravity.
 	if not is_on_floor():
 		velocity.y += gravity * delta
 
+	# Enemy state machine.
 	match state:
 		State.PATROL:
 			_patrol(delta)
@@ -68,9 +92,15 @@ func _physics_process(delta: float) -> void:
 		State.HURT:
 			_process_hurt(delta)
 
+	# Move the wolf.
 	move_and_slide()
 
+	# Attack Xizane when close enough.
+	_try_attack_player()
+
+	# Update the wolf's appearance.
 	_update_visual()
+
 
 
 func _patrol(delta: float) -> void:
@@ -219,14 +249,16 @@ func _update_visual() -> void:
 			visual.modulate = Color.WHITE
 
 
+
 func take_hit(
 	amount: int,
 	knockback: Vector2
 ) -> void:
-	if dead:
+	if dead or amount <= 0:
 		return
 
 	health = maxi(health - amount, 0)
+	_update_health_bar()
 
 	print(
 		"[MountainWolf] HP: %d/%d"
@@ -242,10 +274,14 @@ func take_hit(
 	velocity = knockback
 
 
+
 func _die() -> void:
 	dead = true
 	state = State.DEAD
 	velocity = Vector2.ZERO
+
+	if _health_ui != null:
+		_health_ui.hide()
 
 	set_physics_process(false)
 
@@ -263,3 +299,108 @@ func _die() -> void:
 		0.45
 	)
 	tween.tween_callback(queue_free)
+
+
+
+func _try_attack_player() -> void:
+	if dead or state == State.HURT:
+		return
+
+	if _attack_timer > 0.0:
+		return
+
+	if not is_instance_valid(player):
+		player = get_tree().get_first_node_in_group(
+			"player"
+		) as Node2D
+
+	if not is_instance_valid(player):
+		return
+
+	if not player.has_method("receive_enemy_hit"):
+		return
+
+	var difference: Vector2 = (
+		player.global_position - global_position
+	)
+
+	if absf(difference.x) > attack_range:
+		return
+
+	if absf(difference.y) > attack_height:
+		return
+
+	_attack_timer = attack_cooldown
+
+	print("[MountainWolf] Attacking Xizane")
+
+	player.call(
+		"receive_enemy_hit",
+		attack_damage,
+		global_position
+	)
+
+
+func _build_health_bar() -> void:
+	_health_ui = VBoxContainer.new()
+	_health_ui.name = "EnemyHealthUI"
+	_health_ui.position = Vector2(-55.0, -87.0)
+	_health_ui.custom_minimum_size = Vector2(110.0, 35.0)
+	_health_ui.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_health_ui.add_theme_constant_override(
+		"separation",
+		2
+	)
+	add_child(_health_ui)
+
+	_health_label = Label.new()
+	_health_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_health_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_health_label.add_theme_font_size_override(
+		"font_size",
+		12
+	)
+	_health_label.add_theme_color_override(
+		"font_color",
+		Color(0.92, 0.87, 0.78)
+	)
+	_health_ui.add_child(_health_label)
+
+	_health_bar = ProgressBar.new()
+	_health_bar.custom_minimum_size = Vector2(110.0, 12.0)
+	_health_bar.min_value = 0
+	_health_bar.max_value = max_health
+	_health_bar.show_percentage = false
+	_health_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	var background := StyleBoxFlat.new()
+	background.bg_color = Color(0.12, 0.12, 0.14, 0.9)
+	background.border_color = Color(0.38, 0.34, 0.30)
+	background.set_border_width_all(1)
+
+	var fill := StyleBoxFlat.new()
+	fill.bg_color = Color(0.72, 0.19, 0.14)
+
+	_health_bar.add_theme_stylebox_override(
+		"background",
+		background
+	)
+	_health_bar.add_theme_stylebox_override(
+		"fill",
+		fill
+	)
+
+	_health_ui.add_child(_health_bar)
+
+
+func _update_health_bar() -> void:
+	if _health_bar == null:
+		return
+
+	_health_bar.max_value = maxi(max_health, 1)
+	_health_bar.value = health
+
+	_health_label.text = "%d / %d" % [
+		health,
+		max_health
+	]

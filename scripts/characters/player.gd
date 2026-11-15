@@ -21,17 +21,23 @@ extends CharacterBody2D
 @export var leg_swing_angle: float = 0.48
 @export var animation_smoothing: float = 12.0
 
+@export_group("Progression")
+@export var vitality: int = 10
+@export var health_per_vitality: int = 10
+
 var _stride_phase: float = 0.0
 var _idle_time: float = 0.0
 var _was_grounded: bool = false
 var _landing_timer: float = 0.0
 var _attack_was_pressed: bool = false
+var _damage_flash_tween: Tween
 
 func _ready() -> void:
+	add_to_group("player")
 	motion_mode = CharacterBody2D.MOTION_MODE_GROUNDED
 	floor_snap_length = 6.0
 
-	if health != null:
+	if not health.died.is_connected(_on_died):
 		health.died.connect(_on_died)
 
 func _physics_process(delta: float) -> void:
@@ -47,6 +53,7 @@ func _process(delta: float) -> void:
 	_animate_character(delta)
 
 
+
 func _handle_attack_input() -> void:
 	var h_pressed: bool = Input.is_physical_key_pressed(KEY_H)
 	var just_pressed: bool = h_pressed and not _attack_was_pressed
@@ -59,7 +66,43 @@ func _handle_attack_input() -> void:
 	if movement.is_dashing():
 		return
 
-	combat.try_start_attack()
+	var direction: String = "forward"
+
+	if (
+		Input.is_physical_key_pressed(KEY_W)
+		or Input.is_physical_key_pressed(KEY_UP)
+	):
+		direction = "up"
+
+	elif (
+		not is_on_floor()
+		and (
+			Input.is_physical_key_pressed(KEY_S)
+			or Input.is_physical_key_pressed(KEY_DOWN)
+		)
+	):
+		direction = "down"
+
+	combat.try_start_attack(
+		direction,
+		movement.facing_direction
+	)
+
+func level_up_vitality() -> void:
+	if health.is_dead:
+		return
+
+	vitality += 1
+
+	health.increase_max_health(
+		health_per_vitality,
+		true
+	)
+
+	print(
+		"[Xizane] Vitality: %d, Max HP: %d"
+		% [vitality, health.max_health]
+	)
 
 
 func _animate_character(delta: float) -> void:
@@ -94,23 +137,33 @@ func _animate_character(delta: float) -> void:
 	var target_torso: float = 0.0
 	var target_sword: float = -0.12
 
+
 	if attacking:
 		var progress: float = combat.attack_progress()
+		var swing: float = smoothstep(0.10, 0.85, progress)
 
-		var swing: float = smoothstep(
-			0.10,
-			0.85,
-			progress
-		)
-
-		target_torso = lerpf(-0.08, 0.16, swing)
 		target_front_leg = -0.08
 		target_back_leg = 0.10
-
-		# Swing the arm from an overhead position forward.
-		target_front_arm = lerpf(-1.35, 0.90, swing)
 		target_back_arm = 0.18
-		target_sword = lerpf(-0.20, 0.35, swing)
+
+		match combat.attack_direction():
+			"up":
+				target_torso = -0.10
+				target_front_arm = lerpf(-0.55, -2.65, swing)
+				target_sword = -0.35
+
+			"down":
+				target_torso = 0.18
+				target_front_leg = -0.25
+				target_back_leg = 0.30
+				target_front_arm = lerpf(0.30, -0.45, swing)
+				target_sword = lerpf(0.0, -0.90, swing)
+
+			_:
+				target_torso = lerpf(-0.08, 0.16, swing)
+				target_front_arm = lerpf(-1.35, 0.90, swing)
+				target_sword = lerpf(-0.20, 0.35, swing)
+
 
 	elif dashing:
 		target_torso = 0.26
@@ -197,7 +250,52 @@ func _animate_character(delta: float) -> void:
 
 	visual_root.modulate = visual_root.modulate.lerp(target_color, smoothing)
 
+
+
+func receive_enemy_hit(
+	amount: int,
+	attacker_position: Vector2
+) -> void:
+	if not health.take_damage(amount):
+		return
+
+	print(
+		"[Xizane] HP: %d/%d"
+		% [health.current_health, health.max_health]
+	)
+
+	var push_direction: float = (
+		1.0 if global_position.x >= attacker_position.x
+		else -1.0
+	)
+
+	velocity.x = push_direction * 300.0
+	velocity.y = -210.0
+
+	_flash_damage()
+
+
+
+func _flash_damage() -> void:
+	if _damage_flash_tween != null:
+		_damage_flash_tween.kill()
+
+	var visual := get_node_or_null("VisualRoot") as CanvasItem
+
+	if visual == null:
+		return
+
+	visual.modulate = Color(1.0, 0.35, 0.35)
+
+	_damage_flash_tween = create_tween()
+	_damage_flash_tween.tween_property(
+		visual,
+		"modulate",
+		Color.WHITE,
+		0.25
+	)
+
 func _on_died() -> void:
-	velocity = Vector2.ZERO
 	set_physics_process(false)
-	set_process(false)
+	velocity = Vector2.ZERO
+	print("[Xizane] Defeated")
