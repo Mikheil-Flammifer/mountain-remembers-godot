@@ -1,5 +1,7 @@
 [gd_scene format=3 uid="uid://bn6ry5e3tvjt"]
 
+[ext_resource type="Script" uid="uid://breiac1e8pbb3" path="res://scripts/core/world_map_controller.gd" id="1_hyk8p"]
+
 [node name="Main" type="Node" unique_id=1238189935]
 
 [node name="World" type="Node2D" parent="." unique_id=1360417978]
@@ -29,3 +31,6 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=789419542]
+
+[node name="WorldMapController" type="Node" parent="." unique_id=161864216]
+script = ExtResource("1_hyk8p")
