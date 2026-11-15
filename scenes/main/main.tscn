@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://bn6ry5e3tvjt"]
+
+[node name="Main" type="Node" unique_id=1238189935]
+
+[node name="World" type="Node2D" parent="." unique_id=1360417978]
+
+[node name="MountainLevel" type="Node2D" parent="World" unique_id=1694936478]
+
+[node name="Xizane" type="CharacterBody2D" parent="World/MountainLevel" unique_id=805964270]
+
+[node name="ColorRect" type="ColorRect" parent="World/MountainLevel/Xizane" unique_id=1625265952]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/MountainLevel/Xizane" unique_id=1423359832]
+
+[node name="Camera2D" type="Camera2D" parent="World/MountainLevel/Xizane" unique_id=1361102900]
+
+[node name="MovementComponent" type="Node" parent="World/MountainLevel/Xizane" unique_id=21778435]
+
+[node name="HealthComponent" type="Node" parent="World/MountainLevel/Xizane" unique_id=1889882507]
+
+[node name="Ground" type="StaticBody2D" parent="World" unique_id=2077461162]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Ground" unique_id=1488092678]
+
+[node name="ColorRect" type="ColorRect" parent="World/Ground" unique_id=1598339129]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="UI" type="CanvasLayer" parent="." unique_id=789419542]

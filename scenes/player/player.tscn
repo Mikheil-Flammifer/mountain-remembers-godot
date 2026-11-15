@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://c4alhpxtkvep2"]
+
+[ext_resource type="Script" uid="uid://dilsxg3x8p4rm" path="res://scripts/components/movement_component.gd" id="1_dovo2"]
+[ext_resource type="Script" uid="uid://cmuksd5kis6y" path="res://scripts/components/health_component.gd" id="2_gmlin"]
+
+[node name="Xizane" type="CharacterBody2D" unique_id=1305959874]
+
+[node name="Visuals" type="ColorRect" parent="." unique_id=1147028208]
+offset_left = -12.0
+offset_top = -12.0
+offset_right = 52.0
+offset_bottom = 112.0
+color = Color(0.8392157, 0.77254903, 0.6313726, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=554790226]
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=185555198]
+
+[node name="MovementComponent" type="Node" parent="." unique_id=1333813076]
+script = ExtResource("1_dovo2")
+
+[node name="HealthComponent" type="Node" parent="." unique_id=77705518]
+script = ExtResource("2_gmlin")
