@@ -2,13 +2,9 @@
 class_name MovementComponent
 extends Node
 
-## Responsive 2D platformer movement.
-## Supports:
-## - Ground and air acceleration
-## - Variable-height jumping
-## - Coyote time
-## - Jump buffering
-## - Maximum falling speed
+## Responsive movement with ground/air control,
+## variable jumping, coyote time, jump buffering,
+## and one air dash before landing.
 
 @export_group("Horizontal Movement")
 @export var run_speed: float = 320.0
@@ -27,8 +23,22 @@ extends Node
 @export var coyote_time: float = 0.12
 @export var jump_buffer_time: float = 0.14
 
+@export_group("Dash")
+@export var dash_speed: float = 650.0
+@export var dash_duration: float = 0.17
+@export var dash_cooldown: float = 0.30
+
+var facing_direction: float = 1.0
+
 var _coyote_timer: float = 0.0
 var _jump_buffer_timer: float = 0.0
+
+var _dash_timer: float = 0.0
+var _dash_cooldown_timer: float = 0.0
+var _dash_direction: float = 1.0
+var _dash_available: bool = true
+var _dashing: bool = false
+var _dash_was_pressed: bool = false
 
 
 func physics_tick(
@@ -38,8 +48,37 @@ func physics_tick(
 	var grounded: bool = body.is_on_floor()
 
 	_update_timers(grounded, delta)
-	_update_horizontal(body, grounded, delta)
-	_update_vertical(body, grounded, delta)
+
+	var direction: float = Input.get_axis(
+		"move_left",
+		"move_right"
+	)
+
+	if not is_zero_approx(direction):
+		facing_direction = signf(direction)
+
+	var dash_pressed: bool = _dash_input_pressed()
+	var dash_just_pressed: bool = (
+		dash_pressed and not _dash_was_pressed
+	)
+	_dash_was_pressed = dash_pressed
+
+	if grounded and not _dashing:
+		_dash_available = true
+
+	if (
+		dash_just_pressed
+		and _dash_available
+		and _dash_cooldown_timer <= 0.0
+		and not _dashing
+	):
+		_start_dash(body, direction)
+
+	if _dashing:
+		_update_dash(body, delta)
+	else:
+		_update_horizontal(body, grounded, direction, delta)
+		_update_vertical(body, grounded, delta)
 
 	body.move_and_slide()
 
@@ -64,17 +103,18 @@ func _update_timers(
 			0.0
 		)
 
+	_dash_cooldown_timer = maxf(
+		_dash_cooldown_timer - delta,
+		0.0
+	)
+
 
 func _update_horizontal(
 	body: CharacterBody2D,
 	grounded: bool,
+	direction: float,
 	delta: float
 ) -> void:
-	var direction: float = Input.get_axis(
-		"move_left",
-		"move_right"
-	)
-
 	var target_speed: float = direction * run_speed
 	var acceleration: float
 
@@ -103,7 +143,6 @@ func _update_vertical(
 	grounded: bool,
 	delta: float
 ) -> void:
-	# Apply gravity only when airborne.
 	if not grounded:
 		body.velocity.y = minf(
 			body.velocity.y + gravity * delta,
@@ -112,8 +151,6 @@ func _update_vertical(
 	elif body.velocity.y > 0.0:
 		body.velocity.y = 0.0
 
-	# Buffered jump, including a short window
-	# after leaving a platform.
 	if (
 		_jump_buffer_timer > 0.0
 		and _coyote_timer > 0.0
@@ -122,7 +159,55 @@ func _update_vertical(
 		_jump_buffer_timer = 0.0
 		_coyote_timer = 0.0
 
-	# Releasing jump early produces a shorter jump.
 	if Input.is_action_just_released("jump"):
 		if body.velocity.y < 0.0:
 			body.velocity.y *= jump_cut_multiplier
+
+
+func _dash_input_pressed() -> bool:
+	# Shift works immediately. A custom "dash"
+	# Input Map action can also be used later.
+	if InputMap.has_action("dash"):
+		return (
+			Input.is_action_pressed("dash")
+			or Input.is_physical_key_pressed(KEY_SHIFT)
+		)
+
+	return Input.is_physical_key_pressed(KEY_SHIFT)
+
+
+func _start_dash(
+	body: CharacterBody2D,
+	direction: float
+) -> void:
+	_dashing = true
+	_dash_available = false
+	_dash_timer = dash_duration
+	_dash_cooldown_timer = dash_cooldown
+
+	_dash_direction = (
+		signf(direction)
+		if not is_zero_approx(direction)
+		else facing_direction
+	)
+
+	body.velocity = Vector2(
+		_dash_direction * dash_speed,
+		0.0
+	)
+
+
+func _update_dash(
+	body: CharacterBody2D,
+	delta: float
+) -> void:
+	_dash_timer -= delta
+
+	body.velocity = Vector2(
+		_dash_direction * dash_speed,
+		0.0
+	)
+
+	if _dash_timer <= 0.0:
+		_dashing = false
+		body.velocity.x = _dash_direction * run_speed
