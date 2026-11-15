@@ -1,0 +1,81 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://scripts/levels/mtskheta_environment.gd" id="1_env"]
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2_player"]
+[ext_resource type="Script" path="res://scripts/levels/mtskheta_level.gd" id="3_level"]
+[ext_resource type="Script" path="res://scripts/levels/mtskheta_story.gd" id="4_story"]
+
+[sub_resource type="RectangleShape2D" id="ground_shape"]
+size = Vector2(3600, 240)
+
+[sub_resource type="RectangleShape2D" id="platform_shape"]
+size = Vector2(200, 24)
+
+[sub_resource type="RectangleShape2D" id="left_wall_shape"]
+size = Vector2(30, 900)
+
+[sub_resource type="RectangleShape2D" id="right_wall_shape"]
+size = Vector2(30, 900)
+
+[sub_resource type="RectangleShape2D" id="ceiling_shape"]
+size = Vector2(3600, 30)
+
+[node name="MtskhetaLevel" type="Node2D"]
+script = ExtResource("3_level")
+
+[node name="Environment" type="Node2D" parent="."]
+script = ExtResource("1_env")
+
+[node name="Ground" type="StaticBody2D" parent="."]
+position = Vector2(1800, 730)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground"]
+shape = SubResource("ground_shape")
+
+[node name="WestBoundary" type="StaticBody2D" parent="."]
+position = Vector2(-15, 400)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WestBoundary"]
+shape = SubResource("left_wall_shape")
+
+[node name="EastBoundary" type="StaticBody2D" parent="."]
+position = Vector2(3615, 400)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EastBoundary"]
+shape = SubResource("right_wall_shape")
+
+[node name="UpperBoundary" type="StaticBody2D" parent="."]
+position = Vector2(1800, -415)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="UpperBoundary"]
+shape = SubResource("ceiling_shape")
+
+[node name="PlatformOne" type="StaticBody2D" parent="."]
+position = Vector2(900, 522)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlatformOne"]
+shape = SubResource("platform_shape")
+
+[node name="PlatformTwo" type="StaticBody2D" parent="."]
+position = Vector2(1400, 482)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlatformTwo"]
+shape = SubResource("platform_shape")
+
+[node name="PlatformThree" type="StaticBody2D" parent="."]
+position = Vector2(2080, 522)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlatformThree"]
+shape = SubResource("platform_shape")
+
+[node name="PlatformFour" type="StaticBody2D" parent="."]
+position = Vector2(2650, 522)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlatformFour"]
+shape = SubResource("platform_shape")
+
+[node name="Xizane" parent="." instance=ExtResource("2_player")]
+position = Vector2(180, 538)
+
+[node name="Story" type="Node2D" parent="."]
+script = ExtResource("4_story")
