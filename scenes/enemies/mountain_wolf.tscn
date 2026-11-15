@@ -1,0 +1,31 @@
+
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/enemies/mountain_wolf.gd" id="1_wolf"]
+
+[sub_resource type="CapsuleShape2D" id="wolf_collision"]
+radius = 16.0
+height = 54.0
+
+[node name="MountainWolf" type="CharacterBody2D"]
+collision_layer = 1
+collision_mask = 1
+script = ExtResource("1_wolf")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -2)
+shape = SubResource("wolf_collision")
+
+[node name="Visual" type="Polygon2D" parent="."]
+color = Color(0.13, 0.15, 0.19, 1)
+polygon = PackedVector2Array(-39, 1, -45, -12, -32, -5, -23, -19, 11, -20, 29, -13, 42, -22, 48, -15, 52, -5, 40, 0, 34, 10, 25, 10, 21, 26, 13, 26, 10, 4, -14, 6, -17, 26, -25, 26, -29, 2)
+
+[node name="FloorAhead" type="RayCast2D" parent="."]
+position = Vector2(-30, 0)
+target_position = Vector2(0, 58)
+collision_mask = 1
+
+[node name="WallAhead" type="RayCast2D" parent="."]
+position = Vector2(0, -5)
+target_position = Vector2(-32, 0)
+collision_mask = 1
