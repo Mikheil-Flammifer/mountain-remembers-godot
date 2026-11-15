@@ -1,23 +1,40 @@
-[gd_scene format=3 uid="uid://c4alhpxtkvep2"]
 
-[ext_resource type="Script" uid="uid://dilsxg3x8p4rm" path="res://scripts/components/movement_component.gd" id="1_dovo2"]
-[ext_resource type="Script" uid="uid://cmuksd5kis6y" path="res://scripts/components/health_component.gd" id="2_gmlin"]
+[gd_scene load_steps=5 format=3]
 
-[node name="Xizane" type="CharacterBody2D" unique_id=1305959874]
+[ext_resource type="Script" path="res://scripts/characters/player.gd" id="1_player"]
+[ext_resource type="Script" path="res://scripts/components/movement_component.gd" id="2_movement"]
+[ext_resource type="Script" path="res://scripts/components/health_component.gd" id="3_health"]
 
-[node name="Visuals" type="ColorRect" parent="." unique_id=1147028208]
-offset_left = -12.0
-offset_top = -12.0
-offset_right = 52.0
-offset_bottom = 112.0
-color = Color(0.8392157, 0.77254903, 0.6313726, 1)
+[sub_resource type="CapsuleShape2D" id="player_collision"]
+radius = 16.0
+height = 72.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=554790226]
+[node name="Xizane" type="CharacterBody2D"]
+script = ExtResource("1_player")
+collision_layer = 1
+collision_mask = 1
+floor_snap_length = 6.0
 
-[node name="Camera2D" type="Camera2D" parent="." unique_id=185555198]
+[node name="Visuals" type="Polygon2D" parent="."]
+color = Color(0.16, 0.15, 0.17, 1)
+polygon = PackedVector2Array(-16, -36, 16, -36, 16, 36, -16, 36)
 
-[node name="MovementComponent" type="Node" parent="." unique_id=1333813076]
-script = ExtResource("1_dovo2")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 0)
+shape = SubResource("player_collision")
 
-[node name="HealthComponent" type="Node" parent="." unique_id=77705518]
-script = ExtResource("2_gmlin")
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(0, -90)
+enabled = true
+position_smoothing_enabled = true
+position_smoothing_speed = 7.0
+limit_left = 0
+limit_top = 0
+limit_right = 3600
+limit_bottom = 1000
+
+[node name="MovementComponent" type="Node" parent="."]
+script = ExtResource("2_movement")
+
+[node name="HealthComponent" type="Node" parent="."]
+script = ExtResource("3_health")

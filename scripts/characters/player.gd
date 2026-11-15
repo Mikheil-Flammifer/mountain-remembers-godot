@@ -2,16 +2,19 @@
 class_name XizanePlayer
 extends CharacterBody2D
 
-## Main playable character.
-## Coordinates the player's components without
-## implementing their internal mechanics.
+## Xizane — the playable protagonist.
+## Movement and health remain separate components.
 
 @onready var movement: MovementComponent = $MovementComponent
 @onready var health: HealthComponent = $HealthComponent
 
 
 func _ready() -> void:
-	health.died.connect(_on_died)
+	motion_mode = CharacterBody2D.MOTION_MODE_GROUNDED
+	floor_snap_length = 6.0
+
+	if health != null:
+		health.died.connect(_on_died)
 
 
 func _physics_process(delta: float) -> void:
