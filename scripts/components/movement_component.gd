@@ -211,3 +211,6 @@ func _update_dash(
 	if _dash_timer <= 0.0:
 		_dashing = false
 		body.velocity.x = _dash_direction * run_speed
+
+func is_dashing() -> bool:
+	return _dashing

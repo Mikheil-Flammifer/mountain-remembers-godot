@@ -1,10 +1,10 @@
+[gd_scene format=3 uid="uid://7yn8dnlajqa3"]
 
-[gd_scene load_steps=7 format=3]
-
-[ext_resource type="Script" path="res://scripts/levels/mtskheta_environment.gd" id="1_env"]
+[ext_resource type="Script" uid="uid://clxvu2ki1hs57" path="res://scripts/levels/mtskheta_environment.gd" id="1_env"]
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2_player"]
-[ext_resource type="Script" path="res://scripts/levels/mtskheta_level.gd" id="3_level"]
-[ext_resource type="Script" path="res://scripts/levels/mtskheta_story.gd" id="4_story"]
+[ext_resource type="Script" uid="uid://c2ck753m8203m" path="res://scripts/levels/mtskheta_level.gd" id="3_level"]
+[ext_resource type="Script" uid="uid://juir3bkpl8qd" path="res://scripts/levels/mtskheta_story.gd" id="4_story"]
+[ext_resource type="PackedScene" path="res://scenes/props/training_dummy.tscn" id="5_dummy"]
 
 [sub_resource type="RectangleShape2D" id="ground_shape"]
 size = Vector2(3600, 200)
@@ -12,36 +12,35 @@ size = Vector2(3600, 200)
 [sub_resource type="RectangleShape2D" id="boundary_shape"]
 size = Vector2(50, 1000)
 
-[node name="MtskhetaLevel" type="Node2D"]
+[node name="MtskhetaLevel" type="Node2D" unique_id=876562493]
 script = ExtResource("3_level")
 
-[node name="Environment" type="Node2D" parent="."]
+[node name="Environment" type="Node2D" parent="." unique_id=1421453211]
 script = ExtResource("1_env")
 
-[node name="Ground" type="StaticBody2D" parent="."]
+[node name="Ground" type="StaticBody2D" parent="." unique_id=1088353687]
 position = Vector2(1800, 750)
-collision_layer = 1
-collision_mask = 1
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground" unique_id=1611007762]
 shape = SubResource("ground_shape")
 
-[node name="WestBoundary" type="StaticBody2D" parent="."]
+[node name="WestBoundary" type="StaticBody2D" parent="." unique_id=1238329631]
 position = Vector2(-25, 500)
-collision_layer = 1
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="WestBoundary"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WestBoundary" unique_id=839835980]
 shape = SubResource("boundary_shape")
 
-[node name="EastBoundary" type="StaticBody2D" parent="."]
+[node name="EastBoundary" type="StaticBody2D" parent="." unique_id=2141593826]
 position = Vector2(3625, 500)
-collision_layer = 1
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="EastBoundary"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EastBoundary" unique_id=1581554290]
 shape = SubResource("boundary_shape")
 
-[node name="Xizane" parent="." instance=ExtResource("2_player")]
+[node name="Xizane" parent="." unique_id=1277587307 instance=ExtResource("2_player")]
 position = Vector2(250, 540)
 
-[node name="Story" type="Node2D" parent="."]
+[node name="Story" type="Node2D" parent="." unique_id=1270196055]
 script = ExtResource("4_story")
+
+[node name="TrainingDummy" parent="." instance=ExtResource("5_dummy")]
+position = Vector2(700, 607)
