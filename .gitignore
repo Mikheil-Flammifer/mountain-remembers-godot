@@ -1,0 +1,25 @@
+# Godot generated files
+.godot/
+
+# Godot export outputs
+/builds/
+/exports/
+
+# Export credentials
+*.keystore
+*.p12
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# IDE
+.vscode/
+.idea/
+
+# Logs and temporary files
+*.log
+*.tmp
+
+*.translation
