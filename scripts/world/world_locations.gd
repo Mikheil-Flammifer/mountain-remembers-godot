@@ -50,7 +50,7 @@ const LOCATIONS := [
 		"name": "Ananuri",
 		"position": Vector2(561, 447),
 		"description": "Fortress overlooking the Aragvi route.",
-		"known": true
+		"known": false
 	},
 	{
 		"id": "tianeti",
