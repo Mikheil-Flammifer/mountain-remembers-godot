@@ -46,18 +46,21 @@ func _physics_process(delta: float) -> void:
 func _process(delta: float) -> void:
 	_animate_character(delta)
 
+
 func _handle_attack_input() -> void:
-	var attack_pressed: bool = false
+	var h_pressed: bool = Input.is_physical_key_pressed(KEY_H)
+	var just_pressed: bool = h_pressed and not _attack_was_pressed
 
-	if InputMap.has_action("attack"):
-		attack_pressed = Input.is_action_just_pressed("attack")
-	else:
-		attack_pressed = Input.is_physical_key_pressed(KEY_H) and not _attack_was_pressed
+	_attack_was_pressed = h_pressed
 
-	if attack_pressed and combat != null:
-		combat.try_start_attack()
+	if not just_pressed:
+		return
 
-	_attack_was_pressed = Input.is_physical_key_pressed(KEY_H)
+	if movement.is_dashing():
+		return
+
+	combat.try_start_attack()
+
 
 func _animate_character(delta: float) -> void:
 	var grounded: bool = is_on_floor()
@@ -92,12 +95,22 @@ func _animate_character(delta: float) -> void:
 	var target_sword: float = -0.12
 
 	if attacking:
-		target_torso = 0.10
+		var progress: float = combat.attack_progress()
+
+		var swing: float = smoothstep(
+			0.10,
+			0.85,
+			progress
+		)
+
+		target_torso = lerpf(-0.08, 0.16, swing)
 		target_front_leg = -0.08
 		target_back_leg = 0.10
-		target_front_arm = -1.05
+
+		# Swing the arm from an overhead position forward.
+		target_front_arm = lerpf(-1.35, 0.90, swing)
 		target_back_arm = 0.18
-		target_sword = -1.35
+		target_sword = lerpf(-0.20, 0.35, swing)
 
 	elif dashing:
 		target_torso = 0.26

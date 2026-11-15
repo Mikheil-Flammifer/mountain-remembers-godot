@@ -1,114 +1,151 @@
+
 class_name SwordCombatComponent
 extends Node
 
-## Simple melee combat component for Xizane.
-## Handles attack timing, active hit frames, and damage application.
-
 signal attack_started
 signal attack_finished
-signal hit_landed(target)
+signal hit_landed(target: Node)
 
-@export var attack_duration: float = 0.24
-@export var active_start: float = 0.06
-@export var active_end: float = 0.16
+@export_group("Sword Attack")
 @export var damage: int = 1
-@export var knockback_force: float = 240.0
+@export var attack_duration: float = 0.32
+@export var active_start: float = 0.09
+@export var active_end: float = 0.24
+@export var attack_cooldown: float = 0.12
+@export var knockback_force: float = 250.0
 
 @onready var hitbox: Area2D = $AttackHitbox
 @onready var collision: CollisionShape2D = $AttackHitbox/CollisionShape2D
 
 var _attacking: bool = false
-var _attack_timer: float = 0.0
-var _already_hit: Array[Node] = []
+var _elapsed: float = 0.0
+var _cooldown_remaining: float = 0.0
+var _hit_targets: Array[Node] = []
+
 
 func _ready() -> void:
-	if collision != null:
-		collision.disabled = true
+	# We use the shape for direct physics queries,
+	# so the Area2D does not need to detect overlaps.
+	hitbox.monitoring = false
+	hitbox.monitorable = false
+	collision.disabled = true
 
-func physics_tick(owner_body: CharacterBody2D, facing_direction: float, delta: float) -> void:
-	if _attacking:
-		_attack_timer += delta
 
-		_update_hitbox_state(owner_body, facing_direction)
+func physics_tick(
+	owner_body: CharacterBody2D,
+	facing_direction: float,
+	delta: float
+) -> void:
+	_cooldown_remaining = maxf(
+		_cooldown_remaining - delta,
+		0.0
+	)
 
-		if _attack_timer >= attack_duration:
-			_finish_attack()
+	if not _attacking:
+		return
+
+	_elapsed += delta
+
+	# Keep the hitbox in front of the character.
+	var facing: float = (
+		1.0 if facing_direction >= 0.0 else -1.0
+	)
+
+	hitbox.position = Vector2(
+		34.0 * facing,
+		-10.0
+	)
+
+	if _elapsed >= active_start and _elapsed <= active_end:
+		_check_hits(owner_body, facing)
+
+	if _elapsed >= attack_duration:
+		_finish_attack()
+
 
 func try_start_attack() -> bool:
-	if _attacking:
+	if _attacking or _cooldown_remaining > 0.0:
 		return false
 
 	_attacking = true
-	_attack_timer = 0.0
-	_already_hit.clear()
+	_elapsed = 0.0
+	_hit_targets.clear()
 
-	emit_signal("attack_started")
+	attack_started.emit()
 	return true
+
 
 func is_attacking() -> bool:
 	return _attacking
 
-func _update_hitbox_state(owner_body: CharacterBody2D, facing_direction: float) -> void:
-	if hitbox == null or collision == null:
-		return
 
-	var active: bool = (
-		_attack_timer >= active_start
-		and _attack_timer <= active_end
+func attack_progress() -> float:
+	if not _attacking:
+		return 0.0
+
+	return clampf(
+		_elapsed / maxf(attack_duration, 0.001),
+		0.0,
+		1.0
 	)
 
-	collision.disabled = not active
 
-	if facing_direction >= 0.0:
-		hitbox.position.x = 28.0
-		hitbox.scale.x = 1.0
-	else:
-		hitbox.position.x = -28.0
-		hitbox.scale.x = -1.0
-
-	if active:
-		_apply_hits(owner_body, facing_direction)
-
-func _apply_hits(owner_body: CharacterBody2D, facing_direction: float) -> void:
-	var targets: Array[Node2D] = hitbox.get_overlapping_bodies()
-	var overlap_areas: Array[Area2D] = hitbox.get_overlapping_areas()
-
-	for body in targets:
-		if body == owner_body:
-			continue
-		if _already_hit.has(body):
-			continue
-
-		_already_hit.append(body)
-		_apply_damage(body, facing_direction)
-		emit_signal("hit_landed", body)
-
-	for area in overlap_areas:
-		if area == hitbox:
-			continue
-		if _already_hit.has(area):
-			continue
-
-		_already_hit.append(area)
-		_apply_damage(area, facing_direction)
-		emit_signal("hit_landed", area)
-
-func _apply_damage(target: Node, facing_direction: float) -> void:
-	if target == null:
+func _check_hits(
+	owner_body: CharacterBody2D,
+	facing: float
+) -> void:
+	if collision.shape == null:
 		return
 
-	var knockback := Vector2(facing_direction * knockback_force, -70.0)
+	var query := PhysicsShapeQueryParameters2D.new()
 
-	if target.has_method("take_hit"):
-		target.call("take_hit", damage, knockback)
-	elif target.has_method("take_damage"):
-		target.call("take_damage", damage, knockback)
+	query.shape = collision.shape
+	query.transform = collision.global_transform
+	query.collision_mask = hitbox.collision_mask
+	query.collide_with_bodies = true
+	query.collide_with_areas = false
+	query.exclude = [owner_body.get_rid()]
+
+	var results: Array[Dictionary] = (
+		owner_body.get_world_2d()
+		.direct_space_state
+		.intersect_shape(query, 16)
+	)
+
+	for result: Dictionary in results:
+		var target: Node = result.get("collider") as Node
+
+		if target == null:
+			continue
+
+		if _hit_targets.has(target):
+			continue
+
+		if not (
+			target.has_method("take_hit")
+			or target.has_method("take_damage")
+		):
+			continue
+
+		_hit_targets.append(target)
+
+		var knockback := Vector2(
+			facing * knockback_force,
+			-80.0
+		)
+
+		if target.has_method("take_hit"):
+			target.call("take_hit", damage, knockback)
+		else:
+			target.call("take_damage", damage, knockback)
+
+		hit_landed.emit(target)
+
 
 func _finish_attack() -> void:
 	_attacking = false
-	_attack_timer = 0.0
+	_elapsed = 0.0
+	_cooldown_remaining = attack_cooldown
+	_hit_targets.clear()
 
-	if collision != null:
-		collision.disabled = true
-
-	emit_signal("attack_finished")
+	attack_finished.emit()
