@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" path="res://scenes/props/training_dummy.tscn" id="5_dummy"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/mountain_wolf.tscn" id="6_k7xr2"]
 [ext_resource type="Script" uid="uid://cj6qe537bn8wy" path="res://scripts/ui/player_health_hud.gd" id="7_hmif8"]
+[ext_resource type="Script" uid="uid://cqgasfaeru4yb" path="res://scripts/levels/mtskheta_exploration.gd" id="8_pi075"]
 
 [sub_resource type="RectangleShape2D" id="ground_shape"]
 size = Vector2(3600, 200)
@@ -52,3 +53,9 @@ position = Vector2(1494, 622)
 
 [node name="PlayerHealthHUD" type="CanvasLayer" parent="." unique_id=1167203231]
 script = ExtResource("7_hmif8")
+
+[node name="MtskhetaEnvironment" type="Node2D" parent="." unique_id=2128373684]
+script = ExtResource("1_env")
+
+[node name="MtskhetaExploration" type="Node2D" parent="." unique_id=1817388972]
+script = ExtResource("8_pi075")
