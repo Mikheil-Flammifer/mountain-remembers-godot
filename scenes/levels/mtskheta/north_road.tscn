@@ -1,0 +1,60 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://scripts/levels/mtskheta/north_road_level.gd" id="1_area"]
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2_player"]
+[ext_resource type="Script" path="res://scripts/ui/player_health_hud.gd" id="3_hud"]
+[ext_resource type="PackedScene" path="res://scenes/levels/mtskheta/shared/spawn_point.tscn" id="4_spawn"]
+[ext_resource type="PackedScene" path="res://scenes/levels/mtskheta/shared/transition_zone.tscn" id="5_exit"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/mountain_wolf.tscn" id="6_wolf"]
+
+[sub_resource type="RectangleShape2D" id="ground_shape"]
+size = Vector2(2400, 160)
+
+[sub_resource type="RectangleShape2D" id="boundary_shape"]
+size = Vector2(32, 900)
+
+[node name="NorthRoad" type="Node2D"]
+script = ExtResource("1_area")
+
+[node name="Ground" type="StaticBody2D" parent="."]
+position = Vector2(1200, 730)
+collision_layer = 1
+collision_mask = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground"]
+shape = SubResource("ground_shape")
+
+[node name="Player" parent="." instance=ExtResource("2_player") groups=["player"]]
+position = Vector2(170, 602)
+
+[node name="PlayerHealthHUD" type="CanvasLayer" parent="."]
+script = ExtResource("3_hud")
+
+[node name="SpawnFromTerraces" parent="." instance=ExtResource("4_spawn")]
+position = Vector2(175, 602)
+spawn_id = "from_terraces"
+
+[node name="ToTerraces" parent="." instance=ExtResource("5_exit")]
+position = Vector2(80, 570)
+target_scene = "res://scenes/levels/mtskheta/terraces.tscn"
+target_spawn_id = "from_north_road"
+
+[node name="MountainWolf" parent="." instance=ExtResource("6_wolf")]
+position = Vector2(1430, 623)
+
+
+[node name="LeftWorldWall" type="StaticBody2D" parent="."]
+position = Vector2(-16, 300)
+collision_layer = 1
+collision_mask = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftWorldWall"]
+shape = SubResource("boundary_shape")
+
+[node name="RightWorldWall" type="StaticBody2D" parent="."]
+position = Vector2(2416, 300)
+collision_layer = 1
+collision_mask = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightWorldWall"]
+shape = SubResource("boundary_shape")

@@ -1,6 +1,6 @@
-
 extends Marker2D
 
+## The manager uses this ID to place Xizane at the correct entrance.
 @export var spawn_id: String = "start"
 
 

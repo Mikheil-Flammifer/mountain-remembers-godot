@@ -1,61 +1,81 @@
-[gd_scene format=3 uid="uid://7yn8dnlajqa3"]
+[gd_scene format=3 uid="uid://cgfelo0ux7ceo"]
 
 [ext_resource type="Script" uid="uid://clxvu2ki1hs57" path="res://scripts/levels/mtskheta_environment.gd" id="1_env"]
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2_player"]
 [ext_resource type="Script" uid="uid://c2ck753m8203m" path="res://scripts/levels/mtskheta_level.gd" id="3_level"]
 [ext_resource type="Script" uid="uid://juir3bkpl8qd" path="res://scripts/levels/mtskheta_story.gd" id="4_story"]
-[ext_resource type="PackedScene" path="res://scenes/props/training_dummy.tscn" id="5_dummy"]
-[ext_resource type="PackedScene" path="res://scenes/enemies/mountain_wolf.tscn" id="6_k7xr2"]
-[ext_resource type="Script" uid="uid://cj6qe537bn8wy" path="res://scripts/ui/player_health_hud.gd" id="7_hmif8"]
-[ext_resource type="Script" uid="uid://cqgasfaeru4yb" path="res://scripts/levels/mtskheta_exploration.gd" id="8_pi075"]
 
 [sub_resource type="RectangleShape2D" id="ground_shape"]
-size = Vector2(3600, 200)
+size = Vector2(3600, 240)
 
-[sub_resource type="RectangleShape2D" id="boundary_shape"]
-size = Vector2(50, 1000)
+[sub_resource type="RectangleShape2D" id="left_wall_shape"]
+size = Vector2(30, 900)
 
-[node name="MtskhetaLevel" type="Node2D" unique_id=876562493]
+[sub_resource type="RectangleShape2D" id="right_wall_shape"]
+size = Vector2(30, 900)
+
+[sub_resource type="RectangleShape2D" id="ceiling_shape"]
+size = Vector2(3600, 30)
+
+[sub_resource type="RectangleShape2D" id="platform_shape"]
+size = Vector2(200, 24)
+
+[node name="MtskhetaLevel" type="Node2D" unique_id=234706844]
 script = ExtResource("3_level")
 
-[node name="Environment" type="Node2D" parent="." unique_id=1421453211]
+[node name="Environment" type="Node2D" parent="." unique_id=555818478]
 script = ExtResource("1_env")
 
-[node name="Ground" type="StaticBody2D" parent="." unique_id=1088353687]
-position = Vector2(1800, 750)
+[node name="Ground" type="StaticBody2D" parent="." unique_id=1009896672]
+position = Vector2(1800, 730)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground" unique_id=1611007762]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground" unique_id=536163500]
 shape = SubResource("ground_shape")
 
-[node name="WestBoundary" type="StaticBody2D" parent="." unique_id=1238329631]
-position = Vector2(-25, 500)
+[node name="WestBoundary" type="StaticBody2D" parent="." unique_id=429466665]
+position = Vector2(-15, 400)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="WestBoundary" unique_id=839835980]
-shape = SubResource("boundary_shape")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WestBoundary" unique_id=252127067]
+shape = SubResource("left_wall_shape")
 
-[node name="EastBoundary" type="StaticBody2D" parent="." unique_id=2141593826]
-position = Vector2(3625, 500)
+[node name="EastBoundary" type="StaticBody2D" parent="." unique_id=2018407391]
+position = Vector2(3615, 400)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="EastBoundary" unique_id=1581554290]
-shape = SubResource("boundary_shape")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EastBoundary" unique_id=1384032172]
+shape = SubResource("right_wall_shape")
 
-[node name="Xizane" parent="." unique_id=1277587307 instance=ExtResource("2_player")]
-position = Vector2(250, 540)
+[node name="UpperBoundary" type="StaticBody2D" parent="." unique_id=558533446]
+position = Vector2(1800, -415)
 
-[node name="Story" type="Node2D" parent="." unique_id=1270196055]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="UpperBoundary" unique_id=1629435685]
+shape = SubResource("ceiling_shape")
+
+[node name="PlatformOne" type="StaticBody2D" parent="." unique_id=1203465612]
+position = Vector2(900, 522)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlatformOne" unique_id=1604936803]
+shape = SubResource("platform_shape")
+
+[node name="PlatformTwo" type="StaticBody2D" parent="." unique_id=528419671]
+position = Vector2(1400, 482)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlatformTwo" unique_id=1115587524]
+shape = SubResource("platform_shape")
+
+[node name="PlatformThree" type="StaticBody2D" parent="." unique_id=372558691]
+position = Vector2(2080, 522)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlatformThree" unique_id=1752000783]
+shape = SubResource("platform_shape")
+
+[node name="PlatformFour" type="StaticBody2D" parent="." unique_id=1269392444]
+position = Vector2(2650, 522)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlatformFour" unique_id=1461896947]
+shape = SubResource("platform_shape")
+
+[node name="Xizane" parent="." unique_id=1365987833 instance=ExtResource("2_player")]
+position = Vector2(180, 538)
+
+[node name="Story" type="Node2D" parent="." unique_id=2140599167]
 script = ExtResource("4_story")
-
-[node name="TrainingDummy" parent="." unique_id=125263043 instance=ExtResource("5_dummy")]
-position = Vector2(700, 607)
-
-[node name="MountainWolf" parent="." unique_id=1276401505 instance=ExtResource("6_k7xr2")]
-position = Vector2(1494, 622)
-
-[node name="PlayerHealthHUD" type="CanvasLayer" parent="." unique_id=1167203231]
-script = ExtResource("7_hmif8")
-
-[node name="MtskhetaEnvironment" type="Node2D" parent="." unique_id=2128373684]
-script = ExtResource("1_env")
-
-[node name="MtskhetaExploration" type="Node2D" parent="." unique_id=1817388972]
-script = ExtResource("8_pi075")

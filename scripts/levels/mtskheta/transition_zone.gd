@@ -1,6 +1,6 @@
-
 extends Area2D
 
+## Reusable exit. Auto-travels at district edges, or presses E at a doorway.
 @export_file("*.tscn") var target_scene: String = ""
 @export var target_spawn_id: String = ""
 @export var require_interaction: bool = false
@@ -17,7 +17,6 @@ func _ready() -> void:
 	monitoring = true
 	prompt.visible = false
 	prompt.text = prompt_text
-
 	body_entered.connect(_on_body_entered)
 	body_exited.connect(_on_body_exited)
 
@@ -28,10 +27,7 @@ func _process(_delta: float) -> void:
 	_e_was_down = e_down
 
 	if InputMap.has_action("interact"):
-		interact_pressed = (
-			interact_pressed
-			or Input.is_action_just_pressed("interact")
-		)
+		interact_pressed = interact_pressed or Input.is_action_just_pressed("interact")
 
 	if require_interaction and _player_inside and interact_pressed:
 		_start_transition()
@@ -61,20 +57,14 @@ func _start_transition() -> void:
 		return
 
 	if target_scene.is_empty() or target_spawn_id.is_empty():
-		push_error("Transition destination or spawn ID is missing")
+		push_error("TransitionZone: destination or spawn ID is missing")
 		return
 
-	var manager: Node = get_node_or_null(
-		"/root/MtskhetaTransitionManager"
-	)
-
+	var manager: Node = get_node_or_null("/root/MtskhetaTransitionManager")
 	if manager == null:
-		push_error("MtskhetaTransitionManager autoload missing")
+		push_error("Add mtskheta_transition_manager.gd as Autoload named MtskhetaTransitionManager")
 		return
 
 	_used = true
-	manager.call_deferred(
-		"travel_to",
-		target_scene,
-		target_spawn_id
-	)
+	# Scene replacement is deferred so a physics callback never frees its own area.
+	manager.call_deferred("travel_to", target_scene, target_spawn_id)

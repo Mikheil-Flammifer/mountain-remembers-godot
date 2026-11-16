@@ -1,5 +1,8 @@
-
 extends Node
+
+## Autoload name: MtskhetaTransitionManager.
+## Carries player HP/Vitality through the five districts and manages
+## a session checkpoint + respawn. QuestJournal handles its own disk save.
 
 const AREA_FILES: Array[String] = [
 	"market.tscn",
@@ -8,14 +11,19 @@ const AREA_FILES: Array[String] = [
 	"terraces.tscn",
 	"north_road.tscn",
 ]
-
 const AREA_WIDTH: int = 2400
+
+const DEFAULT_CHECKPOINT_SCENE: String = "res://scenes/levels/mtskheta/market.tscn"
+const DEFAULT_CHECKPOINT_SPAWN: String = "start"
 
 var _traveling: bool = false
 var _pending_spawn_id: String = ""
 var _saved_hp: int = -1
 var _saved_max_hp: int = -1
 var _saved_vitality: int = -1
+
+var _checkpoint_scene: String = DEFAULT_CHECKPOINT_SCENE
+var _checkpoint_spawn_id: String = DEFAULT_CHECKPOINT_SPAWN
 
 
 func _ready() -> void:
@@ -25,22 +33,44 @@ func _ready() -> void:
 func travel_to(scene_path: String, spawn_id: String) -> void:
 	if _traveling:
 		return
-
 	if not ResourceLoader.exists(scene_path):
-		push_error("Scene not found: " + scene_path)
+		push_error("Mtskheta transition: scene not found: " + scene_path)
 		return
 
 	_save_player_stats()
+	_begin_scene_change(scene_path, spawn_id)
 
+
+func activate_checkpoint(scene_path: String, spawn_id: String) -> void:
+	if not ResourceLoader.exists(scene_path) or spawn_id.is_empty():
+		push_error("Mtskheta checkpoint: invalid scene or spawn ID")
+		return
+
+	_checkpoint_scene = scene_path
+	_checkpoint_spawn_id = spawn_id
+	_save_player_stats()
+	print("[Checkpoint] Activated: ", scene_path, " / ", spawn_id)
+
+
+func respawn_at_checkpoint() -> void:
+	if _traveling:
+		return
+
+	# Capture the latest max HP and Vitality, even when the player
+	# has leveled up since their last district transition.
+	_save_player_stats()
+	if _saved_max_hp > 0:
+		_saved_hp = _saved_max_hp
+	_begin_scene_change(_checkpoint_scene, _checkpoint_spawn_id)
+
+
+func _begin_scene_change(scene_path: String, spawn_id: String) -> void:
 	_pending_spawn_id = spawn_id
 	_traveling = true
 
-	var error_code: Error = get_tree().change_scene_to_file(
-		scene_path
-	)
-
+	var error_code: Error = get_tree().change_scene_to_file(scene_path)
 	if error_code != OK:
-		push_error("Transition failed: " + str(error_code))
+		push_error("Mtskheta transition failed: " + str(error_code))
 		_pending_spawn_id = ""
 		_traveling = false
 
@@ -49,61 +79,41 @@ func _on_scene_changed(scene_root: Node) -> void:
 	if scene_root.scene_file_path.get_file() not in AREA_FILES:
 		return
 
-	var player: CharacterBody2D = (
-		scene_root.get_node_or_null("Player") as CharacterBody2D
-	)
-
+	var player: CharacterBody2D = scene_root.get_node_or_null("Player") as CharacterBody2D
 	if player == null:
-		push_error("Mtskheta area is missing Player")
+		push_error("Mtskheta area is missing its Player instance")
 		_traveling = false
 		return
 
 	if _traveling:
-		var entrance: Marker2D = _find_spawn(
-			_pending_spawn_id
-		)
-
+		var entrance: Marker2D = _find_spawn(_pending_spawn_id)
 		if entrance != null:
 			player.global_position = entrance.global_position
 		else:
-			push_warning(
-				"Missing spawn: " + _pending_spawn_id
-			)
+			push_warning("Missing Mtskheta spawn ID: " + _pending_spawn_id)
 
 		player.velocity = Vector2.ZERO
 		_restore_player_stats(player)
-
 		_pending_spawn_id = ""
 		_traveling = false
 
 	_configure_camera(player)
+	_bind_player_death(player)
 
 
 func _find_spawn(spawn_id: String) -> Marker2D:
-	for node: Node in get_tree().get_nodes_in_group(
-		"mtskheta_spawn"
-	):
-		if (
-			node is Marker2D
-			and node.get("spawn_id") == spawn_id
-		):
+	for node: Node in get_tree().get_nodes_in_group("mtskheta_spawn"):
+		if node is Marker2D and str(node.get("spawn_id")) == spawn_id:
 			return node as Marker2D
-
 	return null
 
 
 func _save_player_stats() -> void:
-	var player: Node = get_tree().get_first_node_in_group(
-		"player"
-	)
-
+	var player: Node = get_tree().get_first_node_in_group("player")
 	if player == null:
 		return
 
-	var health: Node = player.get_node_or_null(
-		"HealthComponent"
-	)
-
+	var health: Node = player.get_node_or_null("HealthComponent")
 	if health != null:
 		_saved_hp = int(health.get("current_health"))
 		_saved_max_hp = int(health.get("max_health"))
@@ -113,41 +123,42 @@ func _save_player_stats() -> void:
 
 
 func _restore_player_stats(player: CharacterBody2D) -> void:
-	var health: Node = player.get_node_or_null(
-		"HealthComponent"
-	)
-
+	var health: Node = player.get_node_or_null("HealthComponent")
 	if health != null and _saved_max_hp > 0:
-		var restored_hp: int = clampi(
-			_saved_hp,
-			0,
-			_saved_max_hp
-		)
-
+		var restored_hp: int = clampi(_saved_hp, 0, _saved_max_hp)
 		health.set("max_health", _saved_max_hp)
 		health.set("current_health", restored_hp)
 		health.set("is_dead", false)
+		health.emit_signal("health_changed", restored_hp, _saved_max_hp)
 
-		health.emit_signal(
-			"health_changed",
-			restored_hp,
-			_saved_max_hp
-		)
-
-	if (
-		_saved_vitality >= 0
-		and _has_property(player, "vitality")
-	):
+	if _saved_vitality >= 0 and _has_property(player, "vitality"):
 		player.set("vitality", _saved_vitality)
 
 
-func _configure_camera(player: CharacterBody2D) -> void:
-	var camera: Camera2D = player.find_child(
-		"Camera2D",
-		true,
-		false
-	) as Camera2D
+func _bind_player_death(player: CharacterBody2D) -> void:
+	var health: Node = player.get_node_or_null("HealthComponent")
+	if health == null or not health.has_signal("died"):
+		return
 
+	var handler := Callable(self, "_on_player_died")
+	if not health.is_connected("died", handler):
+		health.connect("died", handler)
+
+
+func _on_player_died() -> void:
+	# Only respawn if we're still in the scene where Xizane died.
+	# A transition during the death delay must not reset the new scene.
+	var death_scene: Node = get_tree().current_scene
+	await get_tree().create_timer(1.0).timeout
+	if _traveling or not is_instance_valid(death_scene):
+		return
+	if get_tree().current_scene != death_scene:
+		return
+	respawn_at_checkpoint()
+
+
+func _configure_camera(player: CharacterBody2D) -> void:
+	var camera: Camera2D = player.find_child("Camera2D", true, false) as Camera2D
 	if camera == null:
 		return
 
@@ -157,12 +168,8 @@ func _configure_camera(player: CharacterBody2D) -> void:
 	camera.limit_bottom = 800
 
 
-func _has_property(
-	object: Object,
-	property_name: String
-) -> bool:
+func _has_property(object: Object, property_name: String) -> bool:
 	for entry: Dictionary in object.get_property_list():
-		if String(entry.get("name", "")) == property_name:
+		if str(entry.get("name", "")) == property_name:
 			return true
-
 	return false
