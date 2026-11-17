@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="New Game Project"
-run/main_scene="res://scenes/levels/mtskheta/mtskheta.tscn"
+run/main_scene="res://scenes/levels/mtskheta/market.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
@@ -19,7 +19,6 @@ config/icon="res://icon.svg"
 
 WorldState="*uid://rxdykkx1qpx3"
 MtskhetaTransitionManager="*uid://c4f8yudxv01t6"
-MtskhetaTravelFX="*res://scripts/levels/mtskheta/mtskheta_travel_fx.gd"
 
 [display]
 

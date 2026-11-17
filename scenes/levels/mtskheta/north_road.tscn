@@ -31,7 +31,7 @@ position = Vector2(170, 602)
 script = ExtResource("3_hud")
 
 [node name="SpawnFromTerraces" parent="." instance=ExtResource("4_spawn")]
-position = Vector2(175, 602)
+position = Vector2(280, 602)
 spawn_id = "from_terraces"
 
 [node name="ToTerraces" parent="." instance=ExtResource("5_exit")]

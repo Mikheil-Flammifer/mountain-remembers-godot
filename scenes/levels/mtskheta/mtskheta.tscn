@@ -5,6 +5,9 @@
 [ext_resource type="Script" uid="uid://c2ck753m8203m" path="res://scripts/levels/mtskheta_level.gd" id="3_level"]
 [ext_resource type="Script" uid="uid://juir3bkpl8qd" path="res://scripts/levels/mtskheta_story.gd" id="4_story"]
 
+[ext_resource type="PackedScene" path="res://scenes/levels/mtskheta/shared/spawn_point.tscn" id="5_spawn"]
+[ext_resource type="PackedScene" path="res://scenes/levels/mtskheta/shared/transition_zone.tscn" id="6_exit"]
+
 [sub_resource type="RectangleShape2D" id="ground_shape"]
 size = Vector2(3600, 240)
 
@@ -79,3 +82,12 @@ position = Vector2(180, 538)
 
 [node name="Story" type="Node2D" parent="." unique_id=2140599167]
 script = ExtResource("4_story")
+
+[node name="SpawnFromMarket" parent="." instance=ExtResource("5_spawn")]
+position = Vector2(3200, 538)
+spawn_id = "from_market"
+
+[node name="ToMarketDistrict" parent="." instance=ExtResource("6_exit")]
+position = Vector2(3440, 510)
+target_scene = "res://scenes/levels/mtskheta/market.tscn"
+target_spawn_id = "from_old_town"

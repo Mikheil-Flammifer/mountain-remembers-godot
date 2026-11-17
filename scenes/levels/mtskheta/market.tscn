@@ -34,7 +34,7 @@ position = Vector2(170, 602)
 spawn_id = "start"
 
 [node name="SpawnFromStreets" parent="." instance=ExtResource("4_spawn")]
-position = Vector2(2150, 602)
+position = Vector2(2050, 602)
 spawn_id = "from_streets"
 
 [node name="ToStreets" parent="." instance=ExtResource("5_exit")]
@@ -58,3 +58,12 @@ collision_mask = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="RightWorldWall"]
 shape = SubResource("boundary_shape")
+
+[node name="SpawnFromOldTown" parent="." instance=ExtResource("4_spawn")]
+position = Vector2(280, 602)
+spawn_id = "from_old_town"
+
+[node name="ToOldTown" parent="." instance=ExtResource("5_exit")]
+position = Vector2(80, 570)
+target_scene = "res://scenes/levels/mtskheta/mtskheta.tscn"
+target_spawn_id = "from_market"

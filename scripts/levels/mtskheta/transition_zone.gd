@@ -1,6 +1,7 @@
 extends Area2D
 
-## Reusable exit. Auto-travels at district edges, or presses E at a doorway.
+## Two-way district portal. Edge exits travel automatically; doorways need E.
+## The transition manager enforces fade completion and a short arrival cooldown.
 @export_file("*.tscn") var target_scene: String = ""
 @export var target_spawn_id: String = ""
 @export var require_interaction: bool = false
@@ -28,6 +29,9 @@ func _process(_delta: float) -> void:
 
 	if InputMap.has_action("interact"):
 		interact_pressed = interact_pressed or Input.is_action_just_pressed("interact")
+
+	if InputMap.has_action("talk"):
+		interact_pressed = interact_pressed or Input.is_action_just_pressed("talk")
 
 	if require_interaction and _player_inside and interact_pressed:
 		_start_transition()
@@ -62,9 +66,13 @@ func _start_transition() -> void:
 
 	var manager: Node = get_node_or_null("/root/MtskhetaTransitionManager")
 	if manager == null:
-		push_error("Add mtskheta_transition_manager.gd as Autoload named MtskhetaTransitionManager")
+		push_error("MtskhetaTransitionManager autoload is missing")
+		return
+
+	# When a player arrives near a portal, ignore its body_entered signal
+	# during fade-in/cooldown. Do not permanently mark it used.
+	if manager.has_method("can_travel") and not manager.can_travel():
 		return
 
 	_used = true
-	# Scene replacement is deferred so a physics callback never frees its own area.
 	manager.call_deferred("travel_to", target_scene, target_spawn_id)
