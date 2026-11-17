@@ -10,6 +10,7 @@ const AREA_FILES: Array[String] = [
 	"streets.tscn",
 	"terraces.tscn",
 	"north_road.tscn",
+	"mtskheta.tscn",
 ]
 const AREA_WIDTH: int = 2400
 
@@ -67,10 +68,15 @@ func respawn_at_checkpoint() -> void:
 func _begin_scene_change(scene_path: String, spawn_id: String) -> void:
 	_pending_spawn_id = spawn_id
 	_traveling = true
+	var fx: Variant = get_node_or_null("/root/MtskhetaTravelFX")
+	if fx != null:
+		await fx.fade_out()
 
 	var error_code: Error = get_tree().change_scene_to_file(scene_path)
 	if error_code != OK:
 		push_error("Mtskheta transition failed: " + str(error_code))
+		if fx != null:
+			fx.fade_in()
 		_pending_spawn_id = ""
 		_traveling = false
 
@@ -80,6 +86,8 @@ func _on_scene_changed(scene_root: Node) -> void:
 		return
 
 	var player: CharacterBody2D = scene_root.get_node_or_null("Player") as CharacterBody2D
+	if player == null:
+		player = scene_root.get_node_or_null("Xizane") as CharacterBody2D
 	if player == null:
 		push_error("Mtskheta area is missing its Player instance")
 		_traveling = false
@@ -163,7 +171,7 @@ func _configure_camera(player: CharacterBody2D) -> void:
 		return
 
 	camera.limit_left = 0
-	camera.limit_right = AREA_WIDTH
+	camera.limit_right = 3600 if get_tree().current_scene.scene_file_path.get_file() == "mtskheta.tscn" else AREA_WIDTH
 	camera.limit_top = -400
 	camera.limit_bottom = 800
 
