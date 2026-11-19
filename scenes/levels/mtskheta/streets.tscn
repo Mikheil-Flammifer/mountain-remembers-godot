@@ -6,6 +6,9 @@
 [ext_resource type="PackedScene" path="res://scenes/levels/mtskheta/shared/spawn_point.tscn" id="4_spawn"]
 [ext_resource type="PackedScene" path="res://scenes/levels/mtskheta/shared/transition_zone.tscn" id="5_exit"]
 
+[ext_resource type="Script" path="res://scripts/levels/mtskheta/investigation_npc.gd" id="invest_npc"]
+[ext_resource type="Script" path="res://scripts/levels/mtskheta/investigation_controller.gd" id="invest_controller"]
+
 [sub_resource type="RectangleShape2D" id="ground_shape"]
 size = Vector2(2400, 160)
 
@@ -22,13 +25,21 @@ position = Vector2(1200, 730)
 shape = SubResource("ground_shape")
 
 [node name="Player" parent="." unique_id=365524171 groups=["player"] instance=ExtResource("2_player")]
+position = Vector2(400, 602)
 position = Vector2(170, 602)
 
 [node name="PlayerHealthHUD" type="CanvasLayer" parent="." unique_id=1499351819]
 script = ExtResource("3_hud")
 
-[node name="SpawnFromMarket" parent="." unique_id=1858815344 instance=ExtResource("4_spawn")]
+[node name="SpawnStart" parent="." instance=ExtResource("4_spawn")]
+position = Vector2(400, 602)
+spawn_id = "start"
+
+[node name="SpawnFromOldTown" parent="." instance=ExtResource("4_spawn")]
 position = Vector2(280, 602)
+spawn_id = "from_old_town"
+[node name="SpawnFromMarket" parent="." unique_id=1858815344 instance=ExtResource("4_spawn")]
+position = Vector2(1930, 602)
 spawn_id = "from_market"
 
 [node name="SpawnFromCathedral" parent="." unique_id=1098797088 instance=ExtResource("4_spawn")]
@@ -39,22 +50,23 @@ spawn_id = "from_cathedral"
 position = Vector2(1940, 602)
 spawn_id = "from_terraces"
 
-[node name="ToMarket" parent="." unique_id=1494431111 instance=ExtResource("5_exit")]
+[node name="ToOldTown" parent="." unique_id=1494431111 instance=ExtResource("5_exit")]
+target_spawn_id = "from_market"
+target_scene = "res://scenes/levels/mtskheta/mtskheta.tscn"
 position = Vector2(80, 570)
-target_scene = "res://scenes/levels/mtskheta/market.tscn"
-target_spawn_id = "from_streets"
 
 [node name="CathedralDoor" parent="." unique_id=806181897 instance=ExtResource("5_exit")]
-position = Vector2(970, 570)
-target_scene = "res://scenes/levels/mtskheta/cathedral_precinct.tscn"
 target_spawn_id = "from_streets"
+target_scene = "res://scenes/levels/mtskheta/cathedral_precinct.tscn"
+position = Vector2(970, 570)
 require_interaction = true
 prompt_text = "E - Enter Svetitskhoveli"
 
-[node name="ToTerraces" parent="." instance=ExtResource("5_exit")]
-position = Vector2(2250, 570)
-target_scene = "res://scenes/levels/mtskheta/terraces.tscn"
+[node name="ToMarket" parent="." instance=ExtResource("5_exit")]
 target_spawn_id = "from_streets"
+target_scene = "res://scenes/levels/mtskheta/market.tscn"
+position = Vector2(2250, 570)
+position = Vector2(2250, 570)
 require_interaction = false
 
 [node name="LeftWorldWall" type="StaticBody2D" parent="." unique_id=648544745]
@@ -79,3 +91,23 @@ theme_override_font_sizes/font_size = 22
 text = "SVETITSKHOVELI
 E - ENTER CATHEDRAL"
 horizontal_alignment = 1
+
+[node name="
+StreetPilgrim
+" type="Node2D" parent="."]
+position = Vector2(
+1600
+, 650)
+script = ExtResource("invest_npc")
+npc_id = "
+street_pilgrim
+"
+display_name = "
+Pilgrim
+"
+cloak_color = Color(
+0.31, 0.40, 0.38, 1
+)
+
+[node name="InvestigationController" type="Node" parent="."]
+script = ExtResource("invest_controller")

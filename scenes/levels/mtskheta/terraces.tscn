@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=11 format=3]
 
 [ext_resource type="Script" path="res://scripts/levels/mtskheta/terraces_level.gd" id="1_area"]
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2_player"]
@@ -6,6 +6,10 @@
 [ext_resource type="PackedScene" path="res://scenes/levels/mtskheta/shared/spawn_point.tscn" id="4_spawn"]
 [ext_resource type="PackedScene" path="res://scenes/levels/mtskheta/shared/transition_zone.tscn" id="5_exit"]
 
+[ext_resource type="Script" path="res://scripts/traps/thorn_patch.gd" id="6_thorns"]
+
+[sub_resource type="RectangleShape2D" id="thorn_hit_shape"]
+size = Vector2(95, 20)
 [sub_resource type="RectangleShape2D" id="ground_shape"]
 size = Vector2(2400, 160)
 
@@ -32,6 +36,9 @@ position = Vector2(170, 602)
 [node name="PlayerHealthHUD" type="CanvasLayer" parent="."]
 script = ExtResource("3_hud")
 
+[node name="SpawnFromMarket" parent="." instance=ExtResource("4_spawn")]
+position = Vector2(280, 602)
+spawn_id = "from_market"
 [node name="SpawnFromStreets" parent="." instance=ExtResource("4_spawn")]
 position = Vector2(280, 602)
 spawn_id = "from_streets"
@@ -40,15 +47,16 @@ spawn_id = "from_streets"
 position = Vector2(2040, 602)
 spawn_id = "from_north_road"
 
-[node name="ToStreets" parent="." instance=ExtResource("5_exit")]
-position = Vector2(80, 570)
-target_scene = "res://scenes/levels/mtskheta/streets.tscn"
+[node name="ToMarket" parent="." instance=ExtResource("5_exit")]
 target_spawn_id = "from_terraces"
+target_scene = "res://scenes/levels/mtskheta/market.tscn"
+position = Vector2(80, 570)
+position = Vector2(80, 570)
 
 [node name="ToNorthRoad" parent="." instance=ExtResource("5_exit")]
-position = Vector2(2310, 570)
-target_scene = "res://scenes/levels/mtskheta/north_road.tscn"
 target_spawn_id = "from_terraces"
+target_scene = "res://scenes/levels/mtskheta/north_road.tscn"
+position = Vector2(2310, 570)
 
 [node name="Terrace1" type="StaticBody2D" parent="."]
 position = Vector2(705, 557)
@@ -75,6 +83,60 @@ shape = SubResource("terrace_shape")
 one_way_collision = true
 
 
+[node name="ThornTrap470" type="Area2D" parent="." groups=["terrace_trap"]]
+position = Vector2(470, 640)
+collision_layer = 0
+collision_mask = 1
+script = ExtResource("6_thorns")
+
+[node name="HitShape" type="CollisionShape2D" parent="ThornTrap470"]
+shape = SubResource("thorn_hit_shape")
+
+[node name="SpikeSilhouette" type="Polygon2D" parent="ThornTrap470"]
+z_index = 4
+color = Color(0.29, 0.20, 0.17, 1)
+polygon = PackedVector2Array(-49, 10, -42, -34, -35, 10, -35, 10, -28, -26, -21, 10, -21, 10, -14, -34, -7, 10, -7, 10, 0, -26, 7, 10, 7, 10, 14, -34, 21, 10, 21, 10, 28, -26, 35, 10, 35, 10, 42, -34, 49, 10)
+
+[node name="WarningStripe" type="Polygon2D" parent="ThornTrap470"]
+z_index = 4
+color = Color(0.86, 0.46, 0.26, 1)
+polygon = PackedVector2Array(-47, 11, 47, 11, 47, 15, -47, 15)
+[node name="ThornTrap1360" type="Area2D" parent="." groups=["terrace_trap"]]
+position = Vector2(1360, 640)
+collision_layer = 0
+collision_mask = 1
+script = ExtResource("6_thorns")
+
+[node name="HitShape" type="CollisionShape2D" parent="ThornTrap1360"]
+shape = SubResource("thorn_hit_shape")
+
+[node name="SpikeSilhouette" type="Polygon2D" parent="ThornTrap1360"]
+z_index = 4
+color = Color(0.29, 0.20, 0.17, 1)
+polygon = PackedVector2Array(-49, 10, -42, -34, -35, 10, -35, 10, -28, -26, -21, 10, -21, 10, -14, -34, -7, 10, -7, 10, 0, -26, 7, 10, 7, 10, 14, -34, 21, 10, 21, 10, 28, -26, 35, 10, 35, 10, 42, -34, 49, 10)
+
+[node name="WarningStripe" type="Polygon2D" parent="ThornTrap1360"]
+z_index = 4
+color = Color(0.86, 0.46, 0.26, 1)
+polygon = PackedVector2Array(-47, 11, 47, 11, 47, 15, -47, 15)
+[node name="ThornTrap1850" type="Area2D" parent="." groups=["terrace_trap"]]
+position = Vector2(1850, 640)
+collision_layer = 0
+collision_mask = 1
+script = ExtResource("6_thorns")
+
+[node name="HitShape" type="CollisionShape2D" parent="ThornTrap1850"]
+shape = SubResource("thorn_hit_shape")
+
+[node name="SpikeSilhouette" type="Polygon2D" parent="ThornTrap1850"]
+z_index = 4
+color = Color(0.29, 0.20, 0.17, 1)
+polygon = PackedVector2Array(-49, 10, -42, -34, -35, 10, -35, 10, -28, -26, -21, 10, -21, 10, -14, -34, -7, 10, -7, 10, 0, -26, 7, 10, 7, 10, 14, -34, 21, 10, 21, 10, 28, -26, 35, 10, 35, 10, 42, -34, 49, 10)
+
+[node name="WarningStripe" type="Polygon2D" parent="ThornTrap1850"]
+z_index = 4
+color = Color(0.86, 0.46, 0.26, 1)
+polygon = PackedVector2Array(-47, 11, 47, 11, 47, 15, -47, 15)
 [node name="LeftWorldWall" type="StaticBody2D" parent="."]
 position = Vector2(-16, 300)
 collision_layer = 1
@@ -91,13 +153,3 @@ collision_mask = 1
 [node name="CollisionShape2D" type="CollisionShape2D" parent="RightWorldWall"]
 shape = SubResource("boundary_shape")
 
-[node name="SpawnFromCathedral" parent="." instance=ExtResource("4_spawn")]
-position = Vector2(1130, 602)
-spawn_id = "from_cathedral"
-
-[node name="CathedralPath" parent="." instance=ExtResource("5_exit")]
-position = Vector2(980, 570)
-target_scene = "res://scenes/levels/mtskheta/cathedral_precinct.tscn"
-target_spawn_id = "from_terraces"
-require_interaction = true
-prompt_text = "E - Svetitskhoveli"

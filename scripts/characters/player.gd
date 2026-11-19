@@ -3,6 +3,7 @@ extends CharacterBody2D
 
 @onready var movement: MovementComponent = $MovementComponent
 @onready var health: HealthComponent = $HealthComponent
+@onready var stamina: StaminaComponent = $StaminaComponent
 @onready var combat: SwordCombatComponent = $SwordCombatComponent
 
 @onready var visual_root: Node2D = $VisualRoot
@@ -30,6 +31,14 @@ var _idle_time: float = 0.0
 var _was_grounded: bool = false
 var _landing_timer: float = 0.0
 var _attack_was_pressed: bool = false
+# V5_STAMINA_POISE: hit priority depends on poise, not invulnerable contact damage.
+@export var max_poise: float = 25.0
+@export var poise_recovery_per_second: float = 18.0
+@export var poise_recovery_delay: float = 1.2
+@export var stagger_duration: float = 0.30
+var poise: float = 25.0
+var _poise_delay: float = 0.0
+var _stagger_timer: float = 0.0
 var _damage_flash_tween: Tween
 
 func _ready() -> void:
@@ -41,6 +50,16 @@ func _ready() -> void:
 		health.died.connect(_on_died)
 
 func _physics_process(delta: float) -> void:
+	_poise_delay = maxf(0.0, _poise_delay - delta)
+	if _poise_delay <= 0.0:
+		poise = minf(max_poise, poise + poise_recovery_per_second * delta)
+	if _stagger_timer > 0.0:
+		_stagger_timer = maxf(0.0, _stagger_timer - delta)
+		velocity.x = move_toward(velocity.x, 0.0, 1800.0 * delta)
+		if not is_on_floor():
+			velocity.y += 1500.0 * delta
+		move_and_slide()
+		return
 	_handle_attack_input()
 
 	if movement != null:
@@ -140,7 +159,8 @@ func _animate_character(delta: float) -> void:
 
 	if attacking:
 		var progress: float = combat.attack_progress()
-		var swing: float = smoothstep(0.10, 0.85, progress)
+		# V4 wider sword swing
+		var swing: float = smoothstep(0.06, 0.82, progress)
 
 		target_front_leg = -0.08
 		target_back_leg = 0.10
@@ -161,8 +181,8 @@ func _animate_character(delta: float) -> void:
 
 			_:
 				target_torso = lerpf(-0.08, 0.16, swing)
-				target_front_arm = lerpf(-1.35, 0.90, swing)
-				target_sword = lerpf(-0.20, 0.35, swing)
+				target_front_arm = lerpf(-2.10, 1.25, swing)
+				target_sword = lerpf(-0.55, 0.45, swing)
 
 
 	elif dashing:
@@ -252,9 +272,13 @@ func _animate_character(delta: float) -> void:
 
 
 
+func is_staggered() -> bool:
+	return _stagger_timer > 0.0
+
 func receive_enemy_hit(
 	amount: int,
-	attacker_position: Vector2
+	attacker_position: Vector2,
+	poise_damage: float = 28.0
 ) -> void:
 	if not health.take_damage(amount):
 		return
@@ -264,6 +288,13 @@ func receive_enemy_hit(
 		% [health.current_health, health.max_health]
 	)
 
+	poise = maxf(0.0, poise - poise_damage)
+	_poise_delay = poise_recovery_delay
+	if poise <= 0.0:
+		poise = max_poise
+		_stagger_timer = stagger_duration
+		if combat.has_method("cancel_attack"):
+			combat.cancel_attack()
 	var push_direction: float = (
 		1.0 if global_position.x >= attacker_position.x
 		else -1.0

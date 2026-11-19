@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://scripts/levels/mtskheta/market_level.gd" id="1_area"]
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2_player"]
@@ -6,6 +6,11 @@
 [ext_resource type="PackedScene" path="res://scenes/levels/mtskheta/shared/spawn_point.tscn" id="4_spawn"]
 [ext_resource type="PackedScene" path="res://scenes/levels/mtskheta/shared/transition_zone.tscn" id="5_exit"]
 
+[ext_resource type="Script" path="res://scripts/levels/mtskheta/investigation_npc.gd" id="invest_npc"]
+[ext_resource type="Script" path="res://scripts/levels/mtskheta/investigation_controller.gd" id="invest_controller"]
+
+[ext_resource type="PackedScene" path="res://scenes/obstacles/wooden_crate.tscn" id="7_crate"]
+[ext_resource type="PackedScene" path="res://scenes/obstacles/market_stand.tscn" id="8_stand"]
 [sub_resource type="RectangleShape2D" id="ground_shape"]
 size = Vector2(2400, 160)
 
@@ -34,15 +39,30 @@ position = Vector2(170, 602)
 spawn_id = "start"
 
 [node name="SpawnFromStreets" parent="." instance=ExtResource("4_spawn")]
-position = Vector2(2050, 602)
+position = Vector2(280, 602)
 spawn_id = "from_streets"
 
-[node name="ToStreets" parent="." instance=ExtResource("5_exit")]
-position = Vector2(2310, 570)
-target_scene = "res://scenes/levels/mtskheta/streets.tscn"
+[node name="SpawnFromTerraces" parent="." instance=ExtResource("4_spawn")]
+position = Vector2(2050, 602)
+spawn_id = "from_terraces"
+[node name="ToTerraces" parent="." instance=ExtResource("5_exit")]
 target_spawn_id = "from_market"
+target_scene = "res://scenes/levels/mtskheta/terraces.tscn"
+position = Vector2(2310, 570)
+position = Vector2(2310, 570)
 
 
+[node name="MarketCrateA" parent="." instance=ExtResource("7_crate")]
+position = Vector2(620, 617)
+
+[node name="MarketCrateB" parent="." instance=ExtResource("7_crate")]
+position = Vector2(990, 617)
+
+[node name="MarketCrateC" parent="." instance=ExtResource("7_crate")]
+position = Vector2(1910, 617)
+
+[node name="GoodsStandA" parent="." instance=ExtResource("8_stand")]
+position = Vector2(1510, 650)
 [node name="LeftWorldWall" type="StaticBody2D" parent="."]
 position = Vector2(-16, 300)
 collision_layer = 1
@@ -63,7 +83,28 @@ shape = SubResource("boundary_shape")
 position = Vector2(280, 602)
 spawn_id = "from_old_town"
 
-[node name="ToOldTown" parent="." instance=ExtResource("5_exit")]
-position = Vector2(80, 570)
-target_scene = "res://scenes/levels/mtskheta/mtskheta.tscn"
+[node name="ToStreetsWest" parent="." instance=ExtResource("5_exit")]
 target_spawn_id = "from_market"
+target_scene = "res://scenes/levels/mtskheta/streets.tscn"
+position = Vector2(80, 570)
+position = Vector2(80, 570)
+
+[node name="
+AragviMerchant
+" type="Node2D" parent="."]
+position = Vector2(
+1250
+, 650)
+script = ExtResource("invest_npc")
+npc_id = "
+aragvi_merchant
+"
+display_name = "
+Aragvi Merchant
+"
+cloak_color = Color(
+0.40, 0.30, 0.23, 1
+)
+
+[node name="InvestigationController" type="Node" parent="."]
+script = ExtResource("invest_controller")

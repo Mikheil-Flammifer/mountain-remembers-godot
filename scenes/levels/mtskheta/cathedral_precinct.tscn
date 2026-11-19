@@ -35,15 +35,20 @@ position = Vector2(760, 602)
 script = ExtResource("3_hud")
 
 [node name="SpawnFromStreets" parent="." instance=ExtResource("4_spawn")]
+position = Vector2(970, 602)
 position = Vector2(760, 602)
 spawn_id = "from_streets"
 
 [node name="ToStreets" parent="." instance=ExtResource("5_exit")]
+prompt_text = "E - Leave Svetitskhoveli"
+require_interaction = true
+position = Vector2(1200, 570)
 position = Vector2(80, 570)
 target_scene = "res://scenes/levels/mtskheta/streets.tscn"
 target_spawn_id = "from_cathedral"
 
 [node name="CourtyardMonk" type="Node2D" parent="."]
+z_index = -2
 position = Vector2(1890, 650)
 script = ExtResource("6_monk")
 
@@ -81,11 +86,3 @@ collision_mask = 1
 [node name="CollisionShape2D" type="CollisionShape2D" parent="RightWorldWall"]
 shape = SubResource("boundary_shape")
 
-[node name="SpawnFromTerraces" parent="." instance=ExtResource("4_spawn")]
-position = Vector2(2120, 602)
-spawn_id = "from_terraces"
-
-[node name="ToTerraces" parent="." instance=ExtResource("5_exit")]
-position = Vector2(2310, 570)
-target_scene = "res://scenes/levels/mtskheta/terraces.tscn"
-target_spawn_id = "from_cathedral"

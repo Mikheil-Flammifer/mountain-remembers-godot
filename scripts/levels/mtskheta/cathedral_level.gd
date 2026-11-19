@@ -20,34 +20,34 @@ extends Node2D
 @export var cathedral_center_x: float = 1200.0
 @export var cathedral_scale: float = 0.82
 
-const SKY := Color("#b8c5bf")
-const MOUNTAIN_FAR := Color("#718680")
-const MOUNTAIN_NEAR := Color("#526861")
+const SKY := Color("#d9c1a4")
+const MOUNTAIN_FAR := Color("#a88f78")
+const MOUNTAIN_NEAR := Color("#80725a")
 
-const COURTYARD := Color("#756f63")
+const COURTYARD := Color("#8e765e")
 
-const STONE_MAIN := Color("#9a8e78")
-const STONE_LIGHT := Color("#afa28a")
-const STONE_MID := Color("#837765")
-const STONE_DARK := Color("#554f47")
-const STONE_SHADOW := Color("#45423d")
+const STONE_MAIN := Color("#b6a086")
+const STONE_LIGHT := Color("#d2b99a")
+const STONE_MID := Color("#9b8066")
+const STONE_DARK := Color("#675445")
+const STONE_SHADOW := Color("#51463c")
 
 # The tower/drum is visibly warmer than the main facade
 # in the supplied reference.
-const DRUM_STONE := Color("#8f795d")
-const DRUM_LIGHT := Color("#aa9270")
-const DRUM_DARK := Color("#695b49")
+const DRUM_STONE := Color("#a58864")
+const DRUM_LIGHT := Color("#c9a87e")
+const DRUM_DARK := Color("#78604a")
 
-const ROOF := Color("#77746f")
-const ROOF_LIGHT := Color("#908b82")
-const DOME := Color("#625b56")
-const DOME_RIB := Color("#8a7b6a")
+const ROOF := Color("#857264")
+const ROOF_LIGHT := Color("#ab937d")
+const DOME := Color("#756354")
+const DOME_RIB := Color("#a88d70")
 
-const WINDOW := Color("#343638")
-const WOOD := Color("#594536")
+const WINDOW := Color("#3e342d")
+const WOOD := Color("#70482f")
 
-const TREE_DARK := Color("#33483d")
-const TREE_LIGHT := Color("#486252")
+const TREE_DARK := Color("#596044")
+const TREE_LIGHT := Color("#7a8050")
 
 
 func _ready() -> void:

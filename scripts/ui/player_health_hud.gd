@@ -4,12 +4,15 @@ extends CanvasLayer
 var _health: HealthComponent
 var _bar: ProgressBar
 var _hp_label: Label
+var _stamina_bar: ProgressBar
+var _stamina_label: Label
 
 
 func _ready() -> void:
 	layer = 100
 	_build_ui()
 	call_deferred("_connect_to_player")
+	call_deferred("_connect_stamina")
 
 
 func _build_ui() -> void:
@@ -72,6 +75,15 @@ func _build_ui() -> void:
 	)
 
 	layout.add_child(_bar)
+	_stamina_label = Label.new()
+	_stamina_label.text = "STAMINA"
+	layout.add_child(_stamina_label)
+	_stamina_bar = ProgressBar.new()
+	_stamina_bar.custom_minimum_size = Vector2(270, 12)
+	_stamina_bar.show_percentage = false
+	_stamina_bar.max_value = 100
+	_stamina_bar.value = 100
+	layout.add_child(_stamina_bar)
 
 
 func _connect_to_player() -> void:
@@ -104,3 +116,17 @@ func _update_health(current: int, maximum: int) -> void:
 	_bar.max_value = maxi(maximum, 1)
 	_bar.value = current
 	_hp_label.text = "%d / %d HP" % [current, maximum]
+
+func _connect_stamina() -> void:
+	var player: Node = get_tree().get_first_node_in_group("player")
+	if player == null:
+		return
+	var stamina: StaminaComponent = player.get_node_or_null("StaminaComponent") as StaminaComponent
+	if stamina != null:
+		stamina.stamina_changed.connect(_update_stamina)
+		_update_stamina(stamina.current_stamina, stamina.max_stamina)
+
+func _update_stamina(current: float, maximum: float) -> void:
+	_stamina_bar.max_value = maximum
+	_stamina_bar.value = current
+	_stamina_label.text = "STAMINA  %d / %d" % [int(current), int(maximum)]

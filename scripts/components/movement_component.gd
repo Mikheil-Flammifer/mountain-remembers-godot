@@ -8,6 +8,7 @@ extends Node
 
 @export_group("Horizontal Movement")
 @export var run_speed: float = 320.0
+@export var sprint_multiplier: float = 1.40
 @export var ground_acceleration: float = 2600.0
 @export var ground_deceleration: float = 3000.0
 @export var air_acceleration: float = 1900.0
@@ -39,6 +40,10 @@ var _dash_direction: float = 1.0
 var _dash_available: bool = true
 var _dashing: bool = false
 var _dash_was_pressed: bool = false
+var _air_jumps_remaining: int = 1
+var _sprint_active: bool = false
+var _jump_was_pressed: bool = false
+var _jumped_this_frame: bool = false
 
 
 func physics_tick(
@@ -46,6 +51,15 @@ func physics_tick(
 	delta: float
 ) -> void:
 	var grounded: bool = body.is_on_floor()
+	_jumped_this_frame = false
+	var stamina: StaminaComponent = body.get_node_or_null("StaminaComponent") as StaminaComponent
+	if body.has_method("is_staggered") and body.is_staggered():
+		return
+	if grounded:
+		_air_jumps_remaining = 1
+	_sprint_active = false
+	if stamina != null and grounded and absf(Input.get_axis("move_left", "move_right")) > 0.01 and Input.is_physical_key_pressed(KEY_CTRL):
+		_sprint_active = stamina.spend(stamina.sprint_per_second * delta)
 
 	_update_timers(grounded, delta)
 
@@ -115,7 +129,7 @@ func _update_horizontal(
 	direction: float,
 	delta: float
 ) -> void:
-	var target_speed: float = direction * run_speed
+	var target_speed: float = direction * run_speed * (sprint_multiplier if _sprint_active else 1.0)
 	var acceleration: float
 
 	if is_zero_approx(direction):
@@ -155,10 +169,20 @@ func _update_vertical(
 		_jump_buffer_timer > 0.0
 		and _coyote_timer > 0.0
 	):
-		body.velocity.y = jump_velocity
+		var stamina: StaminaComponent = body.get_node_or_null("StaminaComponent") as StaminaComponent
+		if stamina == null or stamina.spend(stamina.jump_cost):
+			body.velocity.y = jump_velocity
+			_jumped_this_frame = true
 		_jump_buffer_timer = 0.0
 		_coyote_timer = 0.0
 
+	# One additional air jump, costing twice the normal jump.
+	if not grounded and not _jumped_this_frame and _coyote_timer <= 0.0 and Input.is_action_just_pressed("jump") and _air_jumps_remaining > 0:
+		var stamina: StaminaComponent = body.get_node_or_null("StaminaComponent") as StaminaComponent
+		if stamina == null or stamina.spend(stamina.second_jump_cost):
+			body.velocity.y = jump_velocity * 0.92
+			_air_jumps_remaining -= 1
+			_jump_buffer_timer = 0.0
 	if Input.is_action_just_released("jump"):
 		if body.velocity.y < 0.0:
 			body.velocity.y *= jump_cut_multiplier
