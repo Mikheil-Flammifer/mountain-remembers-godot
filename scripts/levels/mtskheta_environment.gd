@@ -1,4 +1,6 @@
 extends Node2D
+# SHARED_WARM_GREEN_LANDSCAPE
+const Landscape = preload("res://scripts/levels/mtskheta/shared/mtskheta_landscape.gd")
 ## Lightweight hand-drawn scenery for the Mtskheta prototype.
 ## No textures or expensive effects; everything is local to this level.
 
@@ -10,11 +12,7 @@ func _ready() -> void:
 
 
 func _draw() -> void:
-	# Sky and distant ridges.
-	draw_rect(Rect2(0, -900, WIDTH, 1550), Color("c4ba9d"))
-	_draw_ridge(300.0, 135.0, 0.012, Color("919a92"), 0.0)
-	_draw_ridge(390.0, 95.0, 0.019, Color("74837d"), 1.8)
-	_draw_ridge(465.0, 62.0, 0.028, Color("536b67"), 3.5)
+	Landscape.draw_landscape(self, WIDTH, FLOOR_Y, 0.2)
 	# A soft river through the bottom of the image; terrain is in front.
 	draw_rect(Rect2(0, 590, WIDTH, 230), Color("476b75"))
 	for n in range(30):

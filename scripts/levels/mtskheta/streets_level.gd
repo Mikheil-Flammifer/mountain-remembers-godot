@@ -1,4 +1,6 @@
 extends Node2D
+# SHARED_WARM_GREEN_LANDSCAPE
+const Landscape = preload("res://scripts/levels/mtskheta/shared/mtskheta_landscape.gd")
 ## Historic Mtskheta-inspired stone-lane silhouettes. Drawing only.
 ## This is an artistic interpretation, not a reconstruction of a specific century.
 
@@ -33,19 +35,7 @@ func _draw() -> void:
 	_draw_well(1830.0)
 
 func _draw_hills() -> void:
-	draw_rect(Rect2(0, -520, 2400, 1180), SKY)
-	draw_colored_polygon(PackedVector2Array([
-		Vector2(0, 430), Vector2(280, 280), Vector2(590, 410),
-		Vector2(920, 220), Vector2(1170, 390), Vector2(1540, 245),
-		Vector2(1880, 401), Vector2(2170, 268), Vector2(2400, 350),
-		Vector2(2400, 650), Vector2(0, 650)
-	]), Color("#b09a7f"))
-	draw_colored_polygon(PackedVector2Array([
-		Vector2(0, 494), Vector2(220, 396), Vector2(580, 470),
-		Vector2(975, 364), Vector2(1310, 476), Vector2(1760, 352),
-		Vector2(2070, 476), Vector2(2400, 378), Vector2(2400, 650),
-		Vector2(0, 650)
-	]), HILLS)
+	Landscape.draw_landscape(self, 2400.0, 650.0, 0.45)
 
 func _draw_cathedral_silhouette() -> void:
 	# A distant Svetitskhoveli-inspired church dome, visible above the old lanes.

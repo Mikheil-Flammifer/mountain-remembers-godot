@@ -1,4 +1,6 @@
 extends Node2D
+# SHARED_WARM_GREEN_LANDSCAPE
+const Landscape = preload("res://scripts/levels/mtskheta/shared/mtskheta_landscape.gd")
 
 ## Svetitskhoveli Cathedral environment.
 ##
@@ -78,54 +80,8 @@ func _draw() -> void:
 	_draw_foreground()
 
 func _draw_background() -> void:
-	draw_rect(
-		Rect2(
-			-200.0,
-			-300.0,
-			level_width + 400.0,
-			1100.0
-		),
-		SKY
-	)
-
-	var far_mountains := PackedVector2Array([
-		Vector2(-200.0, 390.0),
-		Vector2(160.0, 245.0),
-		Vector2(430.0, 350.0),
-		Vector2(760.0, 210.0),
-		Vector2(1080.0, 345.0),
-		Vector2(1470.0, 205.0),
-		Vector2(1770.0, 340.0),
-		Vector2(2140.0, 230.0),
-		Vector2(2600.0, 360.0),
-		Vector2(2600.0, ground_y),
-		Vector2(-200.0, ground_y)
-	])
-
-	draw_colored_polygon(
-		far_mountains,
-		MOUNTAIN_FAR
-	)
-
-	var near_mountains := PackedVector2Array([
-		Vector2(-200.0, 500.0),
-		Vector2(160.0, 390.0),
-		Vector2(480.0, 475.0),
-		Vector2(790.0, 350.0),
-		Vector2(1150.0, 480.0),
-		Vector2(1510.0, 370.0),
-		Vector2(1820.0, 490.0),
-		Vector2(2150.0, 390.0),
-		Vector2(2600.0, 510.0),
-		Vector2(2600.0, ground_y),
-		Vector2(-200.0, ground_y)
-	])
-
-	draw_colored_polygon(
-		near_mountains,
-		MOUNTAIN_NEAR
-	)
-
+	# Landscape only; the existing detailed cathedral drawing is untouched.
+	Landscape.draw_landscape(self, level_width, ground_y, 0.64)
 
 func _draw_courtyard() -> void:
 	draw_rect(

@@ -1,4 +1,6 @@
 extends Node2D
+# SHARED_WARM_GREEN_LANDSCAPE
+const Landscape = preload("res://scripts/levels/mtskheta/shared/mtskheta_landscape.gd")
 
 ## Mtskheta's southern foothill road, late summer / early autumn.
 ## The forest becomes cold and sparse only in later highland regions.
@@ -21,30 +23,7 @@ func _ready() -> void:
 
 
 func _draw() -> void:
-	# Warm open sky and a low sun; no cold blue-green wash.
-	draw_rect(Rect2(0, -550, 2400, 1370), SKY)
-	draw_circle(Vector2(1920, 20), 125, Color("#f8d6a4", 0.48))
-	draw_circle(Vector2(1920, 20), 63, Color("#f9dda8", 0.78))
-	draw_rect(Rect2(0, 130, 2400, 520), Color("#e1b18b", 0.22))
-
-	draw_colored_polygon(PackedVector2Array([
-		Vector2(0, 450), Vector2(270, 235), Vector2(515, 375),
-		Vector2(875, 190), Vector2(1160, 370), Vector2(1530, 180),
-		Vector2(1890, 390), Vector2(2180, 200), Vector2(2400, 335),
-		Vector2(2400, 650), Vector2(0, 650)
-	]), FAR_HILL)
-	draw_colored_polygon(PackedVector2Array([
-		Vector2(0, 500), Vector2(300, 345), Vector2(640, 475),
-		Vector2(995, 320), Vector2(1300, 455), Vector2(1740, 305),
-		Vector2(2080, 455), Vector2(2400, 340),
-		Vector2(2400, 650), Vector2(0, 650)
-	]), MID_HILL)
-	draw_colored_polygon(PackedVector2Array([
-		Vector2(0, 585), Vector2(360, 465), Vector2(650, 560),
-		Vector2(1040, 440), Vector2(1430, 575), Vector2(1740, 445),
-		Vector2(2100, 565), Vector2(2400, 485),
-		Vector2(2400, 650), Vector2(0, 650)
-	]), NEAR_HILL)
+	Landscape.draw_landscape(self, 2400.0, 650.0, 0.92)
 
 	# Faint ridge lines and distant farm terraces.
 	for i in range(9):

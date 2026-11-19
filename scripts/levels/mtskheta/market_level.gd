@@ -1,4 +1,6 @@
 extends Node2D
+# SHARED_WARM_GREEN_LANDSCAPE
+const Landscape = preload("res://scripts/levels/mtskheta/shared/mtskheta_landscape.gd")
 ## Side-on, layered medieval Georgian market. Purely visual: no collisions or exits.
 ## Behind NPCs (-2) and Xizane (0).
 
@@ -23,7 +25,6 @@ func _draw() -> void:
 	# Buildings frame the market; the square itself stays open around the player.
 	_draw_house(75.0, 270.0, 365.0)
 	_draw_house(1840.0, 385.0, 370.0)
-	_draw_tower(2110.0)
 	for item: Dictionary in [
 		{"x": 320.0, "w": 220.0, "type": 0},
 		{"x": 715.0, "w": 220.0, "type": 1},
@@ -35,26 +36,9 @@ func _draw() -> void:
 	_draw_market_sign()
 
 func _draw_landscape() -> void:
-	draw_rect(Rect2(0, -520, 2400, 1170), SKY)
-	draw_colored_polygon(PackedVector2Array([
-		Vector2(0, 375), Vector2(180, 252), Vector2(420, 349),
-		Vector2(700, 174), Vector2(1080, 365), Vector2(1420, 208),
-		Vector2(1750, 372), Vector2(2130, 230), Vector2(2400, 355),
-		Vector2(2400, 650), Vector2(0, 650)
-	]), DISTANT)
-	draw_colored_polygon(PackedVector2Array([
-		Vector2(0, 490), Vector2(310, 365), Vector2(590, 460),
-		Vector2(930, 335), Vector2(1300, 465), Vector2(1650, 356),
-		Vector2(1980, 450), Vector2(2400, 360), Vector2(2400, 650),
-		Vector2(0, 650)
-	]), MOUNTAIN)
-	# Small Jvari-inspired hilltop silhouette, not an exact architectural replica.
-	draw_rect(Rect2(670, 242, 50, 44), Color("#494e4e"))
-	draw_colored_polygon(PackedVector2Array([
-		Vector2(659, 244), Vector2(695, 220), Vector2(730, 244)
-	]), Color("#484d4d"))
-	draw_line(Vector2(695, 216), Vector2(695, 201), Color("#484d4d"), 3.0)
-	draw_line(Vector2(687, 207), Vector2(703, 207), Color("#484d4d"), 2.0)
+	Landscape.draw_landscape(self, 2400.0, 650.0, 0.1)
+	# Jvari remains a distant landmark, not a generic fortification.
+	Landscape.draw_jvari(self, 690.0, 350.0, 0.83)
 
 func _draw_distant_town() -> void:
 	for i: int in range(14):

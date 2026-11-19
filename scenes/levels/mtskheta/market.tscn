@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="Script" path="res://scripts/levels/mtskheta/market_level.gd" id="1_area"]
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2_player"]
@@ -11,6 +11,8 @@
 
 [ext_resource type="PackedScene" path="res://scenes/obstacles/wooden_crate.tscn" id="7_crate"]
 [ext_resource type="PackedScene" path="res://scenes/obstacles/market_stand.tscn" id="8_stand"]
+[ext_resource type="PackedScene" path="res://scenes/traps/thorn_patch.tscn" id="9_thorns"]
+
 [sub_resource type="RectangleShape2D" id="ground_shape"]
 size = Vector2(2400, 160)
 
@@ -45,24 +47,53 @@ spawn_id = "from_streets"
 [node name="SpawnFromTerraces" parent="." instance=ExtResource("4_spawn")]
 position = Vector2(2050, 602)
 spawn_id = "from_terraces"
+
 [node name="ToTerraces" parent="." instance=ExtResource("5_exit")]
 target_spawn_id = "from_market"
 target_scene = "res://scenes/levels/mtskheta/terraces.tscn"
 position = Vector2(2310, 570)
-position = Vector2(2310, 570)
 
-
+; Introductory single crate (one jump).
 [node name="MarketCrateA" parent="." instance=ExtResource("7_crate")]
 position = Vector2(620, 617)
 
+; Two-crate vertical stack: jump to the first, then the second.
 [node name="MarketCrateB" parent="." instance=ExtResource("7_crate")]
 position = Vector2(990, 617)
 
-[node name="MarketCrateC" parent="." instance=ExtResource("7_crate")]
-position = Vector2(1910, 617)
+[node name="MarketCrateBTop" parent="." instance=ExtResource("7_crate")]
+position = Vector2(990, 551)
+
+; Thorn trap in the central passage. Jump over it or use the stand.
+[node name="MarketThornsA" parent="." instance=ExtResource("9_thorns")]
+position = Vector2(1360, 637)
 
 [node name="GoodsStandA" parent="." instance=ExtResource("8_stand")]
 position = Vector2(1510, 650)
+
+; Three-tier staircase: 1 -> 2 -> 3 crates high, traversable by successive jumps.
+[node name="MarketSteps1" parent="." instance=ExtResource("7_crate")]
+position = Vector2(1640, 617)
+
+[node name="MarketSteps2Base" parent="." instance=ExtResource("7_crate")]
+position = Vector2(1702, 617)
+
+[node name="MarketSteps2Top" parent="." instance=ExtResource("7_crate")]
+position = Vector2(1702, 551)
+
+[node name="MarketSteps3Base" parent="." instance=ExtResource("7_crate")]
+position = Vector2(1764, 617)
+
+[node name="MarketSteps3Middle" parent="." instance=ExtResource("7_crate")]
+position = Vector2(1764, 551)
+
+[node name="MarketSteps3Top" parent="." instance=ExtResource("7_crate")]
+position = Vector2(1764, 485)
+
+; Return to an easy single crate before the eastern entrance.
+[node name="MarketCrateC" parent="." instance=ExtResource("7_crate")]
+position = Vector2(1910, 617)
+
 [node name="LeftWorldWall" type="StaticBody2D" parent="."]
 position = Vector2(-16, 300)
 collision_layer = 1
@@ -87,24 +118,13 @@ spawn_id = "from_old_town"
 target_spawn_id = "from_market"
 target_scene = "res://scenes/levels/mtskheta/streets.tscn"
 position = Vector2(80, 570)
-position = Vector2(80, 570)
 
-[node name="
-AragviMerchant
-" type="Node2D" parent="."]
-position = Vector2(
-1250
-, 650)
+[node name="AragviMerchant" type="Node2D" parent="."]
+position = Vector2(1250, 650)
 script = ExtResource("invest_npc")
-npc_id = "
-aragvi_merchant
-"
-display_name = "
-Aragvi Merchant
-"
-cloak_color = Color(
-0.40, 0.30, 0.23, 1
-)
+npc_id = "aragvi_merchant"
+display_name = "Aragvi Merchant"
+cloak_color = Color(0.40, 0.30, 0.23, 1)
 
 [node name="InvestigationController" type="Node" parent="."]
 script = ExtResource("invest_controller")
