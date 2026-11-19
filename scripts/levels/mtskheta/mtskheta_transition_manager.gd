@@ -38,7 +38,26 @@ var _next_travel_at_ms: int = 0
 
 func _ready() -> void:
 	_build_curtain()
-	get_tree().scene_changed.connect(_on_scene_changed)
+
+	if not get_tree().scene_changed.is_connected(_on_scene_changed):
+		get_tree().scene_changed.connect(_on_scene_changed)
+
+	call_deferred("_configure_initial_scene")
+
+func _configure_initial_scene() -> void:
+	# Autoloads are created before the project's main scene.
+	# Wait until Streets is completely available, then configure it
+	# exactly like scenes entered through the travel system.
+	for _frame in range(10):
+		await get_tree().process_frame
+
+		var current: Node = get_tree().current_scene
+
+		if current != null and current.is_node_ready():
+			_on_scene_changed(current)
+			return
+
+	push_warning("MtskhetaTransitionManager: initial scene was not ready")	
 
 
 func _build_curtain() -> void:
@@ -169,7 +188,20 @@ func _begin_scene_change(scene_path: String, spawn_id: String) -> void:
 		_snap_camera(player)
 
 	await _finish_travel()
+
+	var camera: Camera2D = player.find_child(
+		"Camera2D", true, false
+	) as Camera2D
+
 	print("TRAVEL COMPLETE: ", destination.name)
+	print("Current scene: ", get_tree().current_scene.scene_file_path)
+	print("Player position: ", player.global_position)
+
+	if camera != null:
+		print("Camera current: ", camera.is_current())
+		print("Camera position: ", camera.global_position)
+		print("Camera screen center: ", camera.get_screen_center_position())
+		print("Camera limits: ", camera.limit_left, " / ", camera.limit_right)
 
 
 func _finish_travel() -> void:
@@ -227,34 +259,53 @@ func _find_spawn(spawn_id: String) -> Marker2D:
 
 
 func _snap_camera(player: CharacterBody2D) -> void:
-	var camera: Camera2D = player.find_child("Camera2D", true, false) as Camera2D
+	var camera: Camera2D = player.find_child(
+		"Camera2D", true, false
+	) as Camera2D
+
 	if camera == null:
 		return
+
+	var was_smoothing: bool = camera.position_smoothing_enabled
+
+	camera.position_smoothing_enabled = false
 	camera.make_current()
-	camera.force_update_scroll()
 	camera.reset_smoothing()
 	camera.force_update_scroll()
 
+	camera.position_smoothing_enabled = was_smoothing
+
 
 func _configure_camera(player: CharacterBody2D) -> void:
-	var camera: Camera2D = player.find_child("Camera2D", true, false) as Camera2D
+	var camera: Camera2D = player.find_child(
+		"Camera2D", true, false
+	) as Camera2D
+
 	if camera == null:
 		return
 
-	var current := get_tree().current_scene
-	var filename := current.scene_file_path.get_file()
-	var bounds := Rect2i(0, -400, AREA_WIDTH, 1200)
+	var current: Node = get_tree().current_scene
+	var filename: String = current.scene_file_path.get_file()
+
+	var bounds := Rect2i(0, -400, 2400, 1200)
+
 	if _is_jvari(current.scene_file_path):
 		bounds = current.call("camera_bounds")
 	elif filename == "terraces.tscn":
-		bounds.size.x = TERRACES_WIDTH
+		bounds.size.x = 5100
 	elif filename == "mtskheta.tscn":
-		bounds.size.x = ORIGINAL_MTSKHETA_WIDTH
+		bounds.size.x = 3600
+	elif filename == "streets.tscn":
+		bounds = Rect2i(0, -400, 2400, 1200)
 
 	camera.limit_left = bounds.position.x
-	camera.limit_top = bounds.position.y
 	camera.limit_right = bounds.end.x
+	camera.limit_top = bounds.position.y
 	camera.limit_bottom = bounds.end.y
+
+	camera.position_smoothing_enabled = true
+	camera.position_smoothing_speed = 7.0
+
 	_snap_camera(player)
 
 
