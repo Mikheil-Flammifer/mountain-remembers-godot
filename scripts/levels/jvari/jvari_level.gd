@@ -5,12 +5,14 @@ extends Node2D
 const GROUND_Y: float = 650.0
 const EnemyScene = preload("res://scenes/enemies/jvari_enemy.tscn")
 const BoarScene = preload("res://scenes/enemies/wild_boar.tscn")
-const SpikeScene = preload("res://scenes/traps/jvari_spikes.tscn")
-const RockScene = preload("res://scenes/traps/falling_stone.tscn")
-const WindScene = preload("res://scenes/traps/wind_gust.tscn")
-const CrumbleScene = preload("res://scenes/traps/crumbling_ledge.tscn")
-const RestScene = preload("res://scenes/objects/rest_shrine.tscn")
-const InscriptionScene = preload("res://scenes/objects/inscription.tscn")
+const HAZARD_SCENE_PATHS := {
+	"spikes": "res://scenes/traps/jvari_spikes.tscn",
+	"rock": "res://scenes/traps/falling_stone.tscn",
+	"gust": "res://scenes/traps/wind_gust.tscn",
+	"crumble": "res://scenes/traps/crumbling_ledge.tscn",
+}
+const REST_SCENE_PATH := "res://scenes/objects/rest_shrine.tscn"
+const INSCRIPTION_SCENE_PATH := "res://scenes/objects/inscription.tscn"
 
 @export_range(0, 4, 1) var area_index: int = 0
 @export var area_width: float = 6200.0
@@ -78,6 +80,11 @@ const HAZARD_LAYOUTS: Array = [
 	[[750,"spikes"],[1620,"crumble"],[2070,"rock"],[2850,"crumble"],[3240,"spikes"],[4210,"rock"],[4650,"gust"],[5380,"crumble"],[6080,"spikes"],[6770,"rock"],[7610,"crumble"]],
 	[[1150,"spikes"],[2110,"rock"],[2520,"crumble"],[3400,"spikes"],[4020,"rock"],[4960,"gust"],[5520,"crumble"],[6300,"spikes"],[6860,"rock"],[7750,"crumble"]]
 ]
+
+func camera_bounds() -> Rect2i:
+	var top := floori(_ground_height_at(area_width) - 650.0)
+	return Rect2i(0, top, roundi(area_width), 800 - top)
+
 
 func _build_terrain() -> void:
 	if area_index == 3:
@@ -159,7 +166,7 @@ func _build_stone_ascent() -> void:
 	# Deliberate obstacles add jump-and-fight beats without blocking the ascent.
 	for i in range(7):
 		var bx: float = 1375.0 + float(i) * 945.0
-		var h: float = 55.0 + float(i%3)*10.0
+		var h: float = 55.0 + float(i % 3) * 10.0
 		_pillars.append(Vector2(bx,h))
 		_make_solid("AscentRock_%02d" % i, Vector2(bx,_ascent_ground_at(bx)-h*0.5),Vector2(52.0,h))
 
@@ -250,36 +257,42 @@ func _near_rest(x: float, margin: float) -> bool:
 	# The only rest sanctuary is near the beginning of Confluence Trail.
 	return area_index == 0 and absf(x - 420.0) < margin
 
+func _load_optional_scene(path: String) -> PackedScene:
+	# Some checkouts have these optional set pieces outside the tracked project.
+	return load(path) as PackedScene if ResourceLoader.exists(path, "PackedScene") else null
+
+
 func _build_challenges() -> void:
+	var hazard_scenes: Dictionary[String, PackedScene] = {}
+	for kind: String in HAZARD_SCENE_PATHS:
+		hazard_scenes[kind] = _load_optional_scene(HAZARD_SCENE_PATHS[kind])
 	for i: int in range(HAZARD_LAYOUTS[area_index].size()):
 		var layout: Array = HAZARD_LAYOUTS[area_index][i]
 		var x: float = float(layout[0])
 		var kind: String = str(layout[1])
 		if _near_gap(x,65.0) or _near_rest(x,200.0):
 			continue
-		var obstacle: Node2D = null
+		var scene: PackedScene = hazard_scenes[kind]
+		if scene == null:
+			continue
+		var obstacle := scene.instantiate() as Node2D
 		match kind:
 			"spikes":
-				obstacle = SpikeScene.instantiate() as Node2D
 				obstacle.position = Vector2(x,_ground_height_at(x)-10.0)
 				obstacle.set("damage",10+area_index*2)
 			"rock":
-				obstacle = RockScene.instantiate() as Node2D
 				obstacle.position = Vector2(x,_ground_height_at(x)-390.0)
 				if area_index in [1, 3]:
 					obstacle.set("ground_target_y", _ground_height_at(x)-24.0)
 				obstacle.set("damage",12+area_index*2)
 			"gust":
-				obstacle = WindScene.instantiate() as Node2D
 				obstacle.position = Vector2(x,_ground_height_at(x)-112.0)
 				obstacle.set("force",470.0+float(area_index)*85.0)
 				obstacle.set("direction", -1.0 if i%2==0 else 1.0)
 			"crumble":
-				obstacle = CrumbleScene.instantiate() as Node2D
 				obstacle.position = Vector2(x,_ground_height_at(x)-134.0)
 				obstacle.set("recovery_seconds",3.0+float(area_index)*0.35)
-		if obstacle != null:
-			add_child(obstacle)
+		add_child(obstacle)
 	for i: int in range(ENEMY_LAYOUTS[area_index].size()):
 		var spec: Array = ENEMY_LAYOUTS[area_index][i]
 		var x: float = float(spec[0])
@@ -302,9 +315,12 @@ func _build_challenges() -> void:
 func _build_rest_sites() -> void:
 	if area_index != 0:
 		return
+	var rest_scene := _load_optional_scene(REST_SCENE_PATH)
+	if rest_scene == null:
+		return
 	var x: float = 420.0
 	_shrine_sites.append(x)
-	var shrine: Node2D = RestScene.instantiate() as Node2D
+	var shrine := rest_scene.instantiate() as Node2D
 	shrine.position = Vector2(x,GROUND_Y)
 	shrine.set("spawn_id","jvari_first_rest")
 	add_child(shrine)
@@ -316,7 +332,10 @@ func _build_rest_sites() -> void:
 	add_child(spawn)
 
 func _build_story_moments() -> void:
-	var scriptural: Node2D = InscriptionScene.instantiate() as Node2D
+	var inscription_scene := _load_optional_scene(INSCRIPTION_SCENE_PATH)
+	if inscription_scene == null:
+		return
+	var scriptural := inscription_scene.instantiate() as Node2D
 	scriptural.position = Vector2(area_width - 610.0, _ground_height_at(area_width - 610.0))
 	match area_index:
 		0:

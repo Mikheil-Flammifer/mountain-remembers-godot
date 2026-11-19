@@ -12,7 +12,9 @@ const AREA_FILES: Array[String] = [
 	"terraces.tscn",
 	"north_road.tscn",
 ]
+const JVARI_SCENE_DIR: String = "res://scenes/levels/jvari/"
 const AREA_WIDTH: int = 2400
+const TERRACES_WIDTH: int = 5100
 const ORIGINAL_MTSKHETA_WIDTH: int = 3600
 const FADE_DURATION: float = 0.24
 const MAX_LOAD_FRAMES: int = 120
@@ -28,6 +30,8 @@ var _saved_max_hp: int = -1
 var _saved_vitality: int = -1
 var _checkpoint_scene: String = DEFAULT_CHECKPOINT_SCENE
 var _checkpoint_spawn_id: String = DEFAULT_CHECKPOINT_SPAWN
+var _jvari_checkpoint_scene: String = ""
+var _jvari_checkpoint_spawn: String = ""
 var _curtain: ColorRect
 var _next_travel_at_ms: int = 0
 
@@ -75,6 +79,8 @@ func travel_to(scene_path: String, spawn_id: String) -> void:
 		return
 
 	_save_player_stats()
+	if _saved_hp == 0:
+		return
 	_begin_scene_change(scene_path, spawn_id)
 
 
@@ -83,8 +89,12 @@ func activate_checkpoint(scene_path: String, spawn_id: String) -> void:
 		push_error("Mtskheta checkpoint: invalid scene or spawn ID")
 		return
 
-	_checkpoint_scene = scene_path
-	_checkpoint_spawn_id = spawn_id
+	if _is_jvari(scene_path):
+		_jvari_checkpoint_scene = scene_path
+		_jvari_checkpoint_spawn = spawn_id
+	else:
+		_checkpoint_scene = scene_path
+		_checkpoint_spawn_id = spawn_id
 	_save_player_stats()
 	print("[Checkpoint] Activated: ", scene_path, " / ", spawn_id)
 
@@ -96,7 +106,11 @@ func respawn_at_checkpoint() -> void:
 	_save_player_stats()
 	if _saved_max_hp > 0:
 		_saved_hp = _saved_max_hp
-	_begin_scene_change(_checkpoint_scene, _checkpoint_spawn_id)
+	var active_scene := get_tree().current_scene
+	if active_scene != null and _is_jvari(active_scene.scene_file_path):
+		_begin_scene_change(_jvari_checkpoint_scene, _jvari_checkpoint_spawn)
+	else:
+		_begin_scene_change(_checkpoint_scene, _checkpoint_spawn_id)
 
 
 func _begin_scene_change(scene_path: String, spawn_id: String) -> void:
@@ -112,8 +126,7 @@ func _begin_scene_change(scene_path: String, spawn_id: String) -> void:
 		await _finish_travel()
 		return
 
-	# Complete the change explicitly: do not depend on scene_changed
-	# resetting _traveling (which caused the previous stuck-travel bug).
+	# Wait for the destination to be ready before placing the player.
 	var destination: Node = null
 	for _frame in range(MAX_LOAD_FRAMES):
 		await get_tree().process_frame
@@ -136,8 +149,13 @@ func _begin_scene_change(scene_path: String, spawn_id: String) -> void:
 	var entrance: Marker2D = _find_spawn(_pending_spawn_id)
 	if entrance != null:
 		player.global_position = entrance.global_position
+		if _is_jvari(scene_path):
+			_jvari_checkpoint_scene = scene_path
+			_jvari_checkpoint_spawn = _pending_spawn_id
 	else:
-		push_warning("Missing Mtskheta spawn ID: " + _pending_spawn_id)
+		push_warning("Missing travel spawn ID: " + _pending_spawn_id)
+		if _is_jvari(scene_path):
+			_set_default_jvari_checkpoint(scene_path)
 
 	player.velocity = Vector2.ZERO
 	player.reset_physics_interpolation()
@@ -145,7 +163,7 @@ func _begin_scene_change(scene_path: String, spawn_id: String) -> void:
 	_configure_camera(player)
 	_bind_player_death(player)
 
-	# Allow one frame for the new scene's transforms, still under black.
+	# Let the destination's transforms update while the curtain is opaque.
 	await get_tree().process_frame
 	if is_instance_valid(player):
 		_snap_camera(player)
@@ -155,7 +173,7 @@ func _begin_scene_change(scene_path: String, spawn_id: String) -> void:
 
 
 func _finish_travel() -> void:
-	# Do not allow a new transition while the arriving scene is fading in.
+	# Keep travel locked until the fade-in completes.
 	_pending_spawn_id = ""
 	await _fade_to(0.0)
 	_next_travel_at_ms = Time.get_ticks_msec() + TRANSITION_REARM_MS
@@ -169,7 +187,8 @@ func _on_scene_changed(scene_root: Node = null) -> void:
 	if scene_root == null:
 		return
 
-	if scene_root.scene_file_path.get_file() not in AREA_FILES:
+	var path := scene_root.scene_file_path
+	if path.get_file() not in AREA_FILES and not _is_jvari(path):
 		return
 
 	if _traveling:
@@ -178,8 +197,20 @@ func _on_scene_changed(scene_root: Node = null) -> void:
 	var player: CharacterBody2D = _find_player(scene_root)
 
 	if player != null:
+		if _is_jvari(path):
+			_set_default_jvari_checkpoint(path)
 		_configure_camera(player)
 		_bind_player_death(player)
+
+
+func _is_jvari(scene_path: String) -> bool:
+	return scene_path.begins_with(JVARI_SCENE_DIR)
+
+
+func _set_default_jvari_checkpoint(scene_path: String) -> void:
+	_jvari_checkpoint_scene = scene_path
+	_jvari_checkpoint_spawn = "from_previous"
+
 
 func _find_player(scene_root: Node) -> CharacterBody2D:
 	var player: CharacterBody2D = scene_root.get_node_or_null("Player") as CharacterBody2D
@@ -210,27 +241,23 @@ func _configure_camera(player: CharacterBody2D) -> void:
 	if camera == null:
 		return
 
-	camera.limit_left = 0
-	var current: Node = get_tree().current_scene
-	var scene_name: String = current.scene_file_path.get_file() if current != null else ""
+	var current := get_tree().current_scene
+	var filename := current.scene_file_path.get_file()
+	var bounds := Rect2i(0, -400, AREA_WIDTH, 1200)
+	if _is_jvari(current.scene_file_path):
+		bounds = current.call("camera_bounds")
+	elif filename == "terraces.tscn":
+		bounds.size.x = TERRACES_WIDTH
+	elif filename == "mtskheta.tscn":
+		bounds.size.x = ORIGINAL_MTSKHETA_WIDTH
 
-	if scene_name == "terraces.tscn":
-		camera.limit_right = 1700
-	elif scene_name == "mtskheta.tscn":
-		camera.limit_right = ORIGINAL_MTSKHETA_WIDTH
-	else:
-		camera.limit_right = AREA_WIDTH
-
-	camera.limit_top = -400
-	camera.limit_bottom = 800
+	camera.limit_left = bounds.position.x
+	camera.limit_top = bounds.position.y
+	camera.limit_right = bounds.end.x
+	camera.limit_bottom = bounds.end.y
 	_snap_camera(player)
 
 
-
-	# Terraces 5100px camera override
-	var active_scene: Node = get_tree().current_scene
-	if active_scene != null and active_scene.scene_file_path.get_file() == "terraces.tscn":
-		camera.limit_right = 5100
 func _save_player_stats() -> void:
 	var player: Node = get_tree().get_first_node_in_group("player")
 	if player == null:

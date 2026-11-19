@@ -9,8 +9,8 @@ func _initialize() -> void:
 
 func _check() -> void:
     var cases: Array[Dictionary] = [
-        {"scene": "res://scenes/levels/mtskheta/market.tscn", "npc": "AragviMerchant"},
-        {"scene": "res://scenes/levels/mtskheta/streets.tscn", "npc": "StreetPilgrim"},
+        {"scene": "res://scenes/levels/mtskheta/market.tscn", "npc": "AragviMerchant", "id": "aragvi_merchant"},
+        {"scene": "res://scenes/levels/mtskheta/streets.tscn", "npc": "StreetPilgrim", "id": "street_pilgrim"},
     ]
     for test_case: Dictionary in cases:
         var packed: PackedScene = load(str(test_case["scene"])) as PackedScene
@@ -22,9 +22,14 @@ func _check() -> void:
             root.free()
             _fail("Missing InvestigationController: " + str(test_case["scene"]))
             return
-        if root.get_node_or_null(str(test_case["npc"])) == null:
+        var npc := root.get_node_or_null(str(test_case["npc"])) as MtskhetaInvestigationNPC
+        if npc == null:
             root.free()
             _fail("Missing NPC: " + str(test_case["npc"]))
+            return
+        if npc.npc_id != test_case["id"]:
+            root.free()
+            _fail("Wrong dialogue ID for " + str(test_case["npc"]))
             return
         root.free()
 

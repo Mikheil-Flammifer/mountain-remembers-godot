@@ -92,22 +92,26 @@ text = "SVETITSKHOVELI
 E - ENTER CATHEDRAL"
 horizontal_alignment = 1
 
-[node name="
-StreetPilgrim
-" type="Node2D" parent="."]
-position = Vector2(
-1600
-, 650)
+[node name="StreetPilgrim" type="Node2D" parent="."]
+position = Vector2(1600, 650)
 script = ExtResource("invest_npc")
-npc_id = "
-street_pilgrim
-"
-display_name = "
-Pilgrim
-"
-cloak_color = Color(
-0.31, 0.40, 0.38, 1
-)
+npc_id = "street_pilgrim"
+display_name = "Pilgrim"
+cloak_color = Color(0.31, 0.40, 0.38, 1)
 
 [node name="InvestigationController" type="Node" parent="."]
 script = ExtResource("invest_controller")
+
+
+[node name="MarketSign" type="Label" parent="."]
+offset_left = 1925.0
+offset_top = 458.0
+offset_right = 2275.0
+offset_bottom = 516.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.95, 0.87, 0.7, 1)
+theme_override_colors/font_outline_color = Color(0.18, 0.14, 0.11, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 20
+text = "ARAGVI MARKET  >"
+horizontal_alignment = 1

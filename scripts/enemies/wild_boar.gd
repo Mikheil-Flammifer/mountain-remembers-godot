@@ -146,7 +146,7 @@ func _draw() -> void:
 	draw_colored_polygon(PackedVector2Array([Vector2(45*facing,-13),Vector2(68*facing,-9),Vector2(68*facing,1),Vector2(47*facing,4)]),Color("#695b4b"))
 	draw_circle(Vector2(58*facing,-8), 3.5, Color("#282b28"))
 	draw_circle(Vector2(38*facing,-20), 2.5, Color("#ead8ad"))
-	draw_colored_polygon(PackedVector2Array([Vector2(45*facing,-3),Vector2(52*facing,6),Vector2(59*facing,-3),Vector2(56*facing,9)]),Color("#e0cfac"))
+	draw_colored_polygon(PackedVector2Array([Vector2(45*facing,-3),Vector2(59*facing,-3),Vector2(56*facing,9),Vector2(52*facing,6)]),Color("#e0cfac"))
 	draw_colored_polygon(PackedVector2Array([Vector2(22*facing,-30),Vector2(25*facing,-49),Vector2(35*facing,-35)]),mane_color)
 	if _phase == "warning":
 		draw_arc(Vector2(34.0*facing,-12.0), 39.0, 0.0, TAU, 24, Color("#e6b06a"), 3.0)

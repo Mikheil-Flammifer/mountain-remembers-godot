@@ -4,6 +4,7 @@ extends Node
 ## Existing cathedral and original Mtskheta dialogue remain untouched.
 
 const INTERACTION_RADIUS: float = 115.0
+const CATHEDRAL_STORY = preload("res://scripts/levels/mtskheta/cathedral_story_controller.gd")
 
 var _player: CharacterBody2D
 var _journal: MtskhetaInvestigationJournal
@@ -188,6 +189,8 @@ func _refresh_hud() -> void:
         objective = "Open the journal (J) to compare the two accounts"
     if _journal.has_clue(MtskhetaInvestigationData.DEDUCTION_CLUE):
         objective = "Seek further evidence at Svetitskhoveli"
+        if _journal.has_clue(CATHEDRAL_STORY.QUEST_ENTRY):
+            objective = "Follow the road east from the Market through the Terraces"
 
     _hud.set_objective(objective)
     var journal_entries: Array[String] = []

@@ -7,21 +7,23 @@ const MIN_CLEARANCE: float = 160.0
 const CASES: Dictionary = {
 	"mtskheta.tscn": [["SpawnFromMarket", "ToMarketDistrict", "left"]],
 	"market.tscn": [
-		["SpawnFromOldTown", "ToOldTown", "right"],
-		["SpawnFromStreets", "ToStreets", "left"],
+		["SpawnFromStreets", "ToStreetsWest", "right"],
+		["SpawnFromTerraces", "ToTerraces", "left"],
 	],
 	"streets.tscn": [
-		["SpawnFromMarket", "ToMarket", "right"],
-		["SpawnFromTerraces", "ToTerraces", "left"],
+		["SpawnFromOldTown", "ToOldTown", "right"],
+		["SpawnFromMarket", "ToMarket", "left"],
+		["SpawnFromCathedral", "CathedralDoor", "right"],
 	],
 	"terraces.tscn": [
-		["SpawnFromStreets", "ToStreets", "right"],
+		["SpawnFromMarket", "ToMarket", "right"],
 		["SpawnFromNorthRoad", "ToNorthRoad", "left"],
 	],
-	"cathedral_precinct.tscn": [
-		["SpawnFromTerraces", "ToTerraces", "left"],
+	"cathedral_precinct.tscn": [["SpawnFromStreets", "ToStreets", "right"]],
+	"north_road.tscn": [
+		["SpawnFromTerraces", "ToTerraces", "right"],
+		["SpawnFromJvari", "ToJvari", "left"],
 	],
-	"north_road.tscn": [["SpawnFromTerraces", "ToTerraces", "right"]],
 }
 
 

@@ -2,10 +2,13 @@ extends SceneTree
 
 ## Run: godot --headless --path . --script res://tests/mtskheta_travel_routes.gd
 ## Verify that all Mtskheta exits lead to a matching spawn and allow return travel.
-const AREA_DIR := "res://scenes/levels/mtskheta/"
+const AREA_DIR := "res://scenes/levels/"
+const START_AREA := "mtskheta/market.tscn"
 const AREAS := [
-    "mtskheta.tscn", "market.tscn", "streets.tscn",
-    "cathedral_precinct.tscn", "terraces.tscn", "north_road.tscn",
+    "mtskheta/mtskheta.tscn", "mtskheta/market.tscn", "mtskheta/streets.tscn",
+    "mtskheta/cathedral_precinct.tscn", "mtskheta/terraces.tscn", "mtskheta/north_road.tscn",
+    "jvari/jvari_confluence_trail.tscn", "jvari/jvari_pilgrim_steps.tscn",
+    "jvari/jvari_windcut_ravine.tscn", "jvari/jvari_stone_ascent.tscn", "jvari/jvari_monastery.tscn",
 ]
 
 func _initialize() -> void:
@@ -20,7 +23,9 @@ func _check_routes() -> void:
         if scene == null:
             errors.append("Cannot load " + name)
             continue
-        var root: Node = scene.instantiate()
+        var root: Node = scene.instantiate()'
+        if name.begins_with("jvari/") and not root.has_method("camera_bounds"):
+            errors.append("Missing level script in " + name)
         var ids: Dictionary = {}
         var connections: Array[Dictionary] = []
         for child: Node in root.get_children():
@@ -31,7 +36,7 @@ func _check_routes() -> void:
                 ids[spawn] = true
             if child is Area2D and child.get_script() != null and child.get("target_scene") != null:
                 connections.append({
-                    "target": str(child.get("target_scene")).get_file(),
+                    "target": str(child.get("target_scene")).trim_prefix(AREA_DIR),
                     "spawn": str(child.get("target_spawn_id"))
                 })
         spawns[name] = ids
@@ -51,8 +56,8 @@ func _check_routes() -> void:
             if not has_return:
                 errors.append("%s -> %s has no return portal" % [name, destination])
 
-    var visited: Dictionary = {"mtskheta.tscn": true}
-    var queue: Array[String] = ["mtskheta.tscn"]
+    var visited: Dictionary = {START_AREA: true}
+    var queue: Array[String] = [START_AREA]
     while not queue.is_empty():
         var current: String = queue.pop_front()
         for portal: Dictionary in exits.get(current, []):
@@ -65,7 +70,7 @@ func _check_routes() -> void:
             errors.append("Unreachable district: " + name)
 
     if errors.is_empty():
-        print("PASS: All six Mtskheta scenes have connected return routes.")
+        print("PASS: Mtskheta and Jvari scenes have connected return routes.")
         quit(0)
     else:
         for message: String in errors:
