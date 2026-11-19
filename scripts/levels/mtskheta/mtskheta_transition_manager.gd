@@ -162,20 +162,24 @@ func _finish_travel() -> void:
 	_traveling = false
 
 
-func _on_scene_changed(scene_root: Node) -> void:
+func _on_scene_changed(scene_root: Node = null) -> void:
+	if scene_root == null:
+		scene_root = get_tree().current_scene
+
+	if scene_root == null:
+		return
+
 	if scene_root.scene_file_path.get_file() not in AREA_FILES:
 		return
 
-	# Travel has its own post-load setup while the screen is covered.
 	if _traveling:
 		return
 
-	# Setup when starting the game directly in a Mtskheta district.
 	var player: CharacterBody2D = _find_player(scene_root)
+
 	if player != null:
 		_configure_camera(player)
 		_bind_player_death(player)
-
 
 func _find_player(scene_root: Node) -> CharacterBody2D:
 	var player: CharacterBody2D = scene_root.get_node_or_null("Player") as CharacterBody2D
@@ -208,12 +212,25 @@ func _configure_camera(player: CharacterBody2D) -> void:
 
 	camera.limit_left = 0
 	var current: Node = get_tree().current_scene
-	camera.limit_right = ORIGINAL_MTSKHETA_WIDTH if current != null and current.scene_file_path.get_file() == "mtskheta.tscn" else AREA_WIDTH
+	var scene_name: String = current.scene_file_path.get_file() if current != null else ""
+
+	if scene_name == "terraces.tscn":
+		camera.limit_right = 1700
+	elif scene_name == "mtskheta.tscn":
+		camera.limit_right = ORIGINAL_MTSKHETA_WIDTH
+	else:
+		camera.limit_right = AREA_WIDTH
+
 	camera.limit_top = -400
 	camera.limit_bottom = 800
 	_snap_camera(player)
 
 
+
+	# Terraces 5100px camera override
+	var active_scene: Node = get_tree().current_scene
+	if active_scene != null and active_scene.scene_file_path.get_file() == "terraces.tscn":
+		camera.limit_right = 5100
 func _save_player_stats() -> void:
 	var player: Node = get_tree().get_first_node_in_group("player")
 	if player == null:

@@ -1,29 +1,35 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="Script" path="res://scripts/levels/mtskheta/terraces_level.gd" id="1_area"]
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2_player"]
 [ext_resource type="Script" path="res://scripts/ui/player_health_hud.gd" id="3_hud"]
 [ext_resource type="PackedScene" path="res://scenes/levels/mtskheta/shared/spawn_point.tscn" id="4_spawn"]
 [ext_resource type="PackedScene" path="res://scenes/levels/mtskheta/shared/transition_zone.tscn" id="5_exit"]
+[ext_resource type="PackedScene" path="res://scenes/traps/thorn_patch.tscn" id="6_thorns"]
 
-[ext_resource type="Script" path="res://scripts/traps/thorn_patch.gd" id="6_thorns"]
-
-[sub_resource type="RectangleShape2D" id="thorn_hit_shape"]
-size = Vector2(95, 20)
 [sub_resource type="RectangleShape2D" id="ground_shape"]
-size = Vector2(2400, 160)
-
-[sub_resource type="RectangleShape2D" id="terrace_shape"]
-size = Vector2(210, 18)
+size = Vector2(5100, 160)
 
 [sub_resource type="RectangleShape2D" id="boundary_shape"]
 size = Vector2(32, 900)
+
+[sub_resource type="RectangleShape2D" id="ledge_96"]
+size = Vector2(96, 16)
+
+[sub_resource type="RectangleShape2D" id="ledge_112"]
+size = Vector2(112, 16)
+
+[sub_resource type="RectangleShape2D" id="ledge_128"]
+size = Vector2(128, 16)
+
+[sub_resource type="RectangleShape2D" id="rubble_72"]
+size = Vector2(72, 48)
 
 [node name="Terraces" type="Node2D"]
 script = ExtResource("1_area")
 
 [node name="Ground" type="StaticBody2D" parent="."]
-position = Vector2(1200, 730)
+position = Vector2(2550, 730)
 collision_layer = 1
 collision_mask = 1
 
@@ -37,106 +43,302 @@ position = Vector2(170, 602)
 script = ExtResource("3_hud")
 
 [node name="SpawnFromMarket" parent="." instance=ExtResource("4_spawn")]
-position = Vector2(280, 602)
+position = Vector2(200, 602)
 spawn_id = "from_market"
+
 [node name="SpawnFromStreets" parent="." instance=ExtResource("4_spawn")]
-position = Vector2(280, 602)
+position = Vector2(200, 602)
 spawn_id = "from_streets"
 
 [node name="SpawnFromNorthRoad" parent="." instance=ExtResource("4_spawn")]
-position = Vector2(2040, 602)
+position = Vector2(4940, 602)
 spawn_id = "from_north_road"
 
 [node name="ToMarket" parent="." instance=ExtResource("5_exit")]
 target_spawn_id = "from_terraces"
 target_scene = "res://scenes/levels/mtskheta/market.tscn"
 position = Vector2(80, 570)
-position = Vector2(80, 570)
 
 [node name="ToNorthRoad" parent="." instance=ExtResource("5_exit")]
 target_spawn_id = "from_terraces"
 target_scene = "res://scenes/levels/mtskheta/north_road.tscn"
-position = Vector2(2310, 570)
-
-[node name="Terrace1" type="StaticBody2D" parent="."]
-position = Vector2(705, 557)
+position = Vector2(5020, 570)
+# Walkable short wooden ledge: FirstFooting
+[node name="FirstFooting" type="StaticBody2D" parent="."]
+position = Vector2(480, 582)
 collision_layer = 1
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Terrace1"]
-shape = SubResource("terrace_shape")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="FirstFooting"]
+shape = SubResource("ledge_112")
 one_way_collision = true
 
-[node name="Terrace2" type="StaticBody2D" parent="."]
-position = Vector2(1205, 504)
+[node name="Timber" type="Polygon2D" parent="FirstFooting"]
+color = Color(0.32, 0.20, 0.13, 1)
+polygon = PackedVector2Array(-56, -8, 56, -8, 56, 8, -56, 8)
+
+[node name="TopHighlight" type="Line2D" parent="FirstFooting"]
+points = PackedVector2Array(-56, -8, 56, -8)
+width = 3.0
+default_color = Color(0.75, 0.53, 0.34, 1)
+
+[node name="CrossBrace" type="Line2D" parent="FirstFooting"]
+points = PackedVector2Array(-42, 7, 42, -6)
+width = 2.0
+default_color = Color(0.19, 0.12, 0.09, 1)
+
+# Walkable short wooden ledge: LowerTerrace
+[node name="LowerTerrace" type="StaticBody2D" parent="."]
+position = Vector2(980, 574)
 collision_layer = 1
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Terrace2"]
-shape = SubResource("terrace_shape")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LowerTerrace"]
+shape = SubResource("ledge_128")
 one_way_collision = true
 
-[node name="Terrace3" type="StaticBody2D" parent="."]
-position = Vector2(1695, 559)
+[node name="Timber" type="Polygon2D" parent="LowerTerrace"]
+color = Color(0.32, 0.20, 0.13, 1)
+polygon = PackedVector2Array(-64, -8, 64, -8, 64, 8, -64, 8)
+
+[node name="TopHighlight" type="Line2D" parent="LowerTerrace"]
+points = PackedVector2Array(-64, -8, 64, -8)
+width = 3.0
+default_color = Color(0.75, 0.53, 0.34, 1)
+
+[node name="CrossBrace" type="Line2D" parent="LowerTerrace"]
+points = PackedVector2Array(-50, 7, 50, -6)
+width = 2.0
+default_color = Color(0.19, 0.12, 0.09, 1)
+
+# Walkable short wooden ledge: BrokenWalkway
+[node name="BrokenWalkway" type="StaticBody2D" parent="."]
+position = Vector2(1510, 566)
 collision_layer = 1
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Terrace3"]
-shape = SubResource("terrace_shape")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BrokenWalkway"]
+shape = SubResource("ledge_96")
 one_way_collision = true
 
+[node name="Timber" type="Polygon2D" parent="BrokenWalkway"]
+color = Color(0.32, 0.20, 0.13, 1)
+polygon = PackedVector2Array(-48, -8, 48, -8, 48, 8, -48, 8)
 
-[node name="ThornTrap470" type="Area2D" parent="." groups=["terrace_trap"]]
-position = Vector2(470, 640)
-collision_layer = 0
-collision_mask = 1
-script = ExtResource("6_thorns")
+[node name="TopHighlight" type="Line2D" parent="BrokenWalkway"]
+points = PackedVector2Array(-48, -8, 48, -8)
+width = 3.0
+default_color = Color(0.75, 0.53, 0.34, 1)
 
-[node name="HitShape" type="CollisionShape2D" parent="ThornTrap470"]
-shape = SubResource("thorn_hit_shape")
+[node name="CrossBrace" type="Line2D" parent="BrokenWalkway"]
+points = PackedVector2Array(-34, 7, 34, -6)
+width = 2.0
+default_color = Color(0.19, 0.12, 0.09, 1)
 
-[node name="SpikeSilhouette" type="Polygon2D" parent="ThornTrap470"]
-z_index = 4
-color = Color(0.29, 0.20, 0.17, 1)
-polygon = PackedVector2Array(-49, 10, -42, -34, -35, 10, -35, 10, -28, -26, -21, 10, -21, 10, -14, -34, -7, 10, -7, 10, 0, -26, 7, 10, 7, 10, 14, -34, 21, 10, 21, 10, 28, -26, 35, 10, 35, 10, 42, -34, 49, 10)
+# Walkable short wooden ledge: UpperStoneStep
+[node name="UpperStoneStep" type="StaticBody2D" parent="."]
+position = Vector2(1800, 552)
+collision_layer = 1
 
-[node name="WarningStripe" type="Polygon2D" parent="ThornTrap470"]
-z_index = 4
-color = Color(0.86, 0.46, 0.26, 1)
-polygon = PackedVector2Array(-47, 11, 47, 11, 47, 15, -47, 15)
-[node name="ThornTrap1360" type="Area2D" parent="." groups=["terrace_trap"]]
-position = Vector2(1360, 640)
-collision_layer = 0
-collision_mask = 1
-script = ExtResource("6_thorns")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="UpperStoneStep"]
+shape = SubResource("ledge_112")
+one_way_collision = true
 
-[node name="HitShape" type="CollisionShape2D" parent="ThornTrap1360"]
-shape = SubResource("thorn_hit_shape")
+[node name="Timber" type="Polygon2D" parent="UpperStoneStep"]
+color = Color(0.32, 0.20, 0.13, 1)
+polygon = PackedVector2Array(-56, -8, 56, -8, 56, 8, -56, 8)
 
-[node name="SpikeSilhouette" type="Polygon2D" parent="ThornTrap1360"]
-z_index = 4
-color = Color(0.29, 0.20, 0.17, 1)
-polygon = PackedVector2Array(-49, 10, -42, -34, -35, 10, -35, 10, -28, -26, -21, 10, -21, 10, -14, -34, -7, 10, -7, 10, 0, -26, 7, 10, 7, 10, 14, -34, 21, 10, 21, 10, 28, -26, 35, 10, 35, 10, 42, -34, 49, 10)
+[node name="TopHighlight" type="Line2D" parent="UpperStoneStep"]
+points = PackedVector2Array(-56, -8, 56, -8)
+width = 3.0
+default_color = Color(0.75, 0.53, 0.34, 1)
 
-[node name="WarningStripe" type="Polygon2D" parent="ThornTrap1360"]
-z_index = 4
-color = Color(0.86, 0.46, 0.26, 1)
-polygon = PackedVector2Array(-47, 11, 47, 11, 47, 15, -47, 15)
-[node name="ThornTrap1850" type="Area2D" parent="." groups=["terrace_trap"]]
-position = Vector2(1850, 640)
-collision_layer = 0
-collision_mask = 1
-script = ExtResource("6_thorns")
+[node name="CrossBrace" type="Line2D" parent="UpperStoneStep"]
+points = PackedVector2Array(-42, 7, 42, -6)
+width = 2.0
+default_color = Color(0.19, 0.12, 0.09, 1)
 
-[node name="HitShape" type="CollisionShape2D" parent="ThornTrap1850"]
-shape = SubResource("thorn_hit_shape")
+# Walkable short wooden ledge: RavineFooting
+[node name="RavineFooting" type="StaticBody2D" parent="."]
+position = Vector2(2420, 585)
+collision_layer = 1
 
-[node name="SpikeSilhouette" type="Polygon2D" parent="ThornTrap1850"]
-z_index = 4
-color = Color(0.29, 0.20, 0.17, 1)
-polygon = PackedVector2Array(-49, 10, -42, -34, -35, 10, -35, 10, -28, -26, -21, 10, -21, 10, -14, -34, -7, 10, -7, 10, 0, -26, 7, 10, 7, 10, 14, -34, 21, 10, 21, 10, 28, -26, 35, 10, 35, 10, 42, -34, 49, 10)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RavineFooting"]
+shape = SubResource("ledge_96")
+one_way_collision = true
 
-[node name="WarningStripe" type="Polygon2D" parent="ThornTrap1850"]
-z_index = 4
-color = Color(0.86, 0.46, 0.26, 1)
-polygon = PackedVector2Array(-47, 11, 47, 11, 47, 15, -47, 15)
+[node name="Timber" type="Polygon2D" parent="RavineFooting"]
+color = Color(0.32, 0.20, 0.13, 1)
+polygon = PackedVector2Array(-48, -8, 48, -8, 48, 8, -48, 8)
+
+[node name="TopHighlight" type="Line2D" parent="RavineFooting"]
+points = PackedVector2Array(-48, -8, 48, -8)
+width = 3.0
+default_color = Color(0.75, 0.53, 0.34, 1)
+
+[node name="CrossBrace" type="Line2D" parent="RavineFooting"]
+points = PackedVector2Array(-34, 7, 34, -6)
+width = 2.0
+default_color = Color(0.19, 0.12, 0.09, 1)
+
+# Walkable short wooden ledge: OldWatchLedge
+[node name="OldWatchLedge" type="StaticBody2D" parent="."]
+position = Vector2(3020, 565)
+collision_layer = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="OldWatchLedge"]
+shape = SubResource("ledge_112")
+one_way_collision = true
+
+[node name="Timber" type="Polygon2D" parent="OldWatchLedge"]
+color = Color(0.32, 0.20, 0.13, 1)
+polygon = PackedVector2Array(-56, -8, 56, -8, 56, 8, -56, 8)
+
+[node name="TopHighlight" type="Line2D" parent="OldWatchLedge"]
+points = PackedVector2Array(-56, -8, 56, -8)
+width = 3.0
+default_color = Color(0.75, 0.53, 0.34, 1)
+
+[node name="CrossBrace" type="Line2D" parent="OldWatchLedge"]
+points = PackedVector2Array(-42, 7, 42, -6)
+width = 2.0
+default_color = Color(0.19, 0.12, 0.09, 1)
+
+# Walkable short wooden ledge: NarrowReturn
+[node name="NarrowReturn" type="StaticBody2D" parent="."]
+position = Vector2(3610, 582)
+collision_layer = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="NarrowReturn"]
+shape = SubResource("ledge_96")
+one_way_collision = true
+
+[node name="Timber" type="Polygon2D" parent="NarrowReturn"]
+color = Color(0.32, 0.20, 0.13, 1)
+polygon = PackedVector2Array(-48, -8, 48, -8, 48, 8, -48, 8)
+
+[node name="TopHighlight" type="Line2D" parent="NarrowReturn"]
+points = PackedVector2Array(-48, -8, 48, -8)
+width = 3.0
+default_color = Color(0.75, 0.53, 0.34, 1)
+
+[node name="CrossBrace" type="Line2D" parent="NarrowReturn"]
+points = PackedVector2Array(-34, 7, 34, -6)
+width = 2.0
+default_color = Color(0.19, 0.12, 0.09, 1)
+
+# Walkable short wooden ledge: LastTimber
+[node name="LastTimber" type="StaticBody2D" parent="."]
+position = Vector2(4380, 570)
+collision_layer = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LastTimber"]
+shape = SubResource("ledge_128")
+one_way_collision = true
+
+[node name="Timber" type="Polygon2D" parent="LastTimber"]
+color = Color(0.32, 0.20, 0.13, 1)
+polygon = PackedVector2Array(-64, -8, 64, -8, 64, 8, -64, 8)
+
+[node name="TopHighlight" type="Line2D" parent="LastTimber"]
+points = PackedVector2Array(-64, -8, 64, -8)
+width = 3.0
+default_color = Color(0.75, 0.53, 0.34, 1)
+
+[node name="CrossBrace" type="Line2D" parent="LastTimber"]
+points = PackedVector2Array(-50, 7, 50, -6)
+width = 2.0
+default_color = Color(0.19, 0.12, 0.09, 1)
+
+# Low broken wall: a second obstacle type, passable by a normal jump.
+[node name="CollapsedWall" type="StaticBody2D" parent="."]
+position = Vector2(1695, 626)
+collision_layer = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CollapsedWall"]
+shape = SubResource("rubble_72")
+
+[node name="Stone" type="Polygon2D" parent="CollapsedWall"]
+color = Color(0.40, 0.33, 0.26, 1)
+polygon = PackedVector2Array(-36, 24, -36, -8, -22, -24, 24, -24, 36, -9, 36, 24)
+
+[node name="StoneCap" type="Line2D" parent="CollapsedWall"]
+points = PackedVector2Array(-36, -8, -22, -24, 24, -24, 36, -9)
+width = 3.0
+default_color = Color(0.67, 0.55, 0.41, 1)
+
+# Low broken wall: a second obstacle type, passable by a normal jump.
+[node name="StoneBlockade" type="StaticBody2D" parent="."]
+position = Vector2(3500, 626)
+collision_layer = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StoneBlockade"]
+shape = SubResource("rubble_72")
+
+[node name="Stone" type="Polygon2D" parent="StoneBlockade"]
+color = Color(0.40, 0.33, 0.26, 1)
+polygon = PackedVector2Array(-36, 24, -36, -8, -22, -24, 24, -24, 36, -9, 36, 24)
+
+[node name="StoneCap" type="Line2D" parent="StoneBlockade"]
+points = PackedVector2Array(-36, -8, -22, -24, 24, -24, 36, -9)
+width = 3.0
+default_color = Color(0.67, 0.55, 0.41, 1)
+
+# FirstLesson: 2 thorn patches. Clear sight lines and space to prepare.
+[node name="FirstLessonThorns1" parent="." instance=ExtResource("6_thorns")]
+position = Vector2(620, 640)
+
+[node name="FirstLessonThorns2" parent="." instance=ExtResource("6_thorns")]
+position = Vector2(715, 640)
+
+# Crossroads: 3 thorn patches. Clear sight lines and space to prepare.
+[node name="CrossroadsThorns1" parent="." instance=ExtResource("6_thorns")]
+position = Vector2(1195, 640)
+
+[node name="CrossroadsThorns2" parent="." instance=ExtResource("6_thorns")]
+position = Vector2(1290, 640)
+
+[node name="CrossroadsThorns3" parent="." instance=ExtResource("6_thorns")]
+position = Vector2(1385, 640)
+
+# OldSteps: 2 thorn patches. Clear sight lines and space to prepare.
+[node name="OldStepsThorns1" parent="." instance=ExtResource("6_thorns")]
+position = Vector2(1940, 640)
+
+[node name="OldStepsThorns2" parent="." instance=ExtResource("6_thorns")]
+position = Vector2(2035, 640)
+
+# BrokenRoad: 3 thorn patches. Clear sight lines and space to prepare.
+[node name="BrokenRoadThorns1" parent="." instance=ExtResource("6_thorns")]
+position = Vector2(2550, 640)
+
+[node name="BrokenRoadThorns2" parent="." instance=ExtResource("6_thorns")]
+position = Vector2(2645, 640)
+
+[node name="BrokenRoadThorns3" parent="." instance=ExtResource("6_thorns")]
+position = Vector2(2740, 640)
+
+# PinePass: 2 thorn patches. Clear sight lines and space to prepare.
+[node name="PinePassThorns1" parent="." instance=ExtResource("6_thorns")]
+position = Vector2(3200, 640)
+
+[node name="PinePassThorns2" parent="." instance=ExtResource("6_thorns")]
+position = Vector2(3295, 640)
+
+# LastApproach: 3 thorn patches. Clear sight lines and space to prepare.
+[node name="LastApproachThorns1" parent="." instance=ExtResource("6_thorns")]
+position = Vector2(4010, 640)
+
+[node name="LastApproachThorns2" parent="." instance=ExtResource("6_thorns")]
+position = Vector2(4105, 640)
+
+[node name="LastApproachThorns3" parent="." instance=ExtResource("6_thorns")]
+position = Vector2(4200, 640)
+
+# GateRun: 2 thorn patches. Clear sight lines and space to prepare.
+[node name="GateRunThorns1" parent="." instance=ExtResource("6_thorns")]
+position = Vector2(4640, 640)
+
+[node name="GateRunThorns2" parent="." instance=ExtResource("6_thorns")]
+position = Vector2(4735, 640)
+
 [node name="LeftWorldWall" type="StaticBody2D" parent="."]
 position = Vector2(-16, 300)
 collision_layer = 1
@@ -146,10 +348,9 @@ collision_mask = 1
 shape = SubResource("boundary_shape")
 
 [node name="RightWorldWall" type="StaticBody2D" parent="."]
-position = Vector2(2416, 300)
+position = Vector2(5116, 300)
 collision_layer = 1
 collision_mask = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="RightWorldWall"]
 shape = SubResource("boundary_shape")
-
