@@ -39,4 +39,3 @@ target_spawn_id = "from_jvari"
 position = Vector2(6110, 570)
 target_scene = "res://scenes/levels/jvari/jvari_pilgrim_steps.tscn"
 target_spawn_id = "from_previous"
-

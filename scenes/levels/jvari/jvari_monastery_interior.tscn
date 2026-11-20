@@ -1,0 +1,27 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/levels/jvari/jvari_monastery_interior.gd" id="1_interior"]
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2_player"]
+[ext_resource type="Script" path="res://scripts/ui/player_health_hud.gd" id="3_hud"]
+[ext_resource type="PackedScene" path="res://scenes/levels/mtskheta/shared/spawn_point.tscn" id="4_spawn"]
+[ext_resource type="PackedScene" path="res://scenes/levels/mtskheta/shared/transition_zone.tscn" id="5_exit"]
+
+[node name="JvariMonasteryInterior" type="Node2D"]
+script = ExtResource("1_interior")
+
+[node name="Player" parent="." instance=ExtResource("2_player") groups=["player"]]
+position = Vector2(240, 602)
+
+[node name="PlayerHealthHUD" type="CanvasLayer" parent="."]
+script = ExtResource("3_hud")
+
+[node name="SpawnFromOutside" parent="." instance=ExtResource("4_spawn")]
+position = Vector2(240, 602)
+spawn_id = "from_outside"
+
+[node name="ToOutside" parent="." instance=ExtResource("5_exit")]
+position = Vector2(85, 570)
+require_interaction = true
+prompt_text = "E - Return to Jvari Courtyard"
+target_scene = "res://scenes/levels/jvari/jvari_monastery.tscn"
+target_spawn_id = "from_interior"
