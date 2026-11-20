@@ -43,6 +43,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	var key := event as InputEventKey
 	if key.pressed and not key.echo and (key.keycode == KEY_E or key.physical_keycode == KEY_E):
 		var player: Node = get_tree().get_first_node_in_group("player")
+		if player != null and player.has_method("set_resting"):
+			player.call("set_resting", true)
+				
 		if player != null:
 			var health: Node = player.get_node_or_null("HealthComponent")
 			if health != null and health.has_method("restore_full_health"):

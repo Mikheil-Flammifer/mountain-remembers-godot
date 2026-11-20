@@ -41,6 +41,9 @@ func _on_body_entered(body: Node2D) -> void:
 	if not body.is_in_group("player"):
 		return
 
+	print("Transition entered: ", name)
+	print("Target scene: ", target_scene)	
+
 	_player_inside = true
 	prompt.visible = require_interaction
 

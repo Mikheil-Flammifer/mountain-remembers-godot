@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" path="res://scenes/levels/mtskheta/shared/transition_zone.tscn" id="5_exit"]
 [ext_resource type="Script" path="res://scripts/levels/mtskheta/investigation_npc.gd" id="invest_npc"]
 [ext_resource type="Script" path="res://scripts/levels/mtskheta/investigation_controller.gd" id="invest_controller"]
+[ext_resource type="PackedScene" path="res://scenes/objects/world_signpost.tscn" id="6_sign"]
 
 [sub_resource type="RectangleShape2D" id="ground_shape"]
 size = Vector2(2400, 160)
@@ -61,7 +62,7 @@ position = Vector2(970, 570)
 target_scene = "res://scenes/levels/mtskheta/cathedral_precinct.tscn"
 target_spawn_id = "from_streets"
 require_interaction = true
-prompt_text = "E - Enter Svetitskhoveli"
+prompt_text = "E - Enter"
 
 [node name="ToMarket" parent="." instance=ExtResource("5_exit")]
 position = Vector2(2310, 570)
@@ -85,16 +86,27 @@ collision_mask = 1
 [node name="CollisionShape2D" type="CollisionShape2D" parent="RightWorldWall" unique_id=1347606824]
 shape = SubResource("boundary_shape")
 
-[node name="CathedralEntranceSign" type="Label" parent="." unique_id=1062868452]
-offset_left = 835.0
-offset_top = 355.0
-offset_right = 1105.0
-offset_bottom = 413.0
-theme_override_colors/font_color = Color(0.95, 0.85, 0.61, 1)
-theme_override_font_sizes/font_size = 22
-text = "SVETITSKHOVELI
-E - ENTER CATHEDRAL"
-horizontal_alignment = 1
+; ----------------------------------------------------------------
+; Physical world signs
+; ----------------------------------------------------------------
+
+[node name="SvetitskhoveliSign" parent="." instance=ExtResource("6_sign")]
+position = Vector2(790, 650)
+scale = Vector2(0.62, 0.62)
+inscription = "SVETITSKHOVELI"
+direction = 1
+plank_width = 205.0
+
+[node name="MarketDirectionSign" parent="." instance=ExtResource("6_sign")]
+position = Vector2(1950, 650)
+scale = Vector2(0.62, 0.62)
+inscription = "ARAGVI MARKET"
+direction = 1
+plank_width = 190.0
+
+; ----------------------------------------------------------------
+; NPC
+; ----------------------------------------------------------------
 
 [node name="StreetPilgrim" type="Node2D" parent="."]
 position = Vector2(1600, 650)
@@ -105,18 +117,5 @@ cloak_color = Color(0.31, 0.40, 0.38, 1)
 
 [node name="InvestigationController" type="Node" parent="."]
 script = ExtResource("invest_controller")
-
-[node name="MarketSign" type="Label" parent="."]
-offset_left = 1925.0
-offset_top = 458.0
-offset_right = 2275.0
-offset_bottom = 516.0
-mouse_filter = 2
-theme_override_colors/font_color = Color(0.95, 0.87, 0.7, 1)
-theme_override_colors/font_outline_color = Color(0.18, 0.14, 0.11, 1)
-theme_override_constants/outline_size = 6
-theme_override_font_sizes/font_size = 20
-text = "ARAGVI MARKET  >"
-horizontal_alignment = 1
 
 [editable path="ToMarket"]

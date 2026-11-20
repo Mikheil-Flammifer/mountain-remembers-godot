@@ -118,6 +118,9 @@ func _start_monk_dialogue() -> void:
 
 
 func _rest_at_courtyard() -> void:
+	if _player.has_method("set_resting"):
+		_player.call("set_resting", true)
+
 	var health: Node = _player.get_node_or_null("HealthComponent")
 	if health != null and health.has_method("restore_full_health"):
 		health.call("restore_full_health")
@@ -161,6 +164,9 @@ func _advance_dialogue() -> void:
 
 
 func _finish_dialogue(completed: bool) -> void:
+	if _player.has_method("set_resting"):
+		_player.call("set_resting", false)
+
 	if completed and _record_monk_clue:
 		_journal.call("record_clue", QUEST_ENTRY)
 

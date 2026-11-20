@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/npcs/base_npc.tscn" id="1_base"]
+
+[node name="StreetPilgrim" instance=ExtResource("1_base")]
+npc_id = "street_pilgrim"
+display_name = "Pilgrim"
+cloak_color = Color(0.31, 0.40, 0.38, 1)
+face_player = true
+face_player_distance = 430.0
+idle_enabled = true
+idle_sway_degrees = 0.65
+idle_sway_speed = 1.0

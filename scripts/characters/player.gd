@@ -26,6 +26,7 @@ extends CharacterBody2D
 @export var vitality: int = 10
 @export var health_per_vitality: int = 10
 
+
 var _stride_phase: float = 0.0
 var _idle_time: float = 0.0
 var _was_grounded: bool = false
@@ -40,6 +41,7 @@ var poise: float = 25.0
 var _poise_delay: float = 0.0
 var _stagger_timer: float = 0.0
 var _damage_flash_tween: Tween
+var _is_resting: bool = false
 
 func _ready() -> void:
 	add_to_group("player")
@@ -50,23 +52,55 @@ func _ready() -> void:
 		health.died.connect(_on_died)
 
 func _physics_process(delta: float) -> void:
+	if _is_resting:
+		velocity = Vector2.ZERO
+
+		if (
+			Input.is_action_just_pressed("move_left")
+			or Input.is_action_just_pressed("move_right")
+			or Input.is_action_just_pressed("jump")
+		):
+			set_resting(false)
+
+		return
+
 	_poise_delay = maxf(0.0, _poise_delay - delta)
+
 	if _poise_delay <= 0.0:
-		poise = minf(max_poise, poise + poise_recovery_per_second * delta)
+		poise = minf(
+			max_poise,
+			poise + poise_recovery_per_second * delta
+		)
+
 	if _stagger_timer > 0.0:
-		_stagger_timer = maxf(0.0, _stagger_timer - delta)
-		velocity.x = move_toward(velocity.x, 0.0, 1800.0 * delta)
+		_stagger_timer = maxf(
+			0.0,
+			_stagger_timer - delta
+		)
+
+		velocity.x = move_toward(
+			velocity.x,
+			0.0,
+			1800.0 * delta
+		)
+
 		if not is_on_floor():
 			velocity.y += 1500.0 * delta
+
 		move_and_slide()
 		return
+
 	_handle_attack_input()
 
 	if movement != null:
 		movement.physics_tick(self, delta)
 
 	if combat != null:
-		combat.physics_tick(self, movement.facing_direction, delta)
+		combat.physics_tick(
+			self,
+			movement.facing_direction,
+			delta
+		)
 
 func _process(delta: float) -> void:
 	_animate_character(delta)
@@ -107,6 +141,8 @@ func _handle_attack_input() -> void:
 		movement.facing_direction
 	)
 
+
+
 func level_up_vitality() -> void:
 	if health.is_dead:
 		return
@@ -122,6 +158,21 @@ func level_up_vitality() -> void:
 		"[Xizane] Vitality: %d, Max HP: %d"
 		% [vitality, health.max_health]
 	)
+
+func set_resting(value: bool) -> void:
+	if health != null and health.is_dead:
+		return
+
+	_is_resting = value
+	velocity = Vector2.ZERO
+
+	if combat != null and combat.has_method("cancel_attack"):
+		combat.cancel_attack()
+
+
+func is_resting() -> bool:
+	return _is_resting
+
 
 
 func _animate_character(delta: float) -> void:
@@ -142,7 +193,9 @@ func _animate_character(delta: float) -> void:
 	)
 
 	_idle_time += delta
-	visual_root.scale.x = movement.facing_direction
+
+	if not _is_resting:
+		visual_root.scale.x = movement.facing_direction
 
 	if grounded and speed_ratio > 0.08 and not dashing and not attacking:
 		_stride_phase += absf(velocity.x) * run_stride_speed * delta
@@ -156,6 +209,109 @@ func _animate_character(delta: float) -> void:
 	var target_torso: float = 0.0
 	var target_sword: float = -0.12
 
+	if _is_resting:
+		target_torso = 0.08
+		target_front_leg = 1.18
+		target_back_leg = 1.05
+		target_front_arm = 0.35
+		target_back_arm = -0.25
+		target_sword = -0.35
+
+	elif attacking:
+		var progress: float = combat.attack_progress()
+		var swing: float = smoothstep(
+			0.06,
+			0.82,
+			progress
+		)
+
+		target_front_leg = -0.08
+		target_back_leg = 0.10
+		target_back_arm = 0.18
+
+		match combat.attack_direction():
+			"up":
+				target_torso = -0.10
+				target_front_arm = lerpf(
+					-0.55,
+					-2.65,
+					swing
+				)
+				target_sword = -0.35
+
+			"down":
+				target_torso = 0.18
+				target_front_leg = -0.25
+				target_back_leg = 0.30
+				target_front_arm = lerpf(
+					0.30,
+					-0.45,
+					swing
+				)
+				target_sword = lerpf(
+					0.0,
+					-0.90,
+					swing
+				)
+
+			_:
+				target_torso = lerpf(
+					-0.08,
+					0.16,
+					swing
+				)
+				target_front_arm = lerpf(
+					-2.10,
+					1.25,
+					swing
+				)
+				target_sword = lerpf(
+					-0.55,
+					0.45,
+					swing
+				)
+
+	elif dashing:
+		target_torso = 0.26
+		target_front_leg = -0.52
+		target_back_leg = 0.42
+		target_front_arm = -0.55
+		target_back_arm = 0.38
+		target_sword = -0.70
+
+	elif not grounded:
+		if velocity.y < 0.0:
+			target_torso = -0.06
+			target_front_leg = -0.22
+			target_back_leg = 0.28
+			target_front_arm = -0.30
+			target_back_arm = 0.20
+		else:
+			target_torso = 0.06
+			target_front_leg = 0.22
+			target_back_leg = -0.18
+			target_front_arm = 0.15
+			target_back_arm = -0.20
+
+	elif speed_ratio > 0.08:
+		target_front_leg = stride * leg_swing_angle
+		target_back_leg = -stride * leg_swing_angle
+		target_front_arm = -stride * 0.18
+		target_back_arm = stride * 0.30
+		target_torso = 0.10 * speed_ratio
+
+	if _is_resting:
+		target_torso = 0.08
+
+		# Legs bend forward/down into a seated pose.
+		target_front_leg = 1.18
+		target_back_leg = 1.05
+
+		# Arms rest naturally.
+		target_front_arm = 0.35
+		target_back_arm = -0.25
+
+		target_sword = -0.35
 
 	if attacking:
 		var progress: float = combat.attack_progress()
@@ -235,13 +391,29 @@ func _animate_character(delta: float) -> void:
 	var run_bob: float = absf(stride) * 2.0 * speed_ratio
 	var bob: float = idle_bob
 
-	if grounded and speed_ratio > 0.08 and not attacking:
+	if _is_resting:
+		bob = 19.0
+
+	elif grounded and speed_ratio > 0.08 and not attacking:
 		bob = -run_bob
 
 	if dashing:
 		bob = -1.5
 
-	if attacking:
+	if _is_resting:
+		target_torso = 0.08
+
+		# Legs bend forward/down into a seated pose.
+		target_front_leg = 1.18
+		target_back_leg = 1.05
+
+		# Arms rest naturally.
+		target_front_arm = 0.35
+		target_back_arm = -0.25
+
+		target_sword = -0.35
+
+	elif attacking:
 		bob = -0.6
 
 	torso.position.y = lerpf(
