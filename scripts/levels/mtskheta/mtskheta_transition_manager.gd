@@ -13,6 +13,7 @@ const AREA_FILES: Array[String] = [
 	"north_road.tscn",
 ]
 const JVARI_SCENE_DIR: String = "res://scenes/levels/jvari/"
+const ZHINVALI_SCENE_DIR: String = "res://scenes/levels/zhinvali/"
 const AREA_WIDTH: int = 2400
 const TERRACES_WIDTH: int = 5100
 const ORIGINAL_MTSKHETA_WIDTH: int = 3600
@@ -236,7 +237,7 @@ func _on_scene_changed(scene_root: Node = null) -> void:
 
 
 func _is_jvari(scene_path: String) -> bool:
-	return scene_path.begins_with(JVARI_SCENE_DIR)
+	return scene_path.begins_with(JVARI_SCENE_DIR) or scene_path.begins_with(ZHINVALI_SCENE_DIR)
 
 
 func _set_default_jvari_checkpoint(scene_path: String) -> void:

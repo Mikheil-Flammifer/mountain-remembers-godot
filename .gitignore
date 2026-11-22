@@ -27,3 +27,6 @@ Desktop.ini
 # Installer and editor backups
 *.bak
 *.bak.*
+
+.zhinvali_backup/
+.zhinvali_combat_backup/

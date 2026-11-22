@@ -120,6 +120,7 @@ func take_hit(amount: int, knockback: Vector2, poise_damage: float = 20.0) -> vo
 		return
 	health -= amount
 	if health <= 0:
+		_award_score()
 		_dead = true
 		set_physics_process(false)
 		collision_layer = 0
@@ -133,6 +134,24 @@ func take_hit(amount: int, knockback: Vector2, poise_damage: float = 20.0) -> vo
 			_timer = 0.3
 			velocity = knockback * 0.22
 	queue_redraw()
+
+func _score_reward() -> int:
+	var base: int = 5
+	match archetype:
+		"raider":
+			base = 7
+		"wraith":
+			base = 6
+		"warden":
+			base = 15
+	return base + difficulty
+
+
+func _award_score() -> void:
+	var target_player: Node = get_tree().get_first_node_in_group("player")
+	if target_player != null and target_player.has_method("add_score"):
+		target_player.call("add_score", _score_reward())
+
 
 func _draw() -> void:
 	var warning: bool = _phase == "warning"

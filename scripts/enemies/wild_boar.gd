@@ -1,4 +1,6 @@
 extends CharacterBody2D
+
+@export var score_reward: int = 9
 ## Reusable wild boar: patrol -> warning snort -> committed charge -> recovery.
 ## Compatible with Xizane's sword take_hit(damage, knockback) contract.
 
@@ -114,6 +116,7 @@ func take_hit(amount: int, knockback: Vector2, poise_damage: float = 20.0) -> vo
 		return
 	health -= amount
 	if health <= 0:
+		_award_score()
 		_dead = true
 		set_physics_process(false)
 		collision_layer = 0
@@ -126,6 +129,12 @@ func take_hit(amount: int, knockback: Vector2, poise_damage: float = 20.0) -> vo
 		_enter_recovery()
 		velocity = knockback * 0.2
 	queue_redraw()
+
+func _award_score() -> void:
+	var target_player: Node = get_tree().get_first_node_in_group("player")
+	if target_player != null and target_player.has_method("add_score"):
+		target_player.call("add_score", score_reward)
+
 
 func _draw() -> void:
 	var hide_color := Color("#4b473d")

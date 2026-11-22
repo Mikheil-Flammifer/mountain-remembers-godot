@@ -1,6 +1,8 @@
 class_name MountainWolf
 extends CharacterBody2D
 
+@export var score_reward: int = 5
+
 ## Fast aggressive mountain wolf.
 ##
 ## Behaviour:
@@ -778,7 +780,14 @@ func take_hit(
 # Death
 # -------------------------------------------------------------------
 
+func _award_score() -> void:
+	var target_player: Node = get_tree().get_first_node_in_group("player")
+	if target_player != null and target_player.has_method("add_score"):
+		target_player.call("add_score", score_reward)
+
+
 func _die() -> void:
+	_award_score()
 	dead = true
 
 	state = State.DEAD

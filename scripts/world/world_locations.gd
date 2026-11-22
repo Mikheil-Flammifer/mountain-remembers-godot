@@ -46,6 +46,20 @@ const LOCATIONS := [
 		"known": false
 	},
 	{
+		"id": "zhinvali",
+		"name": "Zhinvali",
+		"position": Vector2(605, 512),
+		"description": "Old river town and crossroads in the Aragvi gorge.",
+		"known": false
+	},
+	{
+		"id": "dusheti",
+		"name": "Dusheti",
+		"position": Vector2(477, 551),
+		"description": "A lower-road settlement toward Kartli.",
+		"known": false
+	},
+	{
 		"id": "ananuri",
 		"name": "Ananuri",
 		"position": Vector2(561, 447),
@@ -78,6 +92,9 @@ const LOCATIONS := [
 const ROUTES := [
 	["mtskheta", "tbilisi"],
 	["mtskheta", "ananuri"],
+	["jvari", "zhinvali"],
+	["zhinvali", "ananuri"],
+	["zhinvali", "dusheti"],
 	["ananuri", "stepantsminda"],
 	["ananuri", "tianeti"],
 	["tianeti", "shatili"],
