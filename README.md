@@ -1,111 +1,160 @@
-## Current Game Progress
+# The Mountain Remembers
 
-### World
+**The Mountain Remembers** is a 2D action-adventure RPG set in a fictionalized medieval Georgian world inspired by Georgian landscapes, architecture, folklore, and mountain culture.
 
-The current playable journey follows Xizane north through a 2D interpretation of medieval Georgia.
+The player controls **Xizane**, who leaves Mtskheta and travels north in search of his missing sister, **Samdzivari**.
 
-Implemented areas include:
+The game is being developed in **Godot 4 with GDScript**.
+
+---
+
+## Current Playable Route
+
+```text
+Mtskheta → Jvari → Zhinvali
+```
+
+Implemented regions include:
 
 - Mtskheta
 - Jvari
 - Zhinvali
+- Ananuri Approach
+- Dusheti Approach
 
-The Zhinvali region introduces branching mountain routes. One road ascends toward Ananuri and the northern mountains, while another descends toward Dusheti. The region includes river valleys, mountain roads, forests, ruined structures, hidden paths and optional encounters.
+Zhinvali introduces branching mountain routes, vertical traversal, ladders, forests, rivers, ruins, and optional areas.
 
-Future progression will continue toward Ananuri and Stepantsminda.
+---
 
-### Level Design
+## Gameplay
 
-The game is evolving from mostly horizontal routes into more layered 2D environments.
+Current systems include:
 
-Areas can contain:
-
-- upper and lower paths
-- climbing and descending routes
-- platforms and vertical traversal
-- branching roads
-- hidden areas
-- optional encounters
-- environmental storytelling
-- rest points and checkpoints
-
-The goal is to make exploration feel like travelling through a connected mountain landscape rather than moving along a single line.
-
-### Combat
-
-Xizane currently has:
-
+- running and jumping
+- double jump
+- dashing
+- coyote time and jump buffering
 - Mountain Blade sword combat
 - directional attacks
-- two-hit sword combinations
-- upward and downward attacks
-- dash attacks
+- two-hit combos
 - shield blocking
-- stamina-based guarding
-- jumping and double jumping
-- air movement
-- directional dashing
-- limited healing stones
+- stamina
+- poise and stagger
+- healing stones
+- checkpoints
+- upgrades
+- score rewards
+- death and score recovery
+- branching exploration
+
+---
+
+## Combat
+
+Enemies use different combat styles instead of only changing health and damage.
+
+### Mtskheta
+
+- Mountain Wolf
+- Shield Guard
+- Swordsman
+
+### Jvari
+
+- Sentry
+- Raider
+- Wraith
+- Warden
+- Wild Boar
+
+Jvari enemies can use mechanics such as:
+
+- blocking
+- guard breaking
+- backstepping
+- counterattacks
+- dodging
+- poise
+- heavy attacks
+
+### Zhinvali
 
 Enemies include:
 
-- mountain wolves
-- wild boars
+- raiders
 - archers
 - mountain hawks
-- regional combatants
 
-Enemies use different attack patterns, pursuit behaviour and score rewards.
+Enemy attacks use actual attack windows instead of simple contact damage.
 
-### Progression
+---
 
-Enemies award a small amount of score when defeated.
+## Progression
 
-Score can be spent while resting to upgrade two groups of abilities:
+Defeated enemies award score.
 
-**Player**
+Score can be spent at rest points to improve:
 
-- Vitality / maximum HP
-- Endurance / maximum energy
-
-**Equipment**
-
+- maximum HP
+- maximum energy
 - Mountain Blade
 - Shield
-- Healing Stone
+- Healing Stones
 
-Upgrade costs increase with each level.
+When Xizane dies, carried score is left behind as a recoverable memory.
 
-### Death and Recovery
+---
 
-When Xizane dies, all currently carried score is lost and left behind as a recoverable memory.
-
-The memory appears at or near the last safe location before death, preventing score from becoming unreachable after falling into a pit or dying inside a hazard.
-
-Xizane has one opportunity to recover the lost score. If he dies again before recovering it, the previous memory is lost and replaced by the score carried at the new death.
-
-### Rest Points
-
-Rest points act as checkpoints.
-
-Resting:
-
-- restores health
-- restores energy
-- saves the respawn point
-- respawns defeated enemies
-- opens the upgrade interface
-
-Press **E** to rest and **E** again to stand.
-
-### Current Controls
+## Current Controls
 
 | Action | Key |
 | --- | --- |
 | Move | A / D |
 | Jump | Space |
 | Dash | Shift |
-| Sword | H |
+| Mountain Blade | H |
 | Shield | G / Right Mouse |
 | Healing Stone | R |
 | Interact / Rest | E |
+| Item Interaction | Q |
+
+---
+
+## World Design
+
+The game is moving toward connected, layered environments rather than simple horizontal levels.
+
+Current areas can contain:
+
+- upper and lower routes
+- slopes
+- ladders
+- cliffs
+- platforms
+- forests
+- rivers
+- ruins
+- hidden areas
+- environmental storytelling
+
+The goal is to make travelling through the world feel like moving through a connected Georgian mountain landscape.
+
+---
+
+## Technology
+
+- Godot 4.x
+- GDScript
+- 2D physics
+- procedural environment drawing
+- reusable enemy scenes
+- reusable level components
+- persistent progression
+
+---
+
+## Main Goal
+
+The main story is about **Xizane searching for Samdzivari and discovering what happened to her**.
+
+Combat and platforming support the journey, while exploration, atmosphere, and story discovery remain central to the game.
