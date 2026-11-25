@@ -33,8 +33,8 @@ spawn_id = "from_next"
 
 [node name="ToJvari" parent="." unique_id=1253235239 instance=ExtResource("5_exit")]
 position = Vector2(85, 570)
-target_scene = "res://scenes/levels/jvari/jvari_windcut_ravine.tscn"
-target_spawn_id = "from_next"
+target_scene = "res://scenes/levels/jvari/jvari_pass_wardens.tscn"
+target_spawn_id = "from_zhinvali"
 
 [node name="ToLadderJunction" parent="." unique_id=1749756614 instance=ExtResource("5_exit")]
 position = Vector2(5310, 570)

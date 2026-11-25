@@ -69,7 +69,8 @@ const ENEMY_LAYOUTS: Array = [
 	[[1050, "sentry"], [1620, "raider"], [4240, "raider"], [5650, "sentry"]],
 	[[750, "sentry"], [1690, "raider"], [2140, "sentry"], [3210, "raider"], [4130, "raider"], [5120, "sentry"], [6330, "raider"]],
 	[[780, "wraith"], [1740, "sentry"], [2990, "wraith"], [3490, "raider"], [4580, "wraith"], [6040, "wraith"], [7110, "raider"]],
-	[[740, "raider"], [1730, "sentry"], [3050, "raider"], [4140, "warden"], [5470, "raider"], [6920, "warden"], [7830, "sentry"]],
+	# JVARI_PASS_WARDENS_V1: Stone Ascent Wardens moved to the final pass arena.
+	[[740, "raider"], [1730, "sentry"], [3050, "raider"], [4140, "sentry"], [5470, "raider"], [6920, "raider"], [7830, "sentry"]],
 	[[1040, "sentry"], [2220, "raider"], [3560, "warden"], [5020, "raider"], [6260, "warden"], [7620, "warden"]]
 ]
 # Hazard positions and types, composed as identifiable encounters.

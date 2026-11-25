@@ -33,5 +33,5 @@ target_spawn_id = "from_next"
 
 [node name="ToZhinvali" parent="." instance=ExtResource("5_exit")]
 position = Vector2(7440, 648)
-target_scene = "res://scenes/levels/zhinvali/zhinvali_river_gate.tscn"
-target_spawn_id = "from_jvari"
+target_scene = "res://scenes/levels/jvari/jvari_pass_wardens.tscn"
+target_spawn_id = "from_windcut"

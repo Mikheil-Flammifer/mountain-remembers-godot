@@ -1,0 +1,36 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/levels/jvari/jvari_pass_wardens.gd" id="1_level"]
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2_player"]
+[ext_resource type="Script" path="res://scripts/ui/player_health_hud.gd" id="3_hud"]
+[ext_resource type="PackedScene" path="res://scenes/levels/mtskheta/shared/spawn_point.tscn" id="4_spawn"]
+[ext_resource type="PackedScene" path="res://scenes/levels/mtskheta/shared/transition_zone.tscn" id="5_exit"]
+
+[node name="JvariPassWardens" type="Node2D"]
+script = ExtResource("1_level")
+
+[node name="Player" parent="." instance=ExtResource("2_player") groups=["player"]]
+position = Vector2(360, 602)
+
+[node name="PlayerHealthHUD" type="CanvasLayer" parent="."]
+script = ExtResource("3_hud")
+
+[node name="SpawnFromWindcut" parent="." instance=ExtResource("4_spawn")]
+position = Vector2(360, 602)
+spawn_id = "from_windcut"
+
+[node name="SpawnFromZhinvali" parent="." instance=ExtResource("4_spawn")]
+position = Vector2(4240, 602)
+spawn_id = "from_zhinvali"
+
+[node name="ToWindcut" parent="." instance=ExtResource("5_exit")]
+position = Vector2(80, 570)
+target_scene = "res://scenes/levels/jvari/jvari_windcut_ravine.tscn"
+target_spawn_id = "from_next"
+
+[node name="ToZhinvali" parent="." instance=ExtResource("5_exit")]
+position = Vector2(4510, 570)
+require_interaction = true
+prompt_text = "E - Take the opened road to Zhinvali"
+target_scene = "res://scenes/levels/zhinvali/zhinvali_river_gate.tscn"
+target_spawn_id = "from_jvari"
