@@ -13,24 +13,20 @@ area_width = 4200.0
 area_name = "Dusheti - Lower Road"
 
 [node name="Player" parent="." instance=ExtResource("2_player") groups=["player"]]
-position = Vector2(240, 603)
+position = Vector2(240, 602)
 
 [node name="PlayerHealthHUD" type="CanvasLayer" parent="."]
 script = ExtResource("3_hud")
 
+[node name="SpawnFromMist" parent="." instance=ExtResource("4_spawn")]
+position = Vector2(240, 602)
+spawn_id = "from_mist"
+
 [node name="SpawnFromPrevious" parent="." instance=ExtResource("4_spawn")]
-position = Vector2(240, 603)
+position = Vector2(240, 602)
 spawn_id = "from_previous"
 
-[node name="SpawnFromNext" parent="." instance=ExtResource("4_spawn")]
-position = Vector2(3945, 665)
-spawn_id = "from_next"
-
-[node name="SpawnFromPreviousArea" parent="." instance=ExtResource("4_spawn")]
-position = Vector2(245, 603)
-spawn_id = "from_road"
-
-[node name="ToPrevious" parent="." instance=ExtResource("5_exit")]
+[node name="ToMistFord" parent="." instance=ExtResource("5_exit")]
 position = Vector2(85, 570)
 target_scene = "res://scenes/levels/zhinvali/zhinvali_mist_ford.tscn"
-target_spawn_id = "from_next"
+target_spawn_id = "from_dusheti"

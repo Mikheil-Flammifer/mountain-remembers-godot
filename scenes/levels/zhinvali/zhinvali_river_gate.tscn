@@ -1,41 +1,42 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene format=3 uid="uid://dwdd3kljfy208"]
 
-[ext_resource type="Script" path="res://scripts/levels/zhinvali/zhinvali_level.gd" id="1_level"]
+[ext_resource type="Script" uid="uid://dhhgyauejh2y2" path="res://scripts/levels/zhinvali/zhinvali_level.gd" id="1_level"]
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2_player"]
-[ext_resource type="Script" path="res://scripts/ui/player_health_hud.gd" id="3_hud"]
+[ext_resource type="Script" uid="uid://cj6qe537bn8wy" path="res://scripts/ui/player_health_hud.gd" id="3_hud"]
 [ext_resource type="PackedScene" path="res://scenes/levels/mtskheta/shared/spawn_point.tscn" id="4_spawn"]
 [ext_resource type="PackedScene" path="res://scenes/levels/mtskheta/shared/transition_zone.tscn" id="5_exit"]
 
-[node name="ZhinvaliRiverGate" type="Node2D"]
+[node name="ZhinvaliRiverGate" type="Node2D" unique_id=1462680326]
 script = ExtResource("1_level")
-area_index = 0
-area_width = 5400.0
-area_name = "Zhinvali - Aragvi River Gate"
 
-[node name="Player" parent="." instance=ExtResource("2_player") groups=["player"]]
+[node name="Player" parent="." unique_id=712456001 groups=["player"] instance=ExtResource("2_player")]
 position = Vector2(240, 602)
 
-[node name="PlayerHealthHUD" type="CanvasLayer" parent="."]
+[node name="PlayerHealthHUD" type="CanvasLayer" parent="." unique_id=995939]
 script = ExtResource("3_hud")
 
-[node name="SpawnFromPrevious" parent="." instance=ExtResource("4_spawn")]
-position = Vector2(240, 602)
-spawn_id = "from_previous"
-
-[node name="SpawnFromNext" parent="." instance=ExtResource("4_spawn")]
-position = Vector2(5145, 602)
-spawn_id = "from_next"
-
-[node name="SpawnFromJvari" parent="." instance=ExtResource("4_spawn")]
+[node name="SpawnFromJvari" parent="." unique_id=1830781396 instance=ExtResource("4_spawn")]
 position = Vector2(240, 602)
 spawn_id = "from_jvari"
 
-[node name="ToJvari" parent="." instance=ExtResource("5_exit")]
+[node name="SpawnFromPrevious" parent="." unique_id=452285704 instance=ExtResource("4_spawn")]
+position = Vector2(240, 602)
+spawn_id = "from_previous"
+
+[node name="SpawnFromB" parent="." unique_id=1463546390 instance=ExtResource("4_spawn")]
+position = Vector2(5145, 602)
+spawn_id = "from_b"
+
+[node name="SpawnFromNext" parent="." unique_id=825792042 instance=ExtResource("4_spawn")]
+position = Vector2(5145, 602)
+spawn_id = "from_next"
+
+[node name="ToJvari" parent="." unique_id=1253235239 instance=ExtResource("5_exit")]
 position = Vector2(85, 570)
 target_scene = "res://scenes/levels/jvari/jvari_windcut_ravine.tscn"
 target_spawn_id = "from_next"
 
-[node name="ToNext" parent="." instance=ExtResource("5_exit")]
-position = Vector2(5310, 571)
+[node name="ToLadderJunction" parent="." unique_id=1749756614 instance=ExtResource("5_exit")]
+position = Vector2(5310, 570)
 target_scene = "res://scenes/levels/zhinvali/zhinvali_three_road_fork.tscn"
-target_spawn_id = "from_previous"
+target_spawn_id = "from_a"

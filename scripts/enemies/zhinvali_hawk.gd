@@ -38,7 +38,8 @@ func _ready() -> void:
 	_home = global_position
 	_dive_target = _home
 	motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
-	collision_layer = 1
+	# zhinvali-hawk-nonphysical-v15: body collision on enemy bit 2.
+	collision_layer = 2
 	collision_mask = 0
 	add_to_group("zhinvali_enemy")
 

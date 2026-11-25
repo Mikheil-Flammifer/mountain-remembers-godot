@@ -55,17 +55,30 @@ func _physics_process(delta: float) -> void:
 
 func _draw() -> void:
 	if _state == "warning":
-		var pulse: float = 0.35 + 0.25 * sin(_timer * 15.0)
-		draw_rect(Rect2(-76.0, -7.0, 152.0, 6.0), Color("#d49a62", pulse))
-		draw_arc(Vector2(0.0, -50.0), 58.0, PI, TAU, 20, Color("#e9c08b", 0.6), 4.0)
-	elif _state == "falling":
-		var y: float = lerpf(-370.0, -25.0, _fall_progress * _fall_progress)
+		var pulse: float = 0.24 + 0.18 * sin(_timer * 13.0)
+		for i in range(5):
+			var px: float = -44.0 + float(i) * 22.0
+			var py: float = -116.0 + float(i % 2) * 12.0 + pulse * 18.0
+			draw_circle(Vector2(px, py), 4.0 + float(i % 2), Color("#9a927f", 0.65))
+			draw_line(Vector2(px, py + 5.0), Vector2(px - 4.0, py + 14.0), Color("#c7b491", 0.30), 1.0)
+		# Dust on the ground instead of an artificial trajectory guide.
 		draw_colored_polygon(PackedVector2Array([
-			Vector2(-48.0,y),Vector2(-26.0,y-24.0),Vector2(18.0,y-34.0),
-			Vector2(48.0,y-12.0),Vector2(39.0,y+26.0),Vector2(-30.0,y+26.0)
-		]),Color("#687068"))
-		draw_line(Vector2(-19.0,y-18.0),Vector2(13.0,y-27.0),Color("#b2b3a0"),3.0)
-	elif _state == "cooldown":
+			Vector2(-82.0, -1.0), Vector2(-48.0, -9.0), Vector2(-10.0, -6.0), Vector2(32.0, -11.0), Vector2(84.0, -2.0), Vector2(82.0, 3.0), Vector2(-82.0, 3.0)
+		]), Color("#ad9070", 0.26))
+	elif _state == "falling":
+		var y: float = lerpf(-370.0, -22.0, _fall_progress * _fall_progress)
+		draw_colored_polygon(PackedVector2Array([
+			Vector2(-54.0,y),Vector2(-30.0,y-28.0),Vector2(10.0,y-38.0),
+			Vector2(50.0,y-18.0),Vector2(44.0,y+20.0),Vector2(14.0,y+30.0),Vector2(-32.0,y+24.0)
+		]),Color("#696e67"))
+		draw_line(Vector2(-22.0,y-18.0),Vector2(8.0,y-29.0),Color("#b0ad98"),2.6)
 		for i in range(4):
-			var x: float = -37.0 + float(i) * 26.0
-			draw_line(Vector2(x,-4.0),Vector2(x+17.0,-3.0),Color("#a69d88",0.42),2.0)
+			var px: float = -28.0 + float(i) * 18.0
+			draw_circle(Vector2(px, y + 34.0 + float(i % 2) * 4.0), 3.0, Color("#8f8a79", 0.74))
+	elif _state == "cooldown":
+		for poly in [
+			PackedVector2Array([Vector2(-28.0,-2.0),Vector2(-18.0,-10.0),Vector2(-4.0,-4.0),Vector2(-10.0,2.0)]),
+			PackedVector2Array([Vector2(6.0,-4.0),Vector2(20.0,-12.0),Vector2(28.0,-2.0),Vector2(14.0,2.0)]),
+			PackedVector2Array([Vector2(32.0,-1.0),Vector2(42.0,-8.0),Vector2(52.0,-2.0),Vector2(42.0,3.0)])
+		]:
+			draw_colored_polygon(poly, Color("#8e8674", 0.46))

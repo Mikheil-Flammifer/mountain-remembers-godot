@@ -45,6 +45,8 @@ var _query_shape: RectangleShape2D
 
 
 func _ready() -> void:
+	# zhinvali-hawk-sword-mask-v15
+	enemy_collision_mask |= 2
 	hitbox.monitoring = false
 	hitbox.monitorable = false
 	collision.disabled = true

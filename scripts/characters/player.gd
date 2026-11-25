@@ -103,7 +103,7 @@ var _safe_sample_timer: float = 0.0
 func _ready() -> void:
 	add_to_group("player")
 	motion_mode = CharacterBody2D.MOTION_MODE_GROUNDED
-	floor_snap_length = 6.0
+	floor_snap_length = 14.0
 	poise = max_poise
 	_ensure_persistent_progress_loaded()
 	_load_session_inventory()
@@ -433,9 +433,13 @@ func receive_enemy_hit(
 			_perfect_guard_flash_timer = 0.22
 
 		var push_direction: float = 1.0 if global_position.x >= attacker_position.x else -1.0
-		velocity.x = push_direction * (shield_knockback * (0.55 if perfect_guard else 1.0))
-		velocity.y = minf(velocity.y, -28.0)
-
+		# Small grounded shield recoil, normal aerial recoil preserved.
+		if is_on_floor():
+			velocity.x = push_direction * minf((shield_knockback * (0.55 if perfect_guard else 1.0)), 42.0)
+			velocity.y = 0.0
+		else:
+			velocity.x = push_direction * (shield_knockback * (0.55 if perfect_guard else 1.0))
+			velocity.y = minf(velocity.y, -28.0)
 		if clean_block:
 			return
 
@@ -459,8 +463,13 @@ func receive_enemy_hit(
 			combat.call("cancel_attack")
 
 	var push_direction: float = 1.0 if global_position.x >= attacker_position.x else -1.0
-	velocity.x = push_direction * 290.0
-	velocity.y = -205.0
+	# zhinvali-ledge-hit-guard-v15: grounded hit keeps Xizane on ledges.
+	if is_on_floor():
+		velocity.x = push_direction * 42.0
+		velocity.y = 0.0
+	else:
+		velocity.x = push_direction * 290.0
+		velocity.y = -205.0
 	_flash_damage()
 
 

@@ -6,11 +6,11 @@
 [ext_resource type="PackedScene" path="res://scenes/levels/mtskheta/shared/spawn_point.tscn" id="4_spawn"]
 [ext_resource type="PackedScene" path="res://scenes/levels/mtskheta/shared/transition_zone.tscn" id="5_exit"]
 
-[node name="ZhinvaliThreeRoadFork" type="Node2D"]
+[node name="ZhinvaliLadderJunction" type="Node2D"]
 script = ExtResource("1_level")
 area_index = 1
 area_width = 5700.0
-area_name = "Zhinvali - Three-Road Fork"
+area_name = "Zhinvali - Ladder Junction"
 
 [node name="Player" parent="." instance=ExtResource("2_player") groups=["player"]]
 position = Vector2(240, 602)
@@ -18,52 +18,33 @@ position = Vector2(240, 602)
 [node name="PlayerHealthHUD" type="CanvasLayer" parent="."]
 script = ExtResource("3_hud")
 
+[node name="SpawnFromA" parent="." instance=ExtResource("4_spawn")]
+position = Vector2(240, 602)
+spawn_id = "from_a"
+
 [node name="SpawnFromPrevious" parent="." instance=ExtResource("4_spawn")]
 position = Vector2(240, 602)
 spawn_id = "from_previous"
 
-[node name="SpawnFromNext" parent="." instance=ExtResource("4_spawn")]
-position = Vector2(5445, 602)
-spawn_id = "from_next"
+[node name="SpawnFromC" parent="." instance=ExtResource("4_spawn")]
+position = Vector2(5400, 145)
+spawn_id = "from_c"
 
-[node name="SpawnFromPreviousArea" parent="." instance=ExtResource("4_spawn")]
-position = Vector2(245, 602)
-spawn_id = "from_road"
+[node name="SpawnFromD" parent="." instance=ExtResource("4_spawn")]
+position = Vector2(5000, 706)
+spawn_id = "from_d"
 
-[node name="SpawnFromUpper" parent="." instance=ExtResource("4_spawn")]
-position = Vector2(3860, 418)
-spawn_id = "from_upper"
-
-[node name="SpawnFromLower" parent="." instance=ExtResource("4_spawn")]
-position = Vector2(2140, 602)
-spawn_id = "from_lower"
-
-[node name="SpawnFromSecret" parent="." instance=ExtResource("4_spawn")]
-position = Vector2(5200, 602)
-spawn_id = "from_secret"
-
-[node name="ToPrevious" parent="." instance=ExtResource("5_exit")]
+[node name="ToRiverGate" parent="." instance=ExtResource("5_exit")]
 position = Vector2(85, 570)
 target_scene = "res://scenes/levels/zhinvali/zhinvali_river_gate.tscn"
-target_spawn_id = "from_next"
+target_spawn_id = "from_b"
 
-[node name="ToLowerRoad" parent="." instance=ExtResource("5_exit")]
-position = Vector2(2380, 570)
+[node name="ToLowerRoadD" parent="." instance=ExtResource("5_exit")]
+position = Vector2(5560, 722)
 target_scene = "res://scenes/levels/zhinvali/zhinvali_river_descent.tscn"
-target_spawn_id = "from_previous"
-require_interaction = true
-prompt_text = "E - Descend toward Dusheti"
+target_spawn_id = "from_b" 
 
-[node name="ToHighRoad" parent="." instance=ExtResource("5_exit")]
-position = Vector2(3950, 360)
+[node name="ToHighRoadC" parent="." instance=ExtResource("5_exit")]
+position = Vector2(5660, 108)
 target_scene = "res://scenes/levels/zhinvali/zhinvali_pine_switchbacks.tscn"
-target_spawn_id = "from_previous"
-require_interaction = true
-prompt_text = "E - Climb toward Ananuri"
-
-[node name="ToRuinedTower" parent="." instance=ExtResource("5_exit")]
-position = Vector2(5390, 570)
-target_scene = "res://scenes/levels/zhinvali/zhinvali_ruined_tower.tscn"
-target_spawn_id = "from_previous"
-require_interaction = true
-prompt_text = "E - Explore the old watchtower"
+target_spawn_id = "from_b"

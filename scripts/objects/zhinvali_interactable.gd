@@ -73,9 +73,22 @@ func _unhandled_input(event: InputEvent) -> void:
 func _draw() -> void:
 	match kind:
 		"spring":
-			draw_colored_polygon(PackedVector2Array([Vector2(-67,0),Vector2(-55,-45),Vector2(-9,-61),Vector2(39,-49),Vector2(62,-3),Vector2(69,0)]), Color("#68776e"))
-			draw_circle(Vector2(0,-17), 23.0, Color("#7da9a0"))
-			draw_line(Vector2(-12,-40),Vector2(0,-18),Color("#d0e4cd"),3.0)
+			# Rock cleft with a shallow basin and a narrow falling stream rather than a blue orb.
+			draw_colored_polygon(PackedVector2Array([
+				Vector2(-72,0), Vector2(-62,-38), Vector2(-34,-58), Vector2(-6,-48), Vector2(22,-61), Vector2(54,-43), Vector2(70,-5), Vector2(72,0)
+			]), Color("#6e7568"))
+			draw_colored_polygon(PackedVector2Array([
+				Vector2(-34,-4), Vector2(-24,-16), Vector2(-4,-20), Vector2(19,-17), Vector2(32,-7), Vector2(18,4), Vector2(-18,5)
+			]), Color("#88a39d", 0.95))
+			draw_colored_polygon(PackedVector2Array([
+				Vector2(-2,-56), Vector2(6,-56), Vector2(9,-10), Vector2(1,-8), Vector2(-4,-12)
+			]), Color("#a7c8c8", 0.92))
+			draw_line(Vector2(-2,-54), Vector2(2,-6), Color("#dff2ef", 0.75), 1.4)
+			for px in [-14.0, -2.0, 10.0, 22.0]:
+				draw_line(Vector2(px, -2.0), Vector2(px + 6.0, 1.0), Color("#dfeeed", 0.45), 1.0)
+			for pos in [Vector2(-42.0, -18.0), Vector2(41.0, -14.0)]:
+				draw_circle(pos, 7.0, Color("#7d7a6a", 0.92))
+				draw_circle(pos + Vector2(5.0, -3.0), 4.0, Color("#928772", 0.72))
 		"cache":
 			draw_rect(Rect2(-44,-46,88,46),Color("#5b4534"))
 			draw_rect(Rect2(-48,-56,96,14),Color("#8b6b4a"))

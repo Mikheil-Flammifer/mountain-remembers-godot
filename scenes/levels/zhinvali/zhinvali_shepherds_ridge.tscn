@@ -13,29 +13,36 @@ area_width = 5500.0
 area_name = "Zhinvali - Shepherds Ridge"
 
 [node name="Player" parent="." instance=ExtResource("2_player") groups=["player"]]
-position = Vector2(240, 600)
+position = Vector2(240, 517)
 
 [node name="PlayerHealthHUD" type="CanvasLayer" parent="."]
 script = ExtResource("3_hud")
 
+[node name="SpawnFromC" parent="." instance=ExtResource("4_spawn")]
+position = Vector2(240, 517)
+spawn_id = "from_c"
+
+[node name="SpawnFromAnanuri" parent="." instance=ExtResource("4_spawn")]
+position = Vector2(5240, 6)
+spawn_id = "from_ananuri"
+
 [node name="SpawnFromPrevious" parent="." instance=ExtResource("4_spawn")]
-position = Vector2(240, 600)
+position = Vector2(240, 517)
 spawn_id = "from_previous"
 
-[node name="SpawnFromNext" parent="." instance=ExtResource("4_spawn")]
-position = Vector2(5245, 289)
-spawn_id = "from_next"
-
-[node name="SpawnFromPreviousArea" parent="." instance=ExtResource("4_spawn")]
-position = Vector2(245, 600)
-spawn_id = "from_road"
-
-[node name="ToPrevious" parent="." instance=ExtResource("5_exit")]
-position = Vector2(85, 570)
+[node name="ToC" parent="." instance=ExtResource("5_exit")]
+position = Vector2(85, 500)
 target_scene = "res://scenes/levels/zhinvali/zhinvali_pine_switchbacks.tscn"
-target_spawn_id = "from_next"
+target_spawn_id = "from_e"
 
-[node name="ToNext" parent="." instance=ExtResource("5_exit")]
-position = Vector2(5410, 256)
+[node name="ToAnanuri" parent="." instance=ExtResource("5_exit")]
+position = Vector2(5410, -12)
 target_scene = "res://scenes/levels/zhinvali/ananuri_approach.tscn"
-target_spawn_id = "from_previous"
+target_spawn_id = "from_e"
+
+[node name="ToRiverDescentLowerRoad" parent="." instance=ExtResource("5_exit")]
+position = Vector2(5260, 400)
+target_scene = "res://scenes/levels/zhinvali/zhinvali_river_descent.tscn"
+target_spawn_id = "from_shepherds_ridge"
+require_interaction = true
+prompt_text = "E - Follow the lower road to River Descent"

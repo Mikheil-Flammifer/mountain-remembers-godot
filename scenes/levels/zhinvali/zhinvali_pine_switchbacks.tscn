@@ -13,29 +13,40 @@ area_width = 6200.0
 area_name = "Zhinvali - Pine Switchbacks"
 
 [node name="Player" parent="." instance=ExtResource("2_player") groups=["player"]]
-position = Vector2(240, 599)
+position = Vector2(240, 472)
 
 [node name="PlayerHealthHUD" type="CanvasLayer" parent="."]
 script = ExtResource("3_hud")
 
+[node name="SpawnFromB" parent="." instance=ExtResource("4_spawn")]
+position = Vector2(240, 472)
+spawn_id = "from_b"
+
 [node name="SpawnFromPrevious" parent="." instance=ExtResource("4_spawn")]
-position = Vector2(240, 599)
+position = Vector2(240, 472)
 spawn_id = "from_previous"
 
-[node name="SpawnFromNext" parent="." instance=ExtResource("4_spawn")]
-position = Vector2(5945, -135)
-spawn_id = "from_next"
+[node name="SpawnFromE" parent="." instance=ExtResource("4_spawn")]
+position = Vector2(5920, 72)
+spawn_id = "from_e"
 
-[node name="SpawnFromPreviousArea" parent="." instance=ExtResource("4_spawn")]
-position = Vector2(245, 599)
-spawn_id = "from_road"
+[node name="SpawnFromF" parent="." instance=ExtResource("4_spawn")]
+position = Vector2(5100, -82)
+spawn_id = "from_f"
 
-[node name="ToPrevious" parent="." instance=ExtResource("5_exit")]
-position = Vector2(85, 570)
+[node name="ToB" parent="." instance=ExtResource("5_exit")]
+position = Vector2(85, 455)
 target_scene = "res://scenes/levels/zhinvali/zhinvali_three_road_fork.tscn"
-target_spawn_id = "from_upper"
+target_spawn_id = "from_c"
 
-[node name="ToNext" parent="." instance=ExtResource("5_exit")]
-position = Vector2(6110, -169)
+[node name="ToE" parent="." instance=ExtResource("5_exit")]
+position = Vector2(6110, 56)
 target_scene = "res://scenes/levels/zhinvali/zhinvali_shepherds_ridge.tscn"
-target_spawn_id = "from_previous"
+target_spawn_id = "from_c"
+
+[node name="ToFWatchtower" parent="." instance=ExtResource("5_exit")]
+position = Vector2(5220, -94)
+target_scene = "res://scenes/levels/zhinvali/zhinvali_ruined_tower.tscn"
+target_spawn_id = "from_c"
+require_interaction = true
+prompt_text = "E - Enter the ruined watchtower trail"

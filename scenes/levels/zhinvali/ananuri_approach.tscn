@@ -1,36 +1,32 @@
-[gd_scene format=3 uid="uid://b4ngwry64uhpf"]
+[gd_scene load_steps=6 format=3]
 
-[ext_resource type="Script" uid="uid://dhhgyauejh2y2" path="res://scripts/levels/zhinvali/zhinvali_level.gd" id="1_level"]
+[ext_resource type="Script" path="res://scripts/levels/zhinvali/zhinvali_level.gd" id="1_level"]
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2_player"]
-[ext_resource type="Script" uid="uid://cj6qe537bn8wy" path="res://scripts/ui/player_health_hud.gd" id="3_hud"]
+[ext_resource type="Script" path="res://scripts/ui/player_health_hud.gd" id="3_hud"]
 [ext_resource type="PackedScene" path="res://scenes/levels/mtskheta/shared/spawn_point.tscn" id="4_spawn"]
 [ext_resource type="PackedScene" path="res://scenes/levels/mtskheta/shared/transition_zone.tscn" id="5_exit"]
 
-[node name="AnanuriApproach" type="Node2D" unique_id=1153028104]
+[node name="AnanuriApproach" type="Node2D"]
 script = ExtResource("1_level")
 area_index = 7
 area_width = 4300.0
 area_name = "Ananuri - Old Watch Road"
 
-[node name="Player" parent="." unique_id=1749297111 groups=["player"] instance=ExtResource("2_player")]
+[node name="Player" parent="." instance=ExtResource("2_player") groups=["player"]]
 position = Vector2(240, 602)
 
-[node name="PlayerHealthHUD" type="CanvasLayer" parent="." unique_id=719270938]
+[node name="PlayerHealthHUD" type="CanvasLayer" parent="."]
 script = ExtResource("3_hud")
 
-[node name="SpawnFromPrevious" parent="." unique_id=65497495 instance=ExtResource("4_spawn")]
+[node name="SpawnFromE" parent="." instance=ExtResource("4_spawn")]
+position = Vector2(240, 602)
+spawn_id = "from_e"
+
+[node name="SpawnFromPrevious" parent="." instance=ExtResource("4_spawn")]
 position = Vector2(240, 602)
 spawn_id = "from_previous"
 
-[node name="SpawnFromNext" parent="." unique_id=733135351 instance=ExtResource("4_spawn")]
-position = Vector2(4045, 548)
-spawn_id = "from_next"
-
-[node name="SpawnFromPreviousArea" parent="." unique_id=2115168497 instance=ExtResource("4_spawn")]
-position = Vector2(245, 601)
-spawn_id = "from_road"
-
-[node name="ToPrevious" parent="." unique_id=1230373548 instance=ExtResource("5_exit")]
+[node name="ToE" parent="." instance=ExtResource("5_exit")]
 position = Vector2(85, 570)
 target_scene = "res://scenes/levels/zhinvali/zhinvali_shepherds_ridge.tscn"
-target_spawn_id = "from_next"
+target_spawn_id = "from_ananuri"

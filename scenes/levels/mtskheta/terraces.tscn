@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="Script" path="res://scripts/levels/mtskheta/terraces_level.gd" id="1_area"]
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2_player"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" path="res://scenes/levels/mtskheta/shared/spawn_point.tscn" id="4_spawn"]
 [ext_resource type="PackedScene" path="res://scenes/levels/mtskheta/shared/transition_zone.tscn" id="5_exit"]
 [ext_resource type="PackedScene" path="res://scenes/traps/thorn_patch.tscn" id="6_thorns"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/mtskheta_combatant.tscn" id="mtskheta_enemy_v1"]
 
 [sub_resource type="RectangleShape2D" id="ground_shape"]
 size = Vector2(5100, 160)
@@ -338,6 +339,11 @@ position = Vector2(4640, 640)
 
 [node name="GateRunThorns2" parent="." instance=ExtResource("6_thorns")]
 position = Vector2(4735, 640)
+
+[node name="TerraceSwordsman" parent="." instance=ExtResource("mtskheta_enemy_v1")]
+position = Vector2(3720, 650)
+archetype = "swordsman"
+difficulty = 1
 
 [node name="LeftWorldWall" type="StaticBody2D" parent="."]
 position = Vector2(-16, 300)

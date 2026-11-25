@@ -13,29 +13,33 @@ area_width = 5800.0
 area_name = "Zhinvali - River Descent"
 
 [node name="Player" parent="." instance=ExtResource("2_player") groups=["player"]]
-position = Vector2(240, 603)
+position = Vector2(240, 602)
 
 [node name="PlayerHealthHUD" type="CanvasLayer" parent="."]
 script = ExtResource("3_hud")
 
+[node name="SpawnFromB" parent="." instance=ExtResource("4_spawn")]
+position = Vector2(240, 602)
+spawn_id = "from_b"
+
 [node name="SpawnFromPrevious" parent="." instance=ExtResource("4_spawn")]
-position = Vector2(240, 603)
+position = Vector2(240, 602)
 spawn_id = "from_previous"
 
-[node name="SpawnFromNext" parent="." instance=ExtResource("4_spawn")]
-position = Vector2(5545, 779)
-spawn_id = "from_next"
+[node name="SpawnFromMist" parent="." instance=ExtResource("4_spawn")]
+position = Vector2(5535, 755)
+spawn_id = "from_mist"
 
-[node name="SpawnFromPreviousArea" parent="." instance=ExtResource("4_spawn")]
-position = Vector2(245, 603)
-spawn_id = "from_road"
-
-[node name="ToPrevious" parent="." instance=ExtResource("5_exit")]
+[node name="ToB" parent="." instance=ExtResource("5_exit")]
 position = Vector2(85, 570)
 target_scene = "res://scenes/levels/zhinvali/zhinvali_three_road_fork.tscn"
-target_spawn_id = "from_lower"
+target_spawn_id = "from_d"
 
-[node name="ToNext" parent="." instance=ExtResource("5_exit")]
-position = Vector2(5710, 749)
+[node name="ToMistFord" parent="." instance=ExtResource("5_exit")]
+position = Vector2(5710, 744)
 target_scene = "res://scenes/levels/zhinvali/zhinvali_mist_ford.tscn"
-target_spawn_id = "from_previous"
+target_spawn_id = "from_d"
+
+[node name="SpawnFromShepherdsRidge" parent="." instance=ExtResource("4_spawn")]
+position = Vector2(1540, 628)
+spawn_id = "from_shepherds_ridge"

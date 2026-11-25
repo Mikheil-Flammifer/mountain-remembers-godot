@@ -13,29 +13,41 @@ area_width = 4900.0
 area_name = "Zhinvali - Mist Ford"
 
 [node name="Player" parent="." instance=ExtResource("2_player") groups=["player"]]
-position = Vector2(240, 603)
+position = Vector2(240, 657)
 
 [node name="PlayerHealthHUD" type="CanvasLayer" parent="."]
 script = ExtResource("3_hud")
 
+[node name="SpawnFromD" parent="." instance=ExtResource("4_spawn")]
+position = Vector2(240, 657)
+spawn_id = "from_d"
+
 [node name="SpawnFromPrevious" parent="." instance=ExtResource("4_spawn")]
-position = Vector2(240, 603)
+position = Vector2(240, 657)
 spawn_id = "from_previous"
 
-[node name="SpawnFromNext" parent="." instance=ExtResource("4_spawn")]
-position = Vector2(4645, 706)
-spawn_id = "from_next"
+[node name="SpawnFromDusheti" parent="." instance=ExtResource("4_spawn")]
+position = Vector2(4645, 705)
+spawn_id = "from_dusheti"
 
-[node name="SpawnFromPreviousArea" parent="." instance=ExtResource("4_spawn")]
-position = Vector2(245, 603)
-spawn_id = "from_road"
-
-[node name="ToPrevious" parent="." instance=ExtResource("5_exit")]
-position = Vector2(85, 570)
+[node name="ToD" parent="." instance=ExtResource("5_exit")]
+position = Vector2(85, 640)
 target_scene = "res://scenes/levels/zhinvali/zhinvali_river_descent.tscn"
-target_spawn_id = "from_next"
+target_spawn_id = "from_mist"
 
-[node name="ToNext" parent="." instance=ExtResource("5_exit")]
-position = Vector2(4810, 676)
+
+[node name="SpawnFromRuins" parent="." instance=ExtResource("4_spawn")]
+position = Vector2(2065, 620)
+spawn_id = "from_ruins"
+
+[node name="ToFordRuins" parent="." instance=ExtResource("5_exit")]
+position = Vector2(2420, 612)
+target_scene = "res://scenes/levels/zhinvali/zhinvali_ford_ruins_interior.tscn"
+target_spawn_id = "from_mist"
+require_interaction = true
+prompt_text = "E - Enter the ford ruins"
+
+[node name="ToDusheti" parent="." instance=ExtResource("5_exit")]
+position = Vector2(4810, 692)
 target_scene = "res://scenes/levels/zhinvali/dusheti_approach.tscn"
-target_spawn_id = "from_previous"
+target_spawn_id = "from_mist"

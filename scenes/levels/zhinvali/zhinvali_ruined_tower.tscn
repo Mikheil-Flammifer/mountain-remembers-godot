@@ -10,7 +10,7 @@
 script = ExtResource("1_level")
 area_index = 6
 area_width = 4600.0
-area_name = "Zhinvali - Ruined Tower"
+area_name = "Zhinvali - Ruined Watchtower"
 
 [node name="Player" parent="." instance=ExtResource("2_player") groups=["player"]]
 position = Vector2(240, 602)
@@ -18,26 +18,22 @@ position = Vector2(240, 602)
 [node name="PlayerHealthHUD" type="CanvasLayer" parent="."]
 script = ExtResource("3_hud")
 
+[node name="SpawnFromC" parent="." instance=ExtResource("4_spawn")]
+position = Vector2(240, 602)
+spawn_id = "from_c"
+
 [node name="SpawnFromPrevious" parent="." instance=ExtResource("4_spawn")]
 position = Vector2(240, 602)
 spawn_id = "from_previous"
 
-[node name="SpawnFromNext" parent="." instance=ExtResource("4_spawn")]
-position = Vector2(4345, 545)
-spawn_id = "from_next"
-
-[node name="SpawnFromPreviousArea" parent="." instance=ExtResource("4_spawn")]
-position = Vector2(245, 602)
-spawn_id = "from_road"
-
-[node name="ToPrevious" parent="." instance=ExtResource("5_exit")]
+[node name="ToCAtBase" parent="." instance=ExtResource("5_exit")]
 position = Vector2(85, 570)
-target_scene = "res://scenes/levels/zhinvali/zhinvali_three_road_fork.tscn"
-target_spawn_id = "from_secret"
+target_scene = "res://scenes/levels/zhinvali/zhinvali_pine_switchbacks.tscn"
+target_spawn_id = "from_f"
 
-[node name="ReturnToFork" parent="." instance=ExtResource("5_exit")]
-position = Vector2(4505, 512)
-target_scene = "res://scenes/levels/zhinvali/zhinvali_three_road_fork.tscn"
-target_spawn_id = "from_secret"
+[node name="ToCFromTowerCrown" parent="." instance=ExtResource("5_exit")]
+position = Vector2(3140, 42)
+target_scene = "res://scenes/levels/zhinvali/zhinvali_pine_switchbacks.tscn"
+target_spawn_id = "from_f"
 require_interaction = true
-prompt_text = "E - Return to the crossroads"
+prompt_text = "E - Return to the upper switchback"

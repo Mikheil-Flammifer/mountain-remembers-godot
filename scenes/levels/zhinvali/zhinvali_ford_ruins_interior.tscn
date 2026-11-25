@@ -1,0 +1,59 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://scripts/levels/zhinvali/zhinvali_ford_ruins_interior.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2_player"]
+[ext_resource type="Script" path="res://scripts/ui/player_health_hud.gd" id="3_hud"]
+[ext_resource type="PackedScene" path="res://scenes/levels/mtskheta/shared/spawn_point.tscn" id="4_spawn"]
+[ext_resource type="PackedScene" path="res://scenes/levels/mtskheta/shared/transition_zone.tscn" id="5_exit"]
+[ext_resource type="PackedScene" path="res://scenes/objects/stone_chest.tscn" id="6_chest"]
+
+[sub_resource type="RectangleShape2D" id="1_floor_shape"]
+size = Vector2(2280, 140)
+
+[sub_resource type="RectangleShape2D" id="2_wall_shape"]
+size = Vector2(70, 820)
+
+[node name="ZhinvaliFordRuinsInterior" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="Player" parent="." instance=ExtResource("2_player") groups=["player"]]
+position = Vector2(250, 565)
+
+[node name="PlayerHealthHUD" type="CanvasLayer" parent="."]
+script = ExtResource("3_hud")
+
+[node name="SpawnFromMist" parent="." instance=ExtResource("4_spawn")]
+position = Vector2(250, 565)
+spawn_id = "from_mist"
+
+[node name="SpawnFromPrevious" parent="." instance=ExtResource("4_spawn")]
+position = Vector2(250, 565)
+spawn_id = "from_previous"
+
+[node name="ToMistFord" parent="." instance=ExtResource("5_exit")]
+position = Vector2(104, 558)
+target_scene = "res://scenes/levels/zhinvali/zhinvali_mist_ford.tscn"
+target_spawn_id = "from_ruins"
+require_interaction = true
+prompt_text = "E - Leave the ford ruins"
+
+[node name="StoneChest" parent="." instance=ExtResource("6_chest")]
+position = Vector2(1505, 560)
+pickup_id = "zhinvali_ford_ruins_chest_01"
+prompt_text = "Q - Open the chest"
+description = "Inside the damp ruin, you find a second healing stone hidden in a cedar coffer."
+input_action = "heal"
+
+[node name="FloorBody" type="StaticBody2D" parent="."]
+
+[node name="FloorCollision" type="CollisionShape2D" parent="FloorBody"]
+position = Vector2(1100, 710)
+shape = SubResource("1_floor_shape")
+
+[node name="LeftWallCollision" type="CollisionShape2D" parent="FloorBody"]
+position = Vector2(-20, 300)
+shape = SubResource("2_wall_shape")
+
+[node name="RightWallCollision" type="CollisionShape2D" parent="FloorBody"]
+position = Vector2(2215, 300)
+shape = SubResource("2_wall_shape")
