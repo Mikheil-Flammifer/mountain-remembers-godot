@@ -1,0 +1,16 @@
+
+[gd_resource type="Resource" script_class="ActorVisualData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/visuals/actor_visual_data.gd" id="1_data"]
+[ext_resource type="PackedScene" path="res://scenes/visuals/actors/player/xizane/xizane_polygon_visual.tscn" id="2_visual"]
+
+[resource]
+script = ExtResource("1_data")
+appearance_id = &"xizane_default"
+display_name = "Xizane"
+description = "Default appearance of Xizane."
+visual_scene = ExtResource("2_visual")
+visual_offset = Vector2(0, 0)
+visual_scale = Vector2(1, 1)
+base_tint = Color(1, 1, 1, 1)
+default_facing = 1
