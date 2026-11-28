@@ -1,0 +1,92 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/visuals/actors/characters/berdia/berdia_visual.gd" id="1"]
+
+[node name="BerdiaVisual" type="Node2D"]
+script = ExtResource("1")
+
+[node name="BackLeg" type="Node2D" parent="."]
+position = Vector2(-7, -31)
+
+[node name="Trouser" type="Polygon2D" parent="BackLeg"]
+color = Color(0.2, 0.18, 0.16, 1)
+polygon = PackedVector2Array(-7,0, 6,0, 5,20, -6,20)
+
+[node name="Boot" type="Polygon2D" parent="BackLeg"]
+color = Color(0.1, 0.08, 0.07, 1)
+polygon = PackedVector2Array(-7,18, 6,18, 7,30, 13,31, 13,34, -8,34)
+
+[node name="FrontLeg" type="Node2D" parent="."]
+position = Vector2(7, -31)
+
+[node name="Trouser" type="Polygon2D" parent="FrontLeg"]
+color = Color(0.2, 0.18, 0.16, 1)
+polygon = PackedVector2Array(-7,0, 6,0, 5,20, -6,20)
+
+[node name="Boot" type="Polygon2D" parent="FrontLeg"]
+color = Color(0.1, 0.08, 0.07, 1)
+polygon = PackedVector2Array(-7,18, 6,18, 7,30, 13,31, 13,34, -8,34)
+
+[node name="Body" type="Node2D" parent="."]
+
+[node name="BackArm" type="Node2D" parent="Body"]
+position = Vector2(-14, -74)
+
+[node name="Sleeve" type="Polygon2D" parent="Body/BackArm"]
+color = Color(0.86, 0.84, 0.78, 1)
+polygon = PackedVector2Array(-6,0, 5,0, 8,32, -4,34)
+
+[node name="Hand" type="Polygon2D" parent="Body/BackArm"]
+color = Color(0.66, 0.5, 0.4, 1)
+polygon = PackedVector2Array(-3,32, 7,32, 7,39, -3,39)
+
+[node name="Robe" type="Polygon2D" parent="Body"]
+color = Color(0.86, 0.84, 0.78, 1)
+polygon = PackedVector2Array(-14,-88, 11,-88, 20,-72, 18,-48, 24,-6, -25,-6, -18,-48, -21,-72)
+
+[node name="Hem" type="Polygon2D" parent="Body"]
+color = Color(0.62, 0.14, 0.12, 1)
+polygon = PackedVector2Array(-25,-10, 24,-10, 24,-6, -25,-6)
+
+[node name="Cross" type="Polygon2D" parent="Body"]
+color = Color(0.62, 0.14, 0.12, 1)
+polygon = PackedVector2Array(-3,-84, 3,-84, 3,-76, 9,-76, 9,-70, 3,-70, 3,-56, -3,-56, -3,-70, -9,-70, -9,-76, -3,-76)
+
+[node name="Sash" type="Polygon2D" parent="Body"]
+color = Color(0.62, 0.14, 0.12, 1)
+polygon = PackedVector2Array(-18,-50, 18,-50, 18,-45, -18,-45)
+
+[node name="Head" type="Polygon2D" parent="Body"]
+color = Color(0.66, 0.5, 0.4, 1)
+polygon = PackedVector2Array(-10,-106, 8,-106, 12,-99, 9,-85, 2,-81, -9,-86, -13,-97)
+
+[node name="Beard" type="Polygon2D" parent="Body"]
+color = Color(0.62, 0.6, 0.58, 1)
+polygon = PackedVector2Array(-10,-95, -3,-91, 5,-92, 11,-96, 10,-82, 1,-62, -9,-80)
+
+[node name="Hat" type="Polygon2D" parent="Body"]
+color = Color(0.86, 0.84, 0.78, 1)
+polygon = PackedVector2Array(-14,-100, 13,-100, 10,-122, -11,-122)
+
+[node name="HatBand" type="Polygon2D" parent="Body"]
+color = Color(0.62, 0.14, 0.12, 1)
+polygon = PackedVector2Array(-14,-104, 13,-104, 13,-100, -14,-100)
+
+[node name="FrontArm" type="Node2D" parent="Body"]
+position = Vector2(14, -74)
+
+[node name="Sleeve" type="Polygon2D" parent="Body/FrontArm"]
+color = Color(0.86, 0.84, 0.78, 1)
+polygon = PackedVector2Array(-5,0, 7,0, 9,32, -3,33)
+
+[node name="Hand" type="Polygon2D" parent="Body/FrontArm"]
+color = Color(0.66, 0.5, 0.4, 1)
+polygon = PackedVector2Array(-2,30, 9,30, 9,38, -2,38)
+
+[node name="Staff" type="Polygon2D" parent="Body/FrontArm"]
+color = Color(0.4, 0.28, 0.16, 1)
+polygon = PackedVector2Array(2,-40, 5,-40, 6,70, 3,70)
+
+[node name="Banner" type="Polygon2D" parent="Body/FrontArm"]
+color = Color(0.62, 0.14, 0.12, 1)
+polygon = PackedVector2Array(5,-40, 22,-36, 5,-24)

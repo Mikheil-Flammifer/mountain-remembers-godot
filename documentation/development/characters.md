@@ -29,6 +29,8 @@ Shared motion (walk, attack, block, jump) is in `scripts/visuals/actors/characte
 | sanata | Sanata | Herb woman with basket. Act 1 river detour. |
 | mutsal_brother | Mutsal's Brother | Chechen raider, brown cherkeska, black papakha, rifle. Act 1 combat 1. |
 | murana | Murana | Dog. Four-legged rig: Body/FrontArm is the tail. Prologue. |
+| berdia | Berdia | Khevisberi (priest-elder): white robe with red cross and sash, tall white felt hat, grey beard, staff with red shrine banner. Act 3, Act 5. |
+| aiza | Aiza | Mutsal's sister, Chechen woman: dark dress, silver bib and belt, black mourning shawl. Act 4. |
 
 ## Adding a character
 
