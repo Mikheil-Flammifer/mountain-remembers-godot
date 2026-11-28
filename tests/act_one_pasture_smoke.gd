@@ -61,6 +61,7 @@ func _check() -> void:
 	scene._unhandled_input(talk)
 	assert(tracking.route_confirmed)
 	assert(tracking.approach_bonus_seconds() == 1.5)
+	scene._update_subarea()
 	scene._process(0.016)
 	assert(scene.current_subarea == 1)
 	assert(scene.trail_status.text.contains("PASTURE  3 / 3"))

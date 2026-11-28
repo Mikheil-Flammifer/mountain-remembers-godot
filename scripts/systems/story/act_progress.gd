@@ -8,7 +8,7 @@ const ACT_COUNT := 5
 const ACT_TITLES := ["Raid and duel", "Night camp and dream", "Return and council", "The arm", "The shrine feast"]
 ## Scenes that exist. Acts without a scene show as "not built yet".
 const ACT_SCENES := {
-	1: "res://scenes/levels/aluda/act_one/tracking.tscn",
+	1: "res://scenes/levels/aluda/prologue/shatili_castle_feast.tscn",
 	2: "res://scenes/levels/aluda/act_two/night_camp.tscn",
 }
 

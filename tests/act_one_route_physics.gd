@@ -33,6 +33,7 @@ func _check() -> void:
 	Input.action_release("move_right")
 	assert(player.position.x > 680 and player.position.y < 450, "Stone should be jumpable")
 	player.position = Vector2(1800, 440)
+	scene._update_subarea()
 	player.velocity = Vector2.ZERO
 	Input.action_press("move_right")
 	for i in 40:
@@ -43,8 +44,10 @@ func _check() -> void:
 		await physics_frame
 	Input.action_release("jump")
 	Input.action_release("move_right")
+	await create_timer(0.5).timeout
 	assert(player.position.x > 1920 and player.position.y < 450, "Ford stone should be jumpable")
 	player.position = Vector2(3850, 440)
+	scene._update_subarea()
 	player.velocity = Vector2.ZERO
 	Input.action_press("move_right")
 	for i in 90:

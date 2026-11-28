@@ -6,6 +6,7 @@ extends RefCounted
 const SHEEPFOLD_END: float = 650.0
 const PASTURE_END: float = 1240.0
 const FORD_END: float = 1920.0
+const CRAGS_END: float = 2860.0
 
 const REGIONS := [
 	{
@@ -38,6 +39,14 @@ const REGIONS := [
 		"subtitle": "Broken rock · Raiders ahead",
 		"short_name": "Arkhoti Crags",
 		"start": FORD_END,
+		"end": CRAGS_END
+	},
+	{
+		"id": &"mutsal_crags",
+		"title": "MUTSAL'S CRAGS",
+		"subtitle": "The raider waits beyond the rocks",
+		"short_name": "Mutsal's Crags",
+		"start": CRAGS_END,
 		"end": 4020.0
 	},
 ]
@@ -50,7 +59,9 @@ static func index_at(world_x: float) -> int:
 		return 1
 	if world_x < FORD_END:
 		return 2
-	return 3
+	if world_x < CRAGS_END:
+		return 3
+	return 4
 
 
 static func region(index: int) -> Dictionary:

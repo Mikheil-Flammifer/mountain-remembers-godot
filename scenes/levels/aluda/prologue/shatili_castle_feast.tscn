@@ -1,4 +1,6 @@
-[gd_scene load_steps=24 format=3]
+[gd_scene load_steps=25 format=3]
+
+[ext_resource type="Script" path="res://scripts/levels/aluda/act_one_feast.gd" id="opening"]
 
 [ext_resource type="PackedScene" path="res://scenes/visuals/environment/castle/stone_wall.tscn" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/visuals/environment/castle/stone_floor.tscn" id="2"]
@@ -25,6 +27,7 @@
 [ext_resource type="PackedScene" path="res://scenes/visuals/actors/characters/murana/murana_visual.tscn" id="23"]
 
 [node name="ShatiliCastleFeast" type="Node2D"]
+script = ExtResource("opening")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(640, 400)
@@ -92,11 +95,13 @@ visual_scale = Vector2(1.8, 1.8)
 default_facing = -1.0
 
 [node name="GuestTorgva" parent="." instance=ExtResource("15")]
+visible = false
 position = Vector2(850, 662)
 visual_scale = Vector2(1.8, 1.8)
 default_facing = -1.0
 
 [node name="GuestKhvtisia" parent="." instance=ExtResource("16")]
+visible = false
 position = Vector2(950, 662)
 visual_scale = Vector2(1.8, 1.8)
 default_facing = -1.0

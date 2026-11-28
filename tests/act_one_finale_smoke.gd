@@ -25,14 +25,14 @@ func _run() -> void:
 
 		# Walk directly over the old four area boundaries.
 		player.position = Vector2(750, 440)
-		act_one._process(0.3)
+		act_one._update_subarea()
 		assert(act_one.current_subarea == 1)
 		assert(is_equal_approx(act_one.checkpoint_position.x, 690.0))
 		player.position = Vector2(1450, 440)
-		act_one._process(0.3)
+		act_one._update_subarea()
 		assert(act_one.current_subarea == 2)
 		player.position = Vector2(2220, 440)
-		act_one._process(0.3)
+		act_one._update_subarea()
 		assert(act_one.current_subarea == 3)
 		assert(is_equal_approx(act_one.checkpoint_position.x, 1960.0))
 

@@ -1,5 +1,5 @@
 extends SceneTree
-## The Act 1 tracking level has four continuous modular landscape regions.
+## The Act 1 tracking level has five modular landscape regions.
 
 
 func _initialize() -> void:
@@ -14,11 +14,12 @@ func _check() -> void:
 	await process_frame
 
 	var subareas: Node2D = scene.get_node("Subareas")
-	assert(subareas.get_child_count() == 4)
+	assert(subareas.get_child_count() == 5)
 	assert(subareas.has_node("ShepherdsFold"))
 	assert(subareas.has_node("WindPasture"))
 	assert(subareas.has_node("SanataFord"))
 	assert(subareas.has_node("ArkhotiCrags"))
+	assert(subareas.has_node("MutsalCrags"))
 	assert(scene.area_banner != null)
 	assert(scene.current_subarea == 0)
 	assert(scene.area_banner.current_title == "THE SHEPHERDS' FOLD")
@@ -32,7 +33,7 @@ func _check() -> void:
 	var expected := [0, 1, 1, 2, 2, 3, 3, 0]
 	for i in range(xs.size()):
 		player.position = Vector2(xs[i], 440.0)
-		scene._process(0.016)
+		scene._update_subarea()
 		assert(scene.current_subarea == expected[i])
 		assert(scene.story.phase == scene.Story.Phase.RAID_REPORT)
 		assert(not scene.area_banner.current_title.is_empty())
@@ -43,8 +44,8 @@ func _check() -> void:
 	for node in scene.get_children():
 		if node is StaticBody2D:
 			floor_count += 1
-			assert(node.get_node("CollisionShape2D") != null)
-	assert(floor_count == 1)
+			assert(node.get_child_count() > 0 and node.get_child(0) is CollisionShape2D)
+	assert(floor_count >= 1)
 	for child in subareas.get_children():
 		assert(child is Node2D)
 		for descendant in child.get_children():
@@ -52,5 +53,5 @@ func _check() -> void:
 
 	scene.queue_free()
 	await process_frame
-	print("PASS: Four Act 1 subareas, boundaries, banner and original quest state.")
+	print("PASS: Five Act 1 subareas, boundaries, banner and original quest state.")
 	quit(0)

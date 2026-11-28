@@ -66,7 +66,7 @@ func start_act(act: int) -> bool:
 	if not Progress.is_unlocked(act) or not Progress.is_built(act):
 		return false
 	var tree := get_tree()
-	for key in ["aluda_act_one_hand_choice", "aluda_act_two_dream_choice", "aluda_act_two_complete"]:
+	for key in ["aluda_act_one_hand_choice", "aluda_act_two_dream_choice", "aluda_act_two_complete", "act_one_feast_report"]:
 		if tree.has_meta(key):
 			tree.remove_meta(key)
 	if act >= 2:

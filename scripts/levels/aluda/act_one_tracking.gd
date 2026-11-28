@@ -14,6 +14,7 @@ const FOLD_INVESTIGATION = preload("res://scripts/levels/aluda/shepherds_fold_in
 const WIND_TRACKING = preload("res://scripts/levels/aluda/wind_pasture_tracking.gd")
 const MUTSAL = preload("res://scenes/visuals/actors/characters/mutsal/mutsal_visual.tscn")
 const MUTSAL_DUEL = preload("res://scripts/levels/aluda/act_one_mutsal_duel.gd")
+const ROUTE_HAZARD = preload("res://scripts/levels/aluda/act_one_route_hazard.gd")
 const ACT_TWO_CAMP = preload("res://scenes/levels/aluda/act_two/night_camp.tscn")
 
 var story = Story.new()
@@ -39,6 +40,9 @@ var _target_zoom: Vector2 = Vector2(1.6, 1.6)
 var _target_tint: Color = Color.WHITE
 var _hand_hold: float = 0.0
 var _leaving_act_one: bool = false
+var _room_transitioning: bool = false
+var _transition_overlay: ColorRect
+var _hazard_cooldown: float = 0.0
 var _points := [
 	{"id": "report", "x": 160.0, "label": "Messenger", "text": "The shepherds were attacked. Raiders took horses, including yours. Follow their trail toward Arkhoti."},
 	{"id": "halter", "x": 295.0, "label": "Cut halter", "text": ""},
@@ -58,7 +62,12 @@ var _points := [
 
 func _ready() -> void:
 	_build_world()
+	if get_tree().has_meta("act_one_feast_report"):
+		get_tree().remove_meta("act_one_feast_report")
+		story.receive_raid_report()
+		get_node("Messenger").visible = false
 	_build_hud()
+	_build_transition_overlay()
 	_update_subarea()
 
 
@@ -77,6 +86,11 @@ func _build_world() -> void:
 	# Low stones create short, readable jumps between investigation areas.
 	_add_route_barrier(Vector2(635, 426), Vector2(38, 28), true)
 	_add_route_barrier(Vector2(1870, 423), Vector2(48, 34), true)
+	for x in [510.0, 990.0, 1610.0, 2180.0]:
+		var hazard = ROUTE_HAZARD.new()
+		hazard.position = Vector2(x, 440)
+		add_child(hazard)
+		hazard.touched.connect(_on_hazard_touched)
 	world_tint = CanvasModulate.new()
 	world_tint.name = "Atmosphere"
 	world_tint.color = Color.WHITE
@@ -93,6 +107,7 @@ func _build_world() -> void:
 	camera.limit_right = 4010
 	player.add_child(camera)
 	var messenger: Node2D = MESSENGER.instantiate()
+	messenger.name = "Messenger"
 	messenger.position = Vector2(160, 440)
 	add_child(messenger)
 	var sanata: Node2D = SANATA.instantiate()
@@ -133,6 +148,62 @@ func _add_route_barrier(center: Vector2, size: Vector2, visible_stone: bool) -> 
 		stone.color = Color("#717b6d")
 		body.add_child(stone)
 	add_child(body)
+
+
+func _build_transition_overlay() -> void:
+	var layer := CanvasLayer.new()
+	layer.layer = 50
+	add_child(layer)
+	_transition_overlay = ColorRect.new()
+	_transition_overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_transition_overlay.color = Color(0.03, 0.05, 0.06, 0.0)
+	_transition_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.add_child(_transition_overlay)
+
+
+func _detect_room_exit() -> void:
+	if _room_transitioning or player == null or current_subarea < 0:
+		return
+	var destination: int = SUBAREAS.index_at(player.position.x)
+	if destination == current_subarea:
+		return
+	# The brother guards the approach to Mutsal's separate room.
+	if destination == 4 and story.phase in [Story.Phase.RAID_REPORT, Story.Phase.TRACKING, Story.Phase.BROTHER_FIGHT]:
+		player.position.x = SUBAREAS.CRAGS_END - 18.0
+		player.velocity.x = 0.0
+		return
+	_start_room_transition(destination)
+
+
+func _start_room_transition(destination: int) -> void:
+	_room_transitioning = true
+	player.set_physics_process(false)
+	player.velocity = Vector2.ZERO
+	var transition := create_tween()
+	transition.tween_property(_transition_overlay, "color:a", 1.0, 0.18)
+	transition.tween_callback(func() -> void:
+		var room: Dictionary = SUBAREAS.region(destination)
+		var moving_right: bool = destination > current_subarea
+		player.position.x = float(room.start) + 35.0 if moving_right else float(room.end) - 35.0
+		player.position.y = 440.0
+		_update_subarea()
+		camera.reset_smoothing()
+	)
+	transition.tween_property(_transition_overlay, "color:a", 0.0, 0.22)
+	transition.tween_callback(func() -> void:
+		player.set_physics_process(true)
+		_room_transitioning = false
+	)
+
+
+func _on_hazard_touched(body: Node2D) -> void:
+	if body != player or _hazard_cooldown > 0.0 or _room_transitioning:
+		return
+	_hazard_cooldown = 1.0
+	var room: Dictionary = SUBAREAS.region(current_subarea)
+	player.position = Vector2(maxf(50.0, float(room.start) + 65.0), 440.0)
+	player.velocity = Vector2.ZERO
+	_show_dialogue("The trail", "Loose stones give way. Take the path again and jump over the unstable ground.")
 
 
 func _build_hud() -> void:
@@ -200,6 +271,7 @@ func _update_subarea() -> void:
 			1: checkpoint_position = Vector2(690, 440)
 			2: checkpoint_position = Vector2(1270, 440)
 			3: checkpoint_position = Vector2(1960, 440)
+			4: checkpoint_position = Vector2(2900, 440)
 	match current_subarea:
 		0:
 			_target_zoom = Vector2(1.6, 1.6)
@@ -210,7 +282,7 @@ func _update_subarea() -> void:
 		2:
 			_target_zoom = Vector2(1.56, 1.56)
 			_target_tint = Color("#e9f3f3")
-		3:
+		3, 4:
 			_target_zoom = Vector2(1.44, 1.44)
 			_target_tint = Color("#f4e8e3")
 	var details: Dictionary = SUBAREAS.region(current_subarea)
@@ -221,16 +293,21 @@ func _update_subarea() -> void:
 
 
 func _process(delta: float) -> void:
+	_hazard_cooldown = maxf(0.0, _hazard_cooldown - delta)
+	if _room_transitioning:
+		return
 	if player.position.y > 780.0:
 		player.position = checkpoint_position
 		player.velocity = Vector2.ZERO
-	_update_subarea()
-	# The camera and atmospheric tint blend across seamless area boundaries.
+	_detect_room_exit()
+	if _room_transitioning:
+		return
+	# The camera and atmospheric tint blend across area boundaries.
 	if camera != null:
 		camera.zoom = camera.zoom.lerp(_target_zoom, clampf(delta * 1.7, 0.0, 1.0))
 	if world_tint != null:
 		world_tint.color = world_tint.color.lerp(_target_tint, clampf(delta * 1.35, 0.0, 1.0))
-	if mutsal_duel != null:
+	if mutsal_duel != null and (current_subarea == 4 or story.phase == Story.Phase.MUTSAL_FINAL):
 		mutsal_duel.tick(delta, player.position.x >= 2870.0 and player.position.x <= 2990.0)
 	if story.phase == Story.Phase.HAND_DECISION:
 		if absf(player.position.x - 3260.0) < 82.0 and Input.is_key_pressed(KEY_H):
@@ -293,6 +370,8 @@ func _process(delta: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if _room_transitioning:
+		return
 	if event is InputEventKey and event.pressed and not event.echo:
 		# ENTER reads/finishes the dialogue; E remains the world-interact key.
 		var key: Key = event.physical_keycode if event.physical_keycode != 0 else event.keycode
