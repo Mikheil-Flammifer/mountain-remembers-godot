@@ -1,0 +1,68 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/actors/player/aluda.tscn" id="1"]
+
+[sub_resource type="RectangleShape2D" id="floor"]
+size = Vector2(2400, 100)
+
+[node name="AludaCharacterPreview" type="Node2D"]
+
+[node name="Sky" type="Polygon2D" parent="."]
+color = Color(0.76, 0.73, 0.63, 1)
+polygon = PackedVector2Array(-1000,-500, 1600,-500, 1600,600, -1000,600)
+
+[node name="FarMountains" type="Polygon2D" parent="."]
+color = Color(0.48, 0.54, 0.51, 1)
+polygon = PackedVector2Array(-1000,360, -730,80, -560,230, -310,-90, -90,180, 120,-30, 350,210, 620,-120, 920,190, 1200,-40, 1600,270, 1600,600, -1000,600)
+
+[node name="NearMountains" type="Polygon2D" parent="."]
+color = Color(0.3, 0.37, 0.34, 1)
+polygon = PackedVector2Array(-1000,430, -750,270, -530,360, -250,180, -20,350, 250,210, 530,340, 790,190, 1100,370, 1400,190, 1600,340, 1600,600, -1000,600)
+
+[node name="GroundArt" type="Polygon2D" parent="."]
+color = Color(0.26, 0.27, 0.23, 1)
+polygon = PackedVector2Array(-1200,440, 1200,440, 1200,600, -1200,600)
+
+[node name="GroundLine" type="Line2D" parent="."]
+points = PackedVector2Array(-1200,440, 1200,440)
+width = 5.0
+default_color = Color(0.58, 0.57, 0.45, 1)
+
+[node name="Ground" type="StaticBody2D" parent="."]
+position = Vector2(0, 490)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground"]
+shape = SubResource("floor")
+
+[node name="Aluda" parent="." instance=ExtResource("1")]
+position = Vector2(0, 440)
+
+[node name="Camera2D" type="Camera2D" parent="Aluda"]
+position = Vector2(0, -85)
+zoom = Vector2(2.2, 2.2)
+position_smoothing_enabled = true
+position_smoothing_speed = 6.0
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="Title" type="Label" parent="HUD"]
+offset_left = 30.0
+offset_top = 22.0
+offset_right = 600.0
+offset_bottom = 60.0
+theme_override_font_sizes/font_size = 25
+theme_override_colors/font_color = Color(0.96, 0.9, 0.76, 1)
+theme_override_colors/font_outline_color = Color(0.13, 0.17, 0.15, 1)
+theme_override_constants/outline_size = 5
+text = "ALUDA KETELAURI"
+
+[node name="Controls" type="Label" parent="HUD"]
+offset_left = 30.0
+offset_top = 62.0
+offset_right = 900.0
+offset_bottom = 94.0
+theme_override_font_sizes/font_size = 15
+theme_override_colors/font_color = Color(0.92, 0.88, 0.77, 1)
+theme_override_colors/font_outline_color = Color(0.13, 0.17, 0.15, 1)
+theme_override_constants/outline_size = 4
+text = "A / D  Move     SPACE  Jump     H  Sword     G  Shield"
