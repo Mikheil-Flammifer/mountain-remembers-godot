@@ -30,3 +30,7 @@ The shrine asks for current upgrade values through XizanePlayer. The shared rule
 ## Scene and resource changes
 
 Preserve stable scene paths, UIDs and node names used by other scenes. Check autoloads, inherited scenes, exported NodePaths, string-based references and save data before moving a resource. Keep district collision, spawns and routes independent of scenery. Use Godot's semicolon comment syntax in text scenes.
+
+## Xizane visual lab
+
+Open `scenes/debug/actor_visual_lab.tscn` in Godot and run the current scene (F6). Choose a pose, facing and preview speed, or trigger a damage flash. This scene instantiates the normal appearance resource and does not load a story level. Run `tests/actor_visual_lab_smoke.gd` headlessly to verify the available modes.
