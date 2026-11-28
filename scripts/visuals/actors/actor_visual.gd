@@ -27,10 +27,10 @@ func _ready() -> void:
 # State interface
 
 func update_visual(
-	_state: ActorVisualState,
+	state: ActorVisualState,
 	_delta: float
 ) -> void:
-	pass
+	set_facing(state.facing_direction)
 
 
 # Facing

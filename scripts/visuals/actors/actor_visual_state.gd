@@ -14,6 +14,7 @@ var run_speed: float = 1.0
 var is_grounded: bool = false
 var is_dashing: bool = false
 var is_climbing: bool = false
+var climb_phase: float = 0.0
 var is_crouching: bool = false
 
 

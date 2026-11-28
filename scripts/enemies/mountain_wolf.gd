@@ -110,12 +110,18 @@ enum State {
 # Scene references
 # -------------------------------------------------------------------
 
-@onready var visual: Node2D = $Visual
-@onready var head: Node2D = $Visual/Head
-@onready var lower_jaw: Node2D = $Visual/Head/LowerJaw
-@onready var front_leg: Node2D = $Visual/FrontLeg
-@onready var back_leg: Node2D = $Visual/BackLeg
-@onready var tail: Node2D = $Visual/Tail
+@onready var _visual: MountainWolfVisual = $WolfVisual
+
+const VISUAL_POSES := {
+	State.PATROL: &"patrol",
+	State.CHASE: &"chase",
+	State.WINDUP: &"windup",
+	State.BITE: &"bite",
+	State.RECOVERY: &"recovery",
+	State.HURT: &"hurt",
+	State.DEAD: &"dead",
+}
+const DEATH_DESPAWN_DELAY: float = 0.45
 
 # Terrain probes are constructed here, just like in the working wild boar.
 # We deliberately DO NOT depend on the old FloorAhead / WallAhead nodes;
@@ -133,7 +139,6 @@ var state: State = State.PATROL
 var health: int = 0
 
 var facing: int = -1
-var _visual_facing: int = -1
 
 var player: Node2D
 
@@ -146,7 +151,6 @@ var _poise_delay: float = 0.0
 
 var _state_timer: float = 0.0
 var _attack_timer: float = 0.0
-var _animation_time: float = 0.0
 var _spawn_settle_timer: float = 0.18
 var _turn_cooldown: float = 0.0
 const TURN_LOCK_TIME: float = 0.28
@@ -166,8 +170,6 @@ func _ready() -> void:
 	poise = max_poise
 
 	_home_position = global_position
-	_visual_facing = facing
-	_apply_visual_facing()
 
 	# The working WildBoar uses layer/mask 1 for the ground.
 	# Match those physics settings for the wolf in the same level.
@@ -192,7 +194,6 @@ func _physics_process(delta: float) -> void:
 	if dead:
 		return
 
-	_animation_time += delta
 	_spawn_settle_timer = maxf(_spawn_settle_timer - delta, 0.0)
 	_turn_cooldown = maxf(_turn_cooldown - delta, 0.0)
 
@@ -246,7 +247,7 @@ func _physics_process(delta: float) -> void:
 
 	move_and_slide()
 
-	_update_visual()
+	_update_visual(delta)
 
 
 # -------------------------------------------------------------------
@@ -545,25 +546,6 @@ func _set_facing(
 		return
 
 	facing = next_facing
-	_visual_facing = next_facing
-	_apply_visual_facing()
-
-
-
-func _apply_visual_facing() -> void:
-	if visual == null:
-		return
-	# Set basis directly, avoiding Godot's negative-scale decomposition.
-	# Keep the scene's intended Visual offset (0, -4).
-	visual.transform = Transform2D(
-		Vector2(float(_visual_facing), 0.0),
-		Vector2(0.0, 1.0),
-		Vector2(0.0, -4.0)
-	)
-
-
-
-
 # -------------------------------------------------------------------
 # State helper
 # -------------------------------------------------------------------
@@ -576,7 +558,6 @@ func _enter_state(
 
 	_state_timer = duration
 
-	queue_redraw()
 
 
 func _brake(delta: float) -> void:
@@ -591,134 +572,12 @@ func _brake(delta: float) -> void:
 # Visual state
 # -------------------------------------------------------------------
 
-func _update_visual() -> void:
-	if visual == null:
-		return
-
-	# Do not write a negative Node2D scale here. In Godot, negative X
-	# scale can decompose into a 180-degree rotation plus negative Y scale.
-	# Mirroring is applied once, only on an actual facing change.
-
+func _update_visual(delta: float = 0.0) -> void:
 	var movement_amount: float = 0.0
-
 	if _spawn_settle_timer <= 0.0:
-		movement_amount = clampf(
-			absf(velocity.x) / maxf(chase_speed, 1.0),
-			0.0,
-			1.0
-		)
+		movement_amount = clampf(absf(velocity.x) / maxf(chase_speed, 1.0), 0.0, 1.0)
+	_visual.update_pose(VISUAL_POSES[state], facing, movement_amount, float(health) / maxf(max_health, 1.0), delta)
 
-	var run_cycle: float = sin(_animation_time * 10.0)
-
-	# Neutral local pose.
-	head.position = Vector2(31.0, -31.0)
-	head.rotation = 0.0
-
-	lower_jaw.rotation = 0.0
-	front_leg.rotation = 0.0
-	back_leg.rotation = 0.0
-	tail.rotation = -0.10
-
-	match state:
-		State.PATROL:
-			if movement_amount > 0.08:
-				front_leg.rotation = run_cycle * 0.16 * movement_amount
-				back_leg.rotation = -run_cycle * 0.16 * movement_amount
-				tail.rotation = -0.10 + sin(_animation_time * 2.5) * 0.05 * movement_amount
-
-		State.CHASE:
-			if movement_amount > 0.08:
-				front_leg.rotation = run_cycle * 0.38 * movement_amount
-				back_leg.rotation = -run_cycle * 0.38 * movement_amount
-			head.rotation = -0.05
-			tail.rotation = 0.10
-
-		State.WINDUP:
-			# Small crouch: no giant swing.
-			head.position = Vector2(29.0, -26.0)
-			head.rotation = 0.08
-			front_leg.rotation = 0.16
-			back_leg.rotation = -0.14
-			tail.rotation = 0.18
-
-		State.BITE:
-			# Visible bite comes from head + jaw, not a fake weapon line.
-			head.position = Vector2(43.0, -28.0)
-			head.rotation = -0.08
-			lower_jaw.rotation = 0.36
-			front_leg.rotation = -0.22
-			back_leg.rotation = 0.20
-			tail.rotation = 0.20
-
-		State.RECOVERY:
-			head.position = Vector2(35.0, -29.0)
-			head.rotation = 0.05
-
-		State.HURT:
-			head.position = Vector2(26.0, -33.0)
-			head.rotation = -0.12
-			tail.rotation = -0.25
-
-		_:
-			pass
-
-	match state:
-		State.WINDUP:
-			visual.modulate = Color(1.06, 0.97, 0.88)
-
-		State.HURT:
-			visual.modulate = Color(1.0, 0.45, 0.42)
-
-		_:
-			visual.modulate = Color.WHITE
-
-
-# -------------------------------------------------------------------
-# Warning / bite effects
-# -------------------------------------------------------------------
-
-func _draw() -> void:
-	if state == State.WINDUP:
-		var warning := Color(
-			0.96,
-			0.56,
-			0.29,
-			0.72
-		)
-
-		# Small ground warning only.
-		draw_arc(
-			Vector2(
-				42.0 * float(facing),
-				18.0
-			),
-			28.0,
-			0.0,
-			TAU,
-			24,
-			warning,
-			2.5
-		)
-
-
-	# Same compact in-world health bar style as the other enemies.
-	# It appears only after the wolf has taken damage.
-	if health < max_health and not dead:
-		var ratio: float = clampf(
-			float(health) / float(max_health),
-			0.0,
-			1.0
-		)
-
-		draw_rect(
-			Rect2(-30.0, -95.0, 60.0, 5.0),
-			Color("#292e2a")
-		)
-
-		draw_rect(
-			Rect2(-30.0, -95.0, 60.0 * ratio, 5.0),
-			Color("#bc7655")
-		)
 
 # -------------------------------------------------------------------
 # Damage
@@ -736,7 +595,6 @@ func take_hit(
 		health - amount,
 		0
 	)
-	queue_redraw()
 
 	if health <= 0:
 		_die()
@@ -806,15 +664,7 @@ func _die() -> void:
 			true
 		)
 
-	var tween: Tween = create_tween()
-
-	tween.tween_property(
-		visual,
-		"modulate:a",
-		0.0,
-		0.45
-	)
-
-	tween.tween_callback(
-		queue_free
-	)
+	_visual.fade_out(DEATH_DESPAWN_DELAY)
+	var despawn := create_tween()
+	despawn.tween_interval(DEATH_DESPAWN_DELAY)
+	despawn.tween_callback(queue_free)

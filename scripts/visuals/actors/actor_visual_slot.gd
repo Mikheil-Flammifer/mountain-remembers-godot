@@ -2,8 +2,6 @@
 class_name ActorVisualSlot
 extends Node2D
 ## Manages the active visual representation of an actor.
-## Gameplay communicates with this slot instead of individual
-## sprites, polygons, bones or animation nodes.
 
 
 signal visual_changed(visual: ActorVisual)
@@ -11,27 +9,55 @@ signal visual_changed(visual: ActorVisual)
 
 @export_group("Visual Configuration")
 
+@export var initial_appearance: ActorVisualData
 @export var initial_visual_scene: PackedScene
 
 
 var _active_visual: ActorVisual
+var _current_appearance: ActorVisualData
 
 
 func _ready() -> void:
-	# Support visual scenes placed directly in the editor.
 	for child in get_children():
 		if child is ActorVisual:
 			_active_visual = child as ActorVisual
 			break
 
-	# Otherwise instantiate the configured visual scene.
+	if initial_appearance != null:
+		if set_appearance(initial_appearance):
+			return
+
 	if not has_visual() and initial_visual_scene != null:
 		set_visual_scene(initial_visual_scene)
 
 
-# Visual management
+# Appearance management
 
-func set_visual_scene(scene: PackedScene) -> bool:
+func set_appearance(appearance: ActorVisualData) -> bool:
+	if appearance == null:
+		push_warning("ActorVisualSlot: Appearance is null.")
+		return false
+
+	if not appearance.is_valid():
+		push_error("ActorVisualSlot: Invalid appearance.")
+		return false
+
+	return set_visual_scene(
+		appearance.visual_scene,
+		appearance
+	)
+
+
+func get_current_appearance() -> ActorVisualData:
+	return _current_appearance
+
+
+# Visual scene management
+
+func set_visual_scene(
+	scene: PackedScene,
+	appearance: ActorVisualData = null
+) -> bool:
 	if scene == null:
 		push_warning("ActorVisualSlot: Visual scene is null.")
 		return false
@@ -48,11 +74,19 @@ func set_visual_scene(scene: PackedScene) -> bool:
 
 	var new_visual := instance as ActorVisual
 
-	# Preserve the existing visual if validation fails.
-	# Remove it only after validating the replacement.
+	if appearance != null:
+		new_visual.position = appearance.visual_offset
+		new_visual.visual_scale = appearance.visual_scale
+		new_visual.base_tint = appearance.base_tint
+		new_visual.default_facing = float(
+			appearance.default_facing
+		)
+
 	clear_visual()
 
+	_current_appearance = appearance
 	_active_visual = new_visual
+
 	add_child(_active_visual)
 
 	visual_changed.emit(_active_visual)
@@ -61,11 +95,14 @@ func set_visual_scene(scene: PackedScene) -> bool:
 
 
 func clear_visual() -> void:
+	_current_appearance = null
+
 	if not has_visual():
 		_active_visual = null
 		return
 
 	var previous_visual: ActorVisual = _active_visual
+
 	_active_visual = null
 
 	remove_child(previous_visual)
@@ -101,10 +138,8 @@ func update_visual(
 # Animation controls
 
 func play_animation(animation_name: StringName) -> void:
-	if not has_visual():
-		return
-
-	_active_visual.play_animation(animation_name)
+	if has_visual():
+		_active_visual.play_animation(animation_name)
 
 
 func get_current_animation() -> StringName:
@@ -115,10 +150,8 @@ func get_current_animation() -> StringName:
 
 
 func set_facing(direction: float) -> void:
-	if not has_visual():
-		return
-
-	_active_visual.set_facing(direction)
+	if has_visual():
+		_active_visual.set_facing(direction)
 
 
 # Visual effects

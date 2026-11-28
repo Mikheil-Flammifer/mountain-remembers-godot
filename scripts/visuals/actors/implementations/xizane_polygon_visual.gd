@@ -59,6 +59,11 @@ func update_visual(
 	if state == null:
 		return
 
+	if state.is_climbing:
+		_update_climb_pose(state.climb_phase)
+		play_animation(&"climb")
+		return
+
 	var grounded: bool = state.is_grounded
 	var dashing: bool = state.is_dashing
 	var attacking: bool = state.is_attacking
@@ -246,6 +251,15 @@ func update_visual(
 	)
 
 	_update_visual_effects(state, smoothing)
+
+
+func _update_climb_pose(phase: float) -> void:
+	var swing := sin(phase) * 0.34
+	front_leg.rotation = 0.26 + swing
+	back_leg.rotation = 0.26 - swing
+	front_arm.rotation = -0.70 - swing
+	back_arm.rotation = -0.70 + swing
+	torso.rotation = 0.0
 
 
 # Facing and squash/stretch

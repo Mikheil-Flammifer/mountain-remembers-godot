@@ -1,0 +1,238 @@
+[gd_scene format=3 uid="uid://tvbu2d8rxf2w"]
+
+[ext_resource type="Script" path="res://scripts/visuals/actors/implementations/xizane_polygon_visual.gd" id="1_visual"]
+
+[node name="XizanePolygonVisual" type="Node2D" unique_id=2127668049]
+script = ExtResource("1_visual")
+
+[node name="BackLeg" type="Node2D" parent="." unique_id=1938415776]
+position = Vector2(-7, 14)
+
+[node name="Trouser" type="Polygon2D" parent="BackLeg" unique_id=985309293]
+color = Color(0.09, 0.1, 0.14, 1)
+polygon = PackedVector2Array(-6, 0, 5, 0, 6, 30, -5, 31)
+
+[node name="LegWrap" type="Polygon2D" parent="BackLeg" unique_id=466727824]
+color = Color(0.35, 0.31, 0.24, 1)
+polygon = PackedVector2Array(-6, 18, 5, 18, 5, 24, -6, 24)
+
+[node name="Boot" type="Polygon2D" parent="BackLeg" unique_id=1557034334]
+color = Color(0.08, 0.07, 0.07, 1)
+polygon = PackedVector2Array(-6, 28, 7, 28, 8, 36, -9, 36)
+
+[node name="BackArm" type="Node2D" parent="." unique_id=695316153]
+position = Vector2(-13, -11)
+
+[node name="Sleeve" type="Polygon2D" parent="BackArm" unique_id=261245890]
+color = Color(0.14, 0.15, 0.18, 1)
+polygon = PackedVector2Array(-5, 0, 5, 0, 7, 24, -5, 27)
+
+[node name="Bracer" type="Polygon2D" parent="BackArm" unique_id=8760466]
+color = Color(0.3, 0.31, 0.34, 1)
+polygon = PackedVector2Array(-5, 14, 6, 14, 7, 22, -4, 22)
+
+[node name="Hand" type="Polygon2D" parent="BackArm" unique_id=1502539773]
+color = Color(0.55, 0.42, 0.3, 1)
+polygon = PackedVector2Array(-4, 24, 6, 23, 6, 30, -4, 30)
+
+[node name="FrontLeg" type="Node2D" parent="." unique_id=2092252838]
+position = Vector2(7, 14)
+
+[node name="Trouser" type="Polygon2D" parent="FrontLeg" unique_id=1921794410]
+color = Color(0.11, 0.12, 0.16, 1)
+polygon = PackedVector2Array(-5, 0, 6, 0, 6, 31, -5, 32)
+
+[node name="LegWrap" type="Polygon2D" parent="FrontLeg" unique_id=1624940686]
+color = Color(0.4, 0.35, 0.27, 1)
+polygon = PackedVector2Array(-5, 18, 6, 18, 6, 25, -5, 25)
+
+[node name="Boot" type="Polygon2D" parent="FrontLeg" unique_id=1723027107]
+color = Color(0.08, 0.07, 0.07, 1)
+polygon = PackedVector2Array(-5, 29, 8, 29, 10, 37, -8, 37)
+
+[node name="TorsoRig" type="Node2D" parent="." unique_id=549005142]
+position = Vector2(0, -7)
+
+[node name="ShieldRig" type="Node2D" parent="TorsoRig" unique_id=402485724]
+position = Vector2(-14, 0)
+rotation = -0.22
+
+[node name="Shield" type="Polygon2D" parent="TorsoRig/ShieldRig" unique_id=1531900010]
+color = Color(0.17, 0.13, 0.1, 1)
+polygon = PackedVector2Array(0, -14, 9, -11, 14, 0, 11, 9, 0, 14, -11, 9, -14, 0, -9, -11)
+
+[node name="ShieldRim" type="Polygon2D" parent="TorsoRig/ShieldRig" unique_id=230566993]
+color = Color(0.34, 0.25, 0.16, 1)
+polygon = PackedVector2Array(0, -11, 7, -9, 11, 0, 9, 7, 0, 11, -9, 7, -11, 0, -7, -9)
+
+[node name="ShieldBoss" type="Polygon2D" parent="TorsoRig/ShieldRig" unique_id=643745433]
+color = Color(0.49, 0.42, 0.3, 1)
+polygon = PackedVector2Array(0, -4, 4, 0, 0, 4, -4, 0)
+
+[node name="Coat" type="Polygon2D" parent="TorsoRig" unique_id=321591797]
+color = Color(0.24, 0.25, 0.29, 1)
+polygon = PackedVector2Array(-13, -20, 13, -20, 17, 0, 18, 15, 16, 25, 6, 31, 2, 16, -2, 16, -6, 31, -16, 25, -18, 15, -17, 0)
+
+[node name="MailTexture1" type="Polygon2D" parent="TorsoRig" unique_id=1066572668]
+color = Color(0.34, 0.36, 0.39, 0.55)
+polygon = PackedVector2Array(-12, -17, 12, -17, 14, -5, -14, -5)
+
+[node name="MailTexture2" type="Polygon2D" parent="TorsoRig" unique_id=272981680]
+color = Color(0.3, 0.32, 0.35, 0.45)
+polygon = PackedVector2Array(-13, -2, 13, -2, 15, 8, -15, 8)
+
+[node name="MailTexture3" type="Polygon2D" parent="TorsoRig" unique_id=1102256635]
+color = Color(0.3, 0.32, 0.35, 0.45)
+polygon = PackedVector2Array(-14, 10, 14, 10, 15, 19, -15, 19)
+
+[node name="ChestStrapA" type="Polygon2D" parent="TorsoRig" unique_id=1259989456]
+color = Color(0.38, 0.26, 0.16, 1)
+polygon = PackedVector2Array(-12, -19, -8, -20, 10, 7, 6, 8)
+
+[node name="ChestStrapB" type="Polygon2D" parent="TorsoRig" unique_id=113969486]
+color = Color(0.38, 0.26, 0.16, 1)
+polygon = PackedVector2Array(8, -19, 12, -18, -2, 8, -6, 7)
+
+[node name="Belt" type="Polygon2D" parent="TorsoRig" unique_id=1554358748]
+color = Color(0.33, 0.21, 0.12, 1)
+polygon = PackedVector2Array(-16, 4, 16, 4, 16, 10, -16, 10)
+
+[node name="Buckle" type="Polygon2D" parent="TorsoRig" unique_id=1723349271]
+color = Color(0.71, 0.64, 0.45, 1)
+polygon = PackedVector2Array(-3, 3, 4, 3, 4, 11, -3, 11)
+
+[node name="SkirtSplit" type="Polygon2D" parent="TorsoRig" unique_id=2082238129]
+color = Color(0.16, 0.17, 0.2, 1)
+polygon = PackedVector2Array(-2, 14, 2, 14, 3, 30, -1, 30)
+
+[node name="HeadRig" type="Node2D" parent="TorsoRig" unique_id=712442748]
+position = Vector2(0, -28)
+
+[node name="Neck" type="Polygon2D" parent="TorsoRig/HeadRig" unique_id=1936764661]
+color = Color(0.54, 0.41, 0.3, 1)
+polygon = PackedVector2Array(-4, 5, 4, 5, 4, 12, -4, 12)
+
+[node name="Face" type="Polygon2D" parent="TorsoRig/HeadRig" unique_id=1489278307]
+color = Color(0.69, 0.55, 0.4, 1)
+polygon = PackedVector2Array(-8, -9, 8, -9, 10, 1, 7, 9, 0, 11, -7, 8, -10, 0)
+
+[node name="Beard" type="Polygon2D" parent="TorsoRig/HeadRig" unique_id=982320397]
+color = Color(0.15, 0.13, 0.12, 1)
+polygon = PackedVector2Array(-7, 1, 8, 1, 6, 9, 0, 13, -6, 8)
+
+[node name="Mustache" type="Polygon2D" parent="TorsoRig/HeadRig" unique_id=33316278]
+color = Color(0.13, 0.12, 0.11, 1)
+polygon = PackedVector2Array(-5, -1, 5, -1, 7, 2, 4, 3, 0, 2, -4, 3, -7, 2)
+
+[node name="HatRig" type="Node2D" parent="TorsoRig/HeadRig" unique_id=640446843]
+position = Vector2(0, -12)
+
+[node name="CapShadow" type="Polygon2D" parent="TorsoRig/HeadRig/HatRig" unique_id=1521454429]
+color = Color(0.07, 0.07, 0.09, 1)
+polygon = PackedVector2Array(-16, -17, 16, -17, 17, 4, 12, 7, -12, 7, -17, 4)
+
+[node name="CapBody" type="Polygon2D" parent="TorsoRig/HeadRig/HatRig" unique_id=1760801893]
+color = Color(0.12, 0.12, 0.15, 1)
+polygon = PackedVector2Array(-15, -17, 15, -17, 15, 3, 11, 5, -11, 5, -15, 3)
+
+[node name="FlatTop" type="Polygon2D" parent="TorsoRig/HeadRig/HatRig" unique_id=1352449197]
+color = Color(0.19, 0.19, 0.21, 1)
+polygon = PackedVector2Array(-13, -20, -8, -22, 9, -22, 14, -20, 16, -17, -16, -17)
+
+[node name="UpperBand" type="Polygon2D" parent="TorsoRig/HeadRig/HatRig" unique_id=293664426]
+color = Color(0.75, 0.73, 0.68, 1)
+polygon = PackedVector2Array(-16, -17, 16, -17, 16, -15, -16, -15)
+
+[node name="LowerBand" type="Polygon2D" parent="TorsoRig/HeadRig/HatRig" unique_id=1052498978]
+color = Color(0.73, 0.71, 0.66, 1)
+polygon = PackedVector2Array(-15, 3, 15, 3, 12, 5, -12, 5)
+
+[node name="LeftRedPanel" type="Polygon2D" parent="TorsoRig/HeadRig/HatRig" unique_id=516553967]
+color = Color(0.65, 0.12, 0.17, 1)
+polygon = PackedVector2Array(-14, -14, -7, -14, -7, 2, -14, 2)
+
+[node name="RightRedPanel" type="Polygon2D" parent="TorsoRig/HeadRig/HatRig" unique_id=159994733]
+color = Color(0.65, 0.12, 0.17, 1)
+polygon = PackedVector2Array(7, -14, 14, -14, 14, 2, 7, 2)
+
+[node name="LeftDiamond" type="Polygon2D" parent="TorsoRig/HeadRig/HatRig" unique_id=2036428391]
+color = Color(0.87, 0.86, 0.79, 1)
+polygon = PackedVector2Array(-11, -13, -7, -6, -11, 1, -15, -6)
+
+[node name="LeftDiamondInner" type="Polygon2D" parent="TorsoRig/HeadRig/HatRig" unique_id=1693305912]
+color = Color(0.13, 0.13, 0.16, 1)
+polygon = PackedVector2Array(-11, -10, -9, -6, -11, -2, -13, -6)
+
+[node name="RightDiamond" type="Polygon2D" parent="TorsoRig/HeadRig/HatRig" unique_id=1182224978]
+color = Color(0.87, 0.86, 0.79, 1)
+polygon = PackedVector2Array(11, -13, 15, -6, 11, 1, 7, -6)
+
+[node name="RightDiamondInner" type="Polygon2D" parent="TorsoRig/HeadRig/HatRig" unique_id=491070494]
+color = Color(0.13, 0.13, 0.16, 1)
+polygon = PackedVector2Array(11, -10, 13, -6, 11, -2, 9, -6)
+
+[node name="CenterPanel" type="Polygon2D" parent="TorsoRig/HeadRig/HatRig" unique_id=664968452]
+color = Color(0.08, 0.09, 0.11, 1)
+polygon = PackedVector2Array(-7, -14, 7, -14, 7, 2, -7, 2)
+
+[node name="CenterTopPattern" type="Line2D" parent="TorsoRig/HeadRig/HatRig" unique_id=449545898]
+points = PackedVector2Array(-5, -12, -5, -7, -1, -7, -1, -10, -3, -10)
+width = 1.0
+default_color = Color(0.88, 0.86, 0.78, 1)
+
+[node name="CenterTopPatternRight" type="Line2D" parent="TorsoRig/HeadRig/HatRig" unique_id=666440024]
+points = PackedVector2Array(5, -12, 5, -7, 1, -7, 1, -10, 3, -10)
+width = 1.0
+default_color = Color(0.88, 0.86, 0.78, 1)
+
+[node name="CenterBottomPattern" type="Line2D" parent="TorsoRig/HeadRig/HatRig" unique_id=1414008958]
+points = PackedVector2Array(-5, 0, -5, -5, -1, -5, -1, -2, -3, -2)
+width = 1.0
+default_color = Color(0.88, 0.86, 0.78, 1)
+
+[node name="CenterBottomPatternRight" type="Line2D" parent="TorsoRig/HeadRig/HatRig" unique_id=1974250373]
+points = PackedVector2Array(5, 0, 5, -5, 1, -5, 1, -2, 3, -2)
+width = 1.0
+default_color = Color(0.88, 0.86, 0.78, 1)
+
+[node name="DaggerSheath" type="Polygon2D" parent="TorsoRig" unique_id=1403192949]
+color = Color(0.22, 0.14, 0.09, 1)
+polygon = PackedVector2Array(12, 7, 16, 8, 14, 24, 10, 23)
+
+[node name="FrontArm" type="Node2D" parent="." unique_id=1773162055]
+position = Vector2(13, -11)
+
+[node name="Sleeve" type="Polygon2D" parent="FrontArm" unique_id=880859418]
+color = Color(0.22, 0.23, 0.27, 1)
+polygon = PackedVector2Array(-5, 0, 6, 0, 8, 24, -3, 27)
+
+[node name="Bracer" type="Polygon2D" parent="FrontArm" unique_id=1539735572]
+color = Color(0.37, 0.38, 0.41, 1)
+polygon = PackedVector2Array(-4, 13, 8, 13, 8, 21, -3, 21)
+
+[node name="Hand" type="Polygon2D" parent="FrontArm" unique_id=1735493422]
+color = Color(0.67, 0.52, 0.36, 1)
+polygon = PackedVector2Array(-2, 23, 8, 22, 9, 30, -1, 30)
+
+[node name="SwordRig" type="Node2D" parent="FrontArm" unique_id=1346143586]
+position = Vector2(5, 24)
+
+[node name="Grip" type="Polygon2D" parent="FrontArm/SwordRig" unique_id=2137085501]
+color = Color(0.3, 0.19, 0.12, 1)
+polygon = PackedVector2Array(0, -4, 4, -4, 4, 9, 0, 9)
+
+[node name="Pommel" type="Polygon2D" parent="FrontArm/SwordRig" unique_id=643747861]
+color = Color(0.66, 0.57, 0.38, 1)
+polygon = PackedVector2Array(-1, 8, 5, 8, 5, 12, -1, 12)
+
+[node name="Guard" type="Polygon2D" parent="FrontArm/SwordRig" unique_id=940275920]
+color = Color(0.67, 0.59, 0.39, 1)
+polygon = PackedVector2Array(-7, -7, 11, -7, 11, -3, -7, -3)
+
+[node name="Blade" type="Polygon2D" parent="FrontArm/SwordRig" unique_id=545863210]
+color = Color(0.72, 0.75, 0.78, 1)
+polygon = PackedVector2Array(0, -6, 4, -6, 5, -38, 3, -48, 1, -38)
+
+[node name="BladeHighlight" type="Polygon2D" parent="FrontArm/SwordRig" unique_id=640115699]
+color = Color(0.93, 0.9, 0.78, 1)
+polygon = PackedVector2Array(1, -8, 2, -42, 3, -36, 3, -8)

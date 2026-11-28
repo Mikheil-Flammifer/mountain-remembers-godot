@@ -61,8 +61,7 @@ func _is_already_collected() -> bool:
 	var player := get_tree().get_first_node_in_group("player")
 	if player != null and player.has_method("has_collected_healing_stone"):
 		return bool(player.call("has_collected_healing_stone", pickup_id))
-	var collected: Dictionary = get_tree().root.get_meta("xizane_collected_healing_stones", {})
-	return collected.has(pickup_id)
+	return XizaneProgressionStore.has_collected(get_tree().root, pickup_id)
 
 func _open_chest() -> void:
 	if _player == null:

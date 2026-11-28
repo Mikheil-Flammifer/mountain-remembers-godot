@@ -8,7 +8,7 @@ extends Area2D
 @export var snap_speed: float = 14.0
 @export var show_prompt: bool = true
 
-var _player: CharacterBody2D
+var _player: XizanePlayer
 var _climbing: bool = false
 var _prompt: Label
 var _clock: float = 0.0
@@ -63,10 +63,8 @@ func _physics_process(delta: float) -> void:
 		_climbing = false
 		return
 
-	var health: Node = _player.get_node_or_null("HealthComponent")
-	if health != null and bool(health.get("is_dead")):
-		_player.set_meta("climbing_ladder", false)
-		_climbing = false
+	if _player.health.is_dead:
+		_finish_climb(Vector2.ZERO)
 		_player = null
 		return
 
@@ -85,7 +83,7 @@ func _physics_process(delta: float) -> void:
 	var top_origin_y: float = global_position.y - ladder_height - player_half_height
 	var bottom_origin_y: float = global_position.y - player_half_height
 	_player.global_position.y = clampf(_player.global_position.y, top_origin_y, bottom_origin_y)
-	_animate_climber(axis)
+	_player.set_ladder_climb_phase(_clock * 8.0 if not is_zero_approx(axis) else 0.0)
 
 	if axis < 0.0 and _player.global_position.y <= top_origin_y + 2.0:
 		_player.global_position.y = top_origin_y
@@ -112,62 +110,23 @@ func _vertical_axis() -> float:
 
 
 func _start_climb() -> void:
-	if not is_instance_valid(_player) or _climbing:
+	if not is_instance_valid(_player) or _climbing or not _player.begin_ladder_climb():
 		return
-	if _player.has_method("is_resting") and bool(_player.call("is_resting")):
-		return
-
-	# set_resting(false) also clears shield state and cancels a sword swing.
-	if _player.has_method("set_resting"):
-		_player.call("set_resting", false)
-
 	_climbing = true
-	_player.set_meta("climbing_ladder", true)
-	_player.velocity = Vector2.ZERO
-	_player.set_physics_process(false)
-	_player.set_process(false)
-	if is_instance_valid(_prompt):
-		_prompt.visible = false
+	_prompt.visible = false
 
 
 func _finish_climb(launch_velocity: Vector2) -> void:
-	if not is_instance_valid(_player):
-		_climbing = false
-		return
-	_player.set_meta("climbing_ladder", false)
-	_player.velocity = launch_velocity
-	_player.set_process(true)
-	_player.set_physics_process(true)
 	_climbing = false
+	if is_instance_valid(_player):
+		_player.end_ladder_climb(launch_velocity)
 	if is_instance_valid(_prompt):
 		_prompt.visible = true
 
 
-func _animate_climber(axis: float) -> void:
-	if not is_instance_valid(_player):
-		return
-	var phase: float = _clock * 8.0 if not is_zero_approx(axis) else 0.0
-	var swing: float = sin(phase) * 0.34
-	var front_leg := _player.get_node_or_null("VisualRoot/FrontLeg") as Node2D
-	var back_leg := _player.get_node_or_null("VisualRoot/BackLeg") as Node2D
-	var front_arm := _player.get_node_or_null("VisualRoot/FrontArm") as Node2D
-	var back_arm := _player.get_node_or_null("VisualRoot/BackArm") as Node2D
-	var torso := _player.get_node_or_null("VisualRoot/TorsoRig") as Node2D
-	if front_leg != null:
-		front_leg.rotation = 0.26 + swing
-	if back_leg != null:
-		back_leg.rotation = 0.26 - swing
-	if front_arm != null:
-		front_arm.rotation = -0.70 - swing
-	if back_arm != null:
-		back_arm.rotation = -0.70 + swing
-	if torso != null:
-		torso.rotation = 0.0
-
-
 func _on_body_entered(body: Node2D) -> void:
-	if body is CharacterBody2D and body.is_in_group("player"):
-		_player = body as CharacterBody2D
+	if body is XizanePlayer:
+		_player = body
 
 
 func _on_body_exited(body: Node2D) -> void:
