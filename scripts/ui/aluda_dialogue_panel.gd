@@ -103,8 +103,12 @@ func _ready() -> void:
 
 
 func set_location(location_name: String) -> void:
+	set_chapter_location("ACT I", location_name)
+
+
+func set_chapter_location(chapter_name: String, location_name: String) -> void:
 	if is_instance_valid(_chapter):
-		_chapter.text = "ACT I   /   " + location_name.to_upper()
+		_chapter.text = chapter_name.to_upper() + "   /   " + location_name.to_upper()
 
 
 func _make_label(value: String, size: int, tint: Color) -> Label:

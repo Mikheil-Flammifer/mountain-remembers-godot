@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/levels/aluda/act_two_night_camp.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/levels/aluda/act_two_night_art.gd" id="2"]
+
+[node name="ActTwoNightCamp" type="Node2D"]
+script = ExtResource("1")
+
+[node name="NightArt" type="Node2D" parent="."]
+z_index = -10
+script = ExtResource("2")
