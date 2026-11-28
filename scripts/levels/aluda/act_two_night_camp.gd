@@ -1,41 +1,58 @@
 extends Node2D
-## Act II opening: camp, watch, dream, and an explicit dagger action.
-## This chapter receives the Act I hand choice from SceneTree metadata.
-## The rest of Act II will be developed in subsequent scenes.
+## Act II: night camp, weapon check, watch, the dream feast, the mirror duel
+## with Mutsal's shade and the dagger decision. ActTwoState owns the sequence;
+## this scene only turns player actions into state calls and presents them.
+## Act II is entered only after Act I is complete and never edits Act I state.
 
-const Story = preload("res://scripts/systems/story/act_one_state.gd")
+const Story = preload("res://scripts/systems/story/act_two_state.gd")
 const ALUDA = preload("res://scenes/actors/player/aluda.tscn")
 const DIALOGUE = preload("res://scripts/ui/aluda_dialogue_panel.gd")
 const BANNER = preload("res://scripts/ui/act_one_area_banner.gd")
+const ACT_ONE_SCENE := "res://scenes/levels/aluda/act_one/tracking.tscn"
 
-enum Stage { ARRIVAL, WATCH, DREAM, AWAKENED }
-enum DreamChoice { UNDECIDED, LOWER_DAGGER, STRIKE }
+const WEAPON_X := 380.0
+const FIRE_X := 540.0
+const LOOKOUT_X := 960.0
+const ROAD_X := 1800.0
+const FEAST_X := 700.0
+const SHADE_X := 1080.0
+const LOWER_X := 850.0
+const STRIKE_X := 1220.0
+const SHADE_ATTACK_INTERVAL := 1.8
+const SHADE_REACH := 150.0
 
-var stage: Stage = Stage.ARRIVAL
-var dream_choice: DreamChoice = DreamChoice.UNDECIDED
-var hand_choice: int = Story.HandChoice.UNDECIDED
+var story: ActTwoState = Story.new()
+var locked: bool = false
+var hand_choice: int = 0
 var player: CharacterBody2D
 var dialogue_panel: AludaDialoguePanel
 var _hint: Label
 var _objective: Label
 var _night_art: Node2D
+var _shade_timer: float = SHADE_ATTACK_INTERVAL
+var _leaving: bool = false
 
 
 func _ready() -> void:
 	var tree: SceneTree = get_tree()
-	hand_choice = int(tree.get_meta("aluda_act_one_hand_choice", Story.HandChoice.UNDECIDED))
+	hand_choice = int(tree.get_meta("aluda_act_one_hand_choice", 0))
+	# Act I sets this only after its COMPLETE phase, so it doubles as the gate.
+	var act_one_done: bool = tree.has_meta("aluda_act_one_hand_choice")
 	_night_art = get_node("NightArt")
 	_build_floor_and_player()
 	_build_hud()
+	if not story.begin(hand_choice, act_one_done):
+		locked = true
+		_dialogue("Narrator", "Act II begins only after Act I is finished. Press E to return to Act I.")
+		return
+	story.phase_changed.connect(func(_p) -> void: _sync_art())
 	var banner := BANNER.new()
 	banner.name = "ActTwoBanner"
 	add_child(banner)
 	banner.announce("ACT II — NIGHT CAMP", "A night of silence above the mountain road")
-	var memory: String = "Mutsal's body remains among the crags. Aluda cannot forget the rifle he threw."
-	if hand_choice == Story.HandChoice.SPARE:
-		memory = "Aluda remembers covering Mutsal rather than taking his hand. The old custom weighs on him."
-	elif hand_choice == Story.HandChoice.CUT:
-		memory = "The severed hand weighs heavily upon Aluda. Victory brought him no peace."
+	var memory: String = "Aluda remembers covering Mutsal rather than taking his hand. The old custom weighs on him."
+	if hand_choice == Story.HAND_CUT:
+		memory = "Two arms hang from Aluda's saddle. Victory brought him no peace."
 	_dialogue("Aluda", memory)
 
 
@@ -77,16 +94,10 @@ func _build_hud() -> void:
 	overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hud.add_child(overlay)
-	_objective = Label.new()
-	_objective.name = "Objective"
+	_objective = _make_label("Objective", 16)
 	_objective.position = Vector2(25, 22)
-	_objective.add_theme_font_size_override("font_size", 16)
-	_objective.add_theme_color_override("font_color", Color("#e9d8b5"))
-	_objective.add_theme_color_override("font_outline_color", Color("#121e29"))
-	_objective.add_theme_constant_override("outline_size", 4)
 	overlay.add_child(_objective)
-	_hint = Label.new()
-	_hint.name = "ActionHint"
+	_hint = _make_label("ActionHint", 17)
 	_hint.anchor_left = 0.15
 	_hint.anchor_right = 0.85
 	_hint.anchor_top = 1.0
@@ -94,34 +105,90 @@ func _build_hud() -> void:
 	_hint.offset_top = -63.0
 	_hint.offset_bottom = -25.0
 	_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_hint.add_theme_font_size_override("font_size", 17)
-	_hint.add_theme_color_override("font_color", Color("#e9d8b5"))
-	_hint.add_theme_color_override("font_outline_color", Color("#121e29"))
-	_hint.add_theme_constant_override("outline_size", 4)
 	overlay.add_child(_hint)
 
 
-func _process(_delta: float) -> void:
-	var near_fire: bool = absf(player.position.x - 540.0) < 88.0
-	match stage:
-		Stage.ARRIVAL:
-			_objective.text = "ACT II   ·   Tend the fire"
-			_hint.text = "E — Tend the fire" if near_fire else "A / D — Walk to the rock shelter"
-		Stage.WATCH:
-			_objective.text = "ACT II   ·   Keep watch, then sleep"
-			_hint.text = "E — Sleep beside the fire" if near_fire else "Return to the campfire"
-		Stage.DREAM:
-			_objective.text = "THE DREAM   ·   A dagger is offered"
-			if absf(player.position.x - 850.0) < 85.0:
-				_hint.text = "E — Turn the dagger aside"
-			elif absf(player.position.x - 1220.0) < 90.0:
-				_hint.text = "E — Strike Mutsal in the dream"
+func _make_label(label_name: String, size: int) -> Label:
+	var label := Label.new()
+	label.name = label_name
+	label.add_theme_font_size_override("font_size", size)
+	label.add_theme_color_override("font_color", Color("#e9d8b5"))
+	label.add_theme_color_override("font_outline_color", Color("#121e29"))
+	label.add_theme_constant_override("outline_size", 4)
+	return label
+
+
+func _near(x: float, reach: float = 88.0) -> bool:
+	return absf(player.position.x - x) < reach
+
+
+func _process(delta: float) -> void:
+	if locked:
+		_objective.text = "ACT II   ·   Locked until Act I is complete"
+		_hint.text = "E — Return to Act I"
+		return
+	match story.phase:
+		Story.Phase.ARRIVAL:
+			_set_text("Tend the fire", "E — Tend the fire" if _near(FIRE_X) else "A / D — Walk to the rock shelter")
+		Story.Phase.FIRE_TENDED:
+			_set_text("Check your rifle", "E — Clean and load the rifle" if _near(WEAPON_X) else "Your rifle rests against the rock")
+		Story.Phase.WEAPON_CHECKED:
+			_set_text("Keep watch over the road", "E — Keep watch" if _near(LOOKOUT_X) else "Walk to the lookout stone")
+		Story.Phase.WATCH_KEPT:
+			_set_text("Sleep beside the fire", "E — Sleep" if _near(FIRE_X) else "Return to the campfire")
+		Story.Phase.DREAM_GATHERING:
+			if not story.feast_witnessed:
+				_set_text("THE DREAM   ·   The dead gather", "E — Sit among the warriors" if _near(FEAST_X) else "Silent warriors sit around a meal")
 			else:
-				_hint.text = "Walk to either memory and press E. No timed decision."
-		Stage.AWAKENED:
-			_objective.text = "ACT II   ·   A changed heart"
-			_hint.text = "E — Reflect by the fire" if near_fire else "The dream has ended"
+				_set_text("THE DREAM   ·   Mutsal waits", "E — Face Mutsal" if _near(SHADE_X, 120.0) else "Mutsal's shade stands apart")
+		Story.Phase.DREAM_DUEL:
+			_update_duel(delta)
+			_set_text("THE DREAM   ·   The duel repeats  (%d)" % story.duel_rounds_remaining,
+				"G — Hold your guard as he strikes.  H only brings more rounds.")
+		Story.Phase.DREAM_DAGGER:
+			if _near(LOWER_X, 85.0):
+				_set_text("THE DREAM   ·   A dagger is offered", "E — Turn the dagger aside")
+			elif _near(STRIKE_X, 90.0):
+				_set_text("THE DREAM   ·   A dagger is offered", "E — Strike Mutsal in the dream")
+			else:
+				_set_text("THE DREAM   ·   A dagger is offered", "Walk to either memory and press E. No timed decision.")
+		Story.Phase.AWAKENED:
+			if not story.reflected:
+				_set_text("A changed heart", "E — Reflect by the fire" if _near(FIRE_X) else "Return to the fire")
+			else:
+				_set_text("Dawn on the road home", "E — Break camp and go home" if _near(ROAD_X, 110.0) else "Walk east to the road")
+		Story.Phase.COMPLETE:
+			_set_text("Act II complete", "Act III is not built yet")
 	_hint.visible = not dialogue_panel.is_open
+
+
+func _set_text(objective: String, hint: String) -> void:
+	_objective.text = objective if objective.begins_with("THE DREAM") else "ACT II   ·   " + objective
+	_hint.text = hint
+
+
+func _update_duel(delta: float) -> void:
+	if not _near(SHADE_X, SHADE_REACH):
+		return
+	_shade_timer -= delta
+	if _shade_timer <= 0.0:
+		_shade_timer = SHADE_ATTACK_INTERVAL
+		shade_attack()
+
+
+## The shade swings. A raised guard counts as a parry; a missed guard costs
+## nothing and makes no choice, the exchange simply repeats.
+func shade_attack() -> void:
+	if story.phase != Story.Phase.DREAM_DUEL:
+		return
+	if _is_guarding():
+		story.parry()
+		if story.phase == Story.Phase.DREAM_DAGGER:
+			_dialogue("Mutsal", "Enough. Take my dagger, Aluda, and finish what the custom asks. Or set it down.")
+
+
+func _is_guarding() -> bool:
+	return bool(player.get("_blocking"))
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -135,52 +202,86 @@ func _unhandled_input(event: InputEvent) -> void:
 			dialogue_panel.close()
 			get_viewport().set_input_as_handled()
 			return
+	if event.is_action_pressed("attack") and not event.is_echo():
+		if story.phase == Story.Phase.DREAM_DUEL and _near(SHADE_X, SHADE_REACH):
+			story.strike_in_duel()
 	if event.is_action_pressed("talk") and not event.is_echo():
 		_interact()
 
 
 func _interact() -> void:
-	match stage:
-		Stage.ARRIVAL:
-			if absf(player.position.x - 540.0) < 88.0:
-				stage = Stage.WATCH
-				_dialogue("Aluda", "The fire takes. I will keep watch until the ridge falls silent.")
-		Stage.WATCH:
-			if absf(player.position.x - 540.0) < 88.0:
-				stage = Stage.DREAM
-				player.position = Vector2(700, 440)
-				_night_art.set("dream_mode", true)
-				_night_art.queue_redraw()
-				dialogue_panel.set_chapter_location("ACT II", "THE DREAM")
-				_dialogue("Mutsal", "In the dream, Mutsal offers his dagger and asks for another blow. Will I repeat the old law?")
-		Stage.DREAM:
-			if absf(player.position.x - 850.0) < 85.0:
-				_resolve_dream(DreamChoice.LOWER_DAGGER)
-			elif absf(player.position.x - 1220.0) < 90.0:
-				_resolve_dream(DreamChoice.STRIKE)
-		Stage.AWAKENED:
-			if absf(player.position.x - 540.0) < 88.0:
-				if dream_choice == DreamChoice.LOWER_DAGGER:
-					_dialogue("Aluda", "A dead enemy remains a man. I cannot return to the old certainty.")
-				else:
-					_dialogue("Aluda", "The old law still calls to me, even after such a dream.")
-
-
-func _resolve_dream(choice: DreamChoice) -> void:
-	if stage != Stage.DREAM or dream_choice != DreamChoice.UNDECIDED:
+	if locked:
+		if not _leaving:
+			_leaving = true
+			get_tree().change_scene_to_file(ACT_ONE_SCENE)
 		return
-	dream_choice = choice
-	# Carry forward only a choice made by the player, not a timer or failure.
+	match story.phase:
+		Story.Phase.ARRIVAL:
+			if _near(FIRE_X) and story.tend_fire():
+				_dialogue("Aluda", "The fire takes. Before I rest, the rifle must be ready.")
+		Story.Phase.FIRE_TENDED:
+			if _near(WEAPON_X) and story.check_weapon():
+				var line: String = "Powder, bullet, ramrod, priming. The horn Mutsal broke still holds a little."
+				_dialogue("Aluda", line)
+		Story.Phase.WEAPON_CHECKED:
+			if _near(LOOKOUT_X) and story.keep_watch():
+				_dialogue("Aluda", "Only wind on the road. No Kist rides after me tonight.")
+		Story.Phase.WATCH_KEPT:
+			if _near(FIRE_X) and story.sleep():
+				player.position = Vector2(560, 440)
+				dialogue_panel.set_chapter_location("ACT II", "THE DREAM")
+				_dialogue("Narrator", "Aluda sleeps. Warriors gather around the dead, as if at a shrine feast.")
+		Story.Phase.DREAM_GATHERING:
+			if not story.feast_witnessed and _near(FEAST_X):
+				story.witness_feast()
+				_dialogue("Narrator", "Bowls are passed in silence. Aluda sees what is served and will not eat.")
+			elif story.feast_witnessed and _near(SHADE_X, 120.0) and story.face_mutsal():
+				_shade_timer = SHADE_ATTACK_INTERVAL
+				_dialogue("Mutsal", "Once more, Aluda, as among the crags. Guard yourself.")
+		Story.Phase.DREAM_DAGGER:
+			if _near(LOWER_X, 85.0):
+				_resolve_dream(Story.DreamChoice.LOWER_DAGGER)
+			elif _near(STRIKE_X, 90.0):
+				_resolve_dream(Story.DreamChoice.STRIKE)
+		Story.Phase.AWAKENED:
+			if not story.reflected and _near(FIRE_X) and story.reflect():
+				if story.dream_choice == Story.DreamChoice.LOWER_DAGGER:
+					_dialogue("Aluda", "A dead enemy remains a man. I cannot look at the trophies as before.")
+				else:
+					_dialogue("Aluda", "The old law still calls to me. I will trust the custom of my fathers.")
+			elif story.reflected and _near(ROAD_X, 110.0):
+				_finish_act()
+
+
+func _resolve_dream(choice: int) -> void:
+	if not story.decide_dream(choice):
+		return
+	# Carry forward only a choice made by the player, never a timer or a failure.
 	get_tree().set_meta("aluda_act_two_dream_choice", int(choice))
-	stage = Stage.AWAKENED
-	_night_art.set("dream_mode", false)
-	_night_art.queue_redraw()
 	dialogue_panel.set_chapter_location("ACT II", "NIGHT CAMP")
 	player.position = Vector2(510, 440)
-	if choice == DreamChoice.LOWER_DAGGER:
+	if choice == Story.DreamChoice.LOWER_DAGGER:
 		_dialogue("Aluda", "I turned the dagger away. Dawn has not yet come, but I know what the dream demanded.")
 	else:
 		_dialogue("Aluda", "In the dream my hand obeyed the old custom. I woke with the weight of it.")
+
+
+func _finish_act() -> void:
+	if not story.break_camp():
+		return
+	get_tree().set_meta("aluda_act_two_complete", true)
+	var banner := BANNER.new()
+	add_child(banner)
+	banner.announce("ACT II COMPLETE", "The road leads home to Shatili. Act III comes next.")
+
+
+func _sync_art() -> void:
+	var dreaming: bool = story.phase in [Story.Phase.DREAM_GATHERING, Story.Phase.DREAM_DUEL, Story.Phase.DREAM_DAGGER]
+	_night_art.set("dream_mode", dreaming)
+	_night_art.set("show_shade", story.phase in [Story.Phase.DREAM_GATHERING, Story.Phase.DREAM_DUEL])
+	_night_art.set("show_dagger_markers", story.phase == Story.Phase.DREAM_DAGGER)
+	_night_art.set("fire_lit", story.phase != Story.Phase.ARRIVAL)
+	_night_art.queue_redraw()
 
 
 func _dialogue(speaker: String, line: String) -> void:

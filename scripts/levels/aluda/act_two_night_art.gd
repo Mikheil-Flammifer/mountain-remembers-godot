@@ -5,6 +5,9 @@ extends Node2D
 
 @export var dream_mode: bool = false
 @export var ground_y: float = 440.0
+@export var show_shade: bool = false
+@export var show_dagger_markers: bool = false
+@export var fire_lit: bool = false
 
 var _time: float = 0.0
 var _redraw: float = 0.0
@@ -24,6 +27,8 @@ func _draw() -> void:
 	_draw_mountains()
 	_draw_rock_shelter()
 	_draw_fire()
+	_draw_camp_points()
+	_draw_dream_gathering()
 	_draw_dream_landmarks()
 	_draw_ground()
 
@@ -92,7 +97,7 @@ func _draw_rock_shelter() -> void:
 
 func _draw_fire() -> void:
 	var x: float = 540.0
-	var glow: float = 13.0 + sin(_time * 5.0) * 3.0
+	var glow: float = (13.0 if fire_lit or dream_mode else 3.0) + sin(_time * 5.0) * 3.0
 	draw_circle(Vector2(x, 406), 83.0, Color("#db875b", 0.08) if not dream_mode else Color("#c46b80", 0.09))
 	for i in range(7):
 		var dx: float = float(i - 3) * 15.0
@@ -110,8 +115,39 @@ func _draw_fire() -> void:
 	]), Color("#fff0ae", 0.83))
 
 
+func _draw_camp_points() -> void:
+	if dream_mode:
+		return
+	# Rifle leaning on the shelter rock.
+	draw_line(Vector2(372, 440), Vector2(392, 372), Color("#5b4433"), 4.0)
+	draw_line(Vector2(390, 378), Vector2(396, 352), Color("#9aa3a6"), 2.0)
+	# Lookout stone above the road.
+	draw_colored_polygon(PackedVector2Array([
+		Vector2(925, 441), Vector2(935, 410), Vector2(965, 400), Vector2(992, 414), Vector2(998, 441)
+	]), Color("#3c4a52"))
+	# Road marker toward home.
+	draw_line(Vector2(1800, 440), Vector2(1800, 392), Color("#8b8f86"), 5.0)
+	draw_line(Vector2(1786, 398), Vector2(1822, 392), Color("#8b8f86"), 4.0)
+
+
+func _draw_dream_gathering() -> void:
+	if not dream_mode or not show_shade:
+		return
+	# Seated warriors around a low meal; the food is implied, never shown.
+	draw_rect(Rect2(640, 425, 120, 10), Color("#4a3a40"))
+	for i in range(5):
+		var x: float = 600.0 + float(i) * 50.0
+		draw_circle(Vector2(x, 400), 9.0, Color("#16121a", 0.8))
+		draw_rect(Rect2(x - 10, 408, 20, 30), Color("#16121a", 0.8))
+	# Mutsal's shade.
+	var sway: float = sin(_time * 1.6) * 3.0
+	draw_circle(Vector2(1080 + sway, 372), 12.0, Color("#c9b4c4", 0.55))
+	draw_rect(Rect2(1068 + sway, 384, 24, 56), Color("#c9b4c4", 0.45))
+	draw_line(Vector2(1092 + sway, 398), Vector2(1112 + sway, 380), Color("#e6dce4", 0.7), 2.0)
+
+
 func _draw_dream_landmarks() -> void:
-	if not dream_mode:
+	if not dream_mode or not show_dagger_markers:
 		return
 	# Two deliberate actions will determine the dream decision.
 	for position_x in [850.0, 1220.0]:
