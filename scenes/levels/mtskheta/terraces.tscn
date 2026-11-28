@@ -44,7 +44,7 @@ position = Vector2(170, 602)
 script = ExtResource("3_hud")
 
 [node name="SpawnFromMarket" parent="." instance=ExtResource("4_spawn")]
-position = Vector2(200, 602)
+position = Vector2(250, 602)
 spawn_id = "from_market"
 
 [node name="SpawnFromStreets" parent="." instance=ExtResource("4_spawn")]
@@ -52,7 +52,7 @@ position = Vector2(200, 602)
 spawn_id = "from_streets"
 
 [node name="SpawnFromNorthRoad" parent="." instance=ExtResource("4_spawn")]
-position = Vector2(4940, 602)
+position = Vector2(4850, 602)
 spawn_id = "from_north_road"
 
 [node name="ToMarket" parent="." instance=ExtResource("5_exit")]
@@ -64,7 +64,7 @@ position = Vector2(80, 570)
 target_spawn_id = "from_terraces"
 target_scene = "res://scenes/levels/mtskheta/north_road.tscn"
 position = Vector2(5020, 570)
-# Walkable short wooden ledge: FirstFooting
+; Walkable short wooden ledge: FirstFooting
 [node name="FirstFooting" type="StaticBody2D" parent="."]
 position = Vector2(480, 582)
 collision_layer = 1
@@ -87,7 +87,7 @@ points = PackedVector2Array(-42, 7, 42, -6)
 width = 2.0
 default_color = Color(0.19, 0.12, 0.09, 1)
 
-# Walkable short wooden ledge: LowerTerrace
+; Walkable short wooden ledge: LowerTerrace
 [node name="LowerTerrace" type="StaticBody2D" parent="."]
 position = Vector2(980, 574)
 collision_layer = 1
@@ -110,7 +110,7 @@ points = PackedVector2Array(-50, 7, 50, -6)
 width = 2.0
 default_color = Color(0.19, 0.12, 0.09, 1)
 
-# Walkable short wooden ledge: BrokenWalkway
+; Walkable short wooden ledge: BrokenWalkway
 [node name="BrokenWalkway" type="StaticBody2D" parent="."]
 position = Vector2(1510, 566)
 collision_layer = 1
@@ -133,7 +133,7 @@ points = PackedVector2Array(-34, 7, 34, -6)
 width = 2.0
 default_color = Color(0.19, 0.12, 0.09, 1)
 
-# Walkable short wooden ledge: UpperStoneStep
+; Walkable short wooden ledge: UpperStoneStep
 [node name="UpperStoneStep" type="StaticBody2D" parent="."]
 position = Vector2(1800, 552)
 collision_layer = 1
@@ -156,7 +156,7 @@ points = PackedVector2Array(-42, 7, 42, -6)
 width = 2.0
 default_color = Color(0.19, 0.12, 0.09, 1)
 
-# Walkable short wooden ledge: RavineFooting
+; Walkable short wooden ledge: RavineFooting
 [node name="RavineFooting" type="StaticBody2D" parent="."]
 position = Vector2(2420, 585)
 collision_layer = 1
@@ -179,7 +179,7 @@ points = PackedVector2Array(-34, 7, 34, -6)
 width = 2.0
 default_color = Color(0.19, 0.12, 0.09, 1)
 
-# Walkable short wooden ledge: OldWatchLedge
+; Walkable short wooden ledge: OldWatchLedge
 [node name="OldWatchLedge" type="StaticBody2D" parent="."]
 position = Vector2(3020, 565)
 collision_layer = 1
@@ -202,7 +202,7 @@ points = PackedVector2Array(-42, 7, 42, -6)
 width = 2.0
 default_color = Color(0.19, 0.12, 0.09, 1)
 
-# Walkable short wooden ledge: NarrowReturn
+; Walkable short wooden ledge: NarrowReturn
 [node name="NarrowReturn" type="StaticBody2D" parent="."]
 position = Vector2(3610, 582)
 collision_layer = 1
@@ -225,7 +225,7 @@ points = PackedVector2Array(-34, 7, 34, -6)
 width = 2.0
 default_color = Color(0.19, 0.12, 0.09, 1)
 
-# Walkable short wooden ledge: LastTimber
+; Walkable short wooden ledge: LastTimber
 [node name="LastTimber" type="StaticBody2D" parent="."]
 position = Vector2(4380, 570)
 collision_layer = 1
@@ -248,7 +248,7 @@ points = PackedVector2Array(-50, 7, 50, -6)
 width = 2.0
 default_color = Color(0.19, 0.12, 0.09, 1)
 
-# Low broken wall: a second obstacle type, passable by a normal jump.
+; Low broken wall: a second obstacle type, passable by a normal jump.
 [node name="CollapsedWall" type="StaticBody2D" parent="."]
 position = Vector2(1695, 626)
 collision_layer = 1
@@ -265,7 +265,7 @@ points = PackedVector2Array(-36, -8, -22, -24, 24, -24, 36, -9)
 width = 3.0
 default_color = Color(0.67, 0.55, 0.41, 1)
 
-# Low broken wall: a second obstacle type, passable by a normal jump.
+; Low broken wall: a second obstacle type, passable by a normal jump.
 [node name="StoneBlockade" type="StaticBody2D" parent="."]
 position = Vector2(3500, 626)
 collision_layer = 1
@@ -282,14 +282,14 @@ points = PackedVector2Array(-36, -8, -22, -24, 24, -24, 36, -9)
 width = 3.0
 default_color = Color(0.67, 0.55, 0.41, 1)
 
-# FirstLesson: 2 thorn patches. Clear sight lines and space to prepare.
+; FirstLesson: 2 thorn patches. Clear sight lines and space to prepare.
 [node name="FirstLessonThorns1" parent="." instance=ExtResource("6_thorns")]
 position = Vector2(620, 640)
 
 [node name="FirstLessonThorns2" parent="." instance=ExtResource("6_thorns")]
 position = Vector2(715, 640)
 
-# Crossroads: 3 thorn patches. Clear sight lines and space to prepare.
+; Crossroads: 3 thorn patches. Clear sight lines and space to prepare.
 [node name="CrossroadsThorns1" parent="." instance=ExtResource("6_thorns")]
 position = Vector2(1195, 640)
 
@@ -299,14 +299,14 @@ position = Vector2(1290, 640)
 [node name="CrossroadsThorns3" parent="." instance=ExtResource("6_thorns")]
 position = Vector2(1385, 640)
 
-# OldSteps: 2 thorn patches. Clear sight lines and space to prepare.
+; OldSteps: 2 thorn patches. Clear sight lines and space to prepare.
 [node name="OldStepsThorns1" parent="." instance=ExtResource("6_thorns")]
 position = Vector2(1940, 640)
 
 [node name="OldStepsThorns2" parent="." instance=ExtResource("6_thorns")]
 position = Vector2(2035, 640)
 
-# BrokenRoad: 3 thorn patches. Clear sight lines and space to prepare.
+; BrokenRoad: 3 thorn patches. Clear sight lines and space to prepare.
 [node name="BrokenRoadThorns1" parent="." instance=ExtResource("6_thorns")]
 position = Vector2(2550, 640)
 
@@ -316,14 +316,14 @@ position = Vector2(2645, 640)
 [node name="BrokenRoadThorns3" parent="." instance=ExtResource("6_thorns")]
 position = Vector2(2740, 640)
 
-# PinePass: 2 thorn patches. Clear sight lines and space to prepare.
+; PinePass: 2 thorn patches. Clear sight lines and space to prepare.
 [node name="PinePassThorns1" parent="." instance=ExtResource("6_thorns")]
 position = Vector2(3200, 640)
 
 [node name="PinePassThorns2" parent="." instance=ExtResource("6_thorns")]
 position = Vector2(3295, 640)
 
-# LastApproach: 3 thorn patches. Clear sight lines and space to prepare.
+; LastApproach: 3 thorn patches. Clear sight lines and space to prepare.
 [node name="LastApproachThorns1" parent="." instance=ExtResource("6_thorns")]
 position = Vector2(4010, 640)
 
@@ -333,7 +333,7 @@ position = Vector2(4105, 640)
 [node name="LastApproachThorns3" parent="." instance=ExtResource("6_thorns")]
 position = Vector2(4200, 640)
 
-# GateRun: 2 thorn patches. Clear sight lines and space to prepare.
+; GateRun: 2 thorn patches. Clear sight lines and space to prepare.
 [node name="GateRunThorns1" parent="." instance=ExtResource("6_thorns")]
 position = Vector2(4640, 640)
 

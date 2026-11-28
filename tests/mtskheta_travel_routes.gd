@@ -4,11 +4,14 @@ extends SceneTree
 ## Verify that all Mtskheta exits lead to a matching spawn and allow return travel.
 const AREA_DIR := "res://scenes/levels/"
 const START_AREA := "mtskheta/market.tscn"
+const ZHINVALI_ENTRY := "zhinvali/zhinvali_river_gate.tscn"
 const AREAS := [
     "mtskheta/mtskheta.tscn", "mtskheta/market.tscn", "mtskheta/streets.tscn",
     "mtskheta/cathedral_precinct.tscn", "mtskheta/terraces.tscn", "mtskheta/north_road.tscn",
     "jvari/jvari_confluence_trail.tscn", "jvari/jvari_pilgrim_steps.tscn",
     "jvari/jvari_windcut_ravine.tscn", "jvari/jvari_stone_ascent.tscn", "jvari/jvari_monastery.tscn",
+    "jvari/jvari_monastery_interior.tscn", "jvari/jvari_pass_wardens.tscn",
+    ZHINVALI_ENTRY,
 ]
 
 func _initialize() -> void:
@@ -23,7 +26,7 @@ func _check_routes() -> void:
         if scene == null:
             errors.append("Cannot load " + name)
             continue
-        var root: Node = scene.instantiate()'
+        var root: Node = scene.instantiate()
         if name.begins_with("jvari/") and not root.has_method("camera_bounds"):
             errors.append("Missing level script in " + name)
         var ids: Dictionary = {}
@@ -35,8 +38,13 @@ func _check_routes() -> void:
                     errors.append("Duplicate spawn " + spawn + " in " + name)
                 ids[spawn] = true
             if child is Area2D and child.get_script() != null and child.get("target_scene") != null:
+                var target := String(child.get("target_scene")).trim_prefix(AREA_DIR)
+                # Validate both ways across the Jvari boundary. The paths deeper
+                # into Zhinvali are outside this test's route graph.
+                if name == ZHINVALI_ENTRY and target.begins_with("zhinvali/"):
+                    continue
                 connections.append({
-                    "target": str(child.get("target_scene")).trim_prefix(AREA_DIR),
+                    "target": target,
                     "spawn": str(child.get("target_spawn_id"))
                 })
         spawns[name] = ids

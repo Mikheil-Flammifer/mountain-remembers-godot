@@ -42,7 +42,7 @@ target_spawn_id = "from_north_road"
 
 [node name="MountainWolf" parent="." instance=ExtResource("6_wolf")]
 position = Vector2(1430, 623)
-# MTSKHETA_ENEMY_V1_WOLF_TUNING
+; MTSKHETA_ENEMY_V1_WOLF_TUNING
 avoid_ledges = true
 max_health = 42
 max_poise = 22.0
