@@ -5,4 +5,4 @@
 [node name="ArkhotiCrags" type="Node2D"]
 script = ExtResource("1")
 region_id = 3
-region_width = 1380
+region_width = 2000.0

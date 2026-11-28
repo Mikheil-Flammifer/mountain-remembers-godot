@@ -44,13 +44,13 @@ func _check() -> void:
 	Input.action_release("jump")
 	Input.action_release("move_right")
 	assert(player.position.x > 1920 and player.position.y < 450, "Ford stone should be jumpable")
-	player.position = Vector2(3300, 440)
+	player.position = Vector2(3850, 440)
 	player.velocity = Vector2.ZERO
 	Input.action_press("move_right")
 	for i in 90:
 		await physics_frame
 	Input.action_release("move_right")
-	assert(player.position.x < 3355 and player.position.y < 450, "Act 1 edge must stop the player")
+	assert(player.position.x < 3905 and player.position.y < 450, "Act 1 edge must stop the player")
 	scene.queue_free()
 	await process_frame
 	print("PASS: preview and Act 1 boundaries, walkable and jumpable stone.")

@@ -38,7 +38,7 @@ const REGIONS := [
 		"subtitle": "Broken rock · Raiders ahead",
 		"short_name": "Arkhoti Crags",
 		"start": FORD_END,
-		"end": 3300.0
+		"end": 4020.0
 	},
 ]
 
