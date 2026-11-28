@@ -11,9 +11,11 @@ const DIALOGUE_PANEL = preload("res://scripts/ui/aluda_dialogue_panel.gd")
 const SUBAREAS = preload("res://scripts/levels/aluda/act_one_subareas.gd")
 const AREA_BANNER = preload("res://scripts/ui/act_one_area_banner.gd")
 const FOLD_INVESTIGATION = preload("res://scripts/levels/aluda/shepherds_fold_investigation.gd")
+const WIND_TRACKING = preload("res://scripts/levels/aluda/wind_pasture_tracking.gd")
 
 var story = Story.new()
 var fold_investigation: ShepherdsFoldInvestigation = FOLD_INVESTIGATION.new()
+var wind_tracking: WindPastureTracking = WIND_TRACKING.new()
 var player: CharacterBody2D
 var dialogue_panel: AludaDialoguePanel
 var area_banner: ActOneAreaBanner
@@ -29,8 +31,11 @@ var _points := [
 	{"id": "halter", "x": 295.0, "label": "Cut halter", "text": ""},
 	{"id": "dogs", "x": 430.0, "label": "Silent sheepdog", "text": ""},
 	{"id": "gate", "x": 570.0, "label": "Broken gate", "text": ""},
-	{"id": "hoofprints", "x": 750.0, "label": "Hoofprints", "text": "Fresh hoofprints climb away from the sheepfold toward the high pasture."},
-	{"id": "grass", "x": 1060.0, "label": "Bent grass", "text": "Bent grass and disturbed earth mark a hurried passage."},
+	{"id": "hoofprints", "x": 750.0, "label": "Hoofprints", "text": ""},
+	{"id": "scrape", "x": 900.0, "label": "Scraped slate", "text": ""},
+	{"id": "grass", "x": 1060.0, "label": "Bent grass", "text": ""},
+	{"id": "ridge", "x": 1160.0, "label": "Read upper ledge", "text": ""},
+	{"id": "gully", "x": 1220.0, "label": "Check lower gully", "text": ""},
 	{"id": "river", "x": 1400.0, "label": "River detour", "text": "The river stones are wet with fresh prints. The raiders may reach cover while you take this longer path."},
 	{"id": "stones", "x": 1720.0, "label": "Wet stones", "text": "Water on the stones shows where the horses crossed."},
 	{"id": "birds", "x": 2050.0, "label": "Birdcalls", "text": "Birdcalls echo over the pasture as the dawn light reaches the crags."},
@@ -171,6 +176,11 @@ func _process(delta: float) -> void:
 			trail_status.text = "TRAIL SIGNS  %d / 5    |    SHEEPFOLD  %d / 3" % [
 				story.trail_clues.size(), fold_investigation.evidence_count()
 			]
+		elif current_subarea == 1:
+			var route_status: String = "RIDGE FOUND" if wind_tracking.route_confirmed else "READ THE TRACKS"
+			trail_status.text = "TRAIL SIGNS  %d / 5    |    PASTURE  %d / 3    |    %s" % [
+				story.trail_clues.size(), wind_tracking.clue_count(), route_status
+			]
 		else:
 			trail_status.text = "TRAIL SIGNS  %d / 5  (optional)" % story.trail_clues.size()
 	else:
@@ -200,7 +210,7 @@ func _unhandled_input(event: InputEvent) -> void:
 				rifle.enemy_health = 1
 				rifle.loaded = true
 				rifle.reload_step = 0
-				rifle.enemy_timer = rifle.ENEMY_FIRE_INTERVAL
+				rifle.enemy_timer = rifle.ENEMY_FIRE_INTERVAL + wind_tracking.approach_bonus_seconds()
 				rifle.start()
 			else:
 				rifle.reload_next()
@@ -227,12 +237,25 @@ func _unhandled_input(event: InputEvent) -> void:
 		_show_dialogue(str(observation.get("speaker", "The trail")), str(observation.get("text", "")))
 		queue_redraw()
 		return
+	elif id in ["hoofprints", "scrape", "grass"]:
+		if id != "scrape":
+			story.inspect_trail(StringName(id))
+		var reading: Dictionary = wind_tracking.examine_clue(StringName(id))
+		_show_dialogue(str(reading.get("speaker", "The trail")), str(reading.get("text", "")))
+		queue_redraw()
+		return
+	elif id in ["ridge", "gully"]:
+		var reading: Dictionary = wind_tracking.examine_route(StringName(id))
+		_show_dialogue(str(reading.get("speaker", "The trail")), str(reading.get("text", "")))
+		queue_redraw()
+		return
 	elif id == "river":
 		story.visit_river()
 		story.meet_sanata()
 	elif id == "crags":
 		if story.reach_crags():
 			brother.visible = true
+			rifle.enemy_timer = rifle.ENEMY_FIRE_INTERVAL + wind_tracking.approach_bonus_seconds()
 			rifle.start()
 			queue_redraw()
 			return
@@ -266,11 +289,21 @@ func _draw() -> void:
 		return
 	for point: Dictionary in _points:
 		var clue_id: StringName = StringName(point.id)
-		if clue_id not in [&"halter", &"dogs", &"gate", &"hoofprints", &"grass", &"stones", &"birds"]:
+		if clue_id not in [&"halter", &"dogs", &"gate", &"hoofprints", &"scrape", &"grass", &"ridge", &"gully", &"stones", &"birds"]:
 			continue
 		var x: float = float(point.x)
 		var center := Vector2(x, 412.0)
-		var examined: bool = fold_investigation.inspected.has(clue_id) if clue_id in [&"halter", &"dogs", &"gate"] else story.trail_clues.has(clue_id)
+		var examined: bool = false
+		if clue_id in [&"halter", &"dogs", &"gate"]:
+			examined = fold_investigation.inspected.has(clue_id)
+		elif clue_id in [&"hoofprints", &"scrape", &"grass"]:
+			examined = wind_tracking.clues.has(clue_id)
+		elif clue_id == &"ridge":
+			examined = wind_tracking.route_confirmed
+		elif clue_id == &"gully":
+			examined = wind_tracking.gully_inspected
+		else:
+			examined = story.trail_clues.has(clue_id)
 		if examined:
 			draw_circle(center, 3.2, Color("#8d9d89", 0.57))
 		else:

@@ -1,8 +1,12 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/levels/aluda/act_one_subarea_art.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/levels/aluda/wind_pasture_signs.gd" id="2"]
 
 [node name="WindPasture" type="Node2D"]
 script = ExtResource("1")
 region_id = 1
-region_width = 590
+region_width = 590.0
+
+[node name="TrailSigns" type="Node2D" parent="."]
+script = ExtResource("2")
