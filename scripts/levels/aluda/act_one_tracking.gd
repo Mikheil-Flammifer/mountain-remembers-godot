@@ -12,6 +12,9 @@ var story = Story.new()
 var player: CharacterBody2D
 var message: Label
 var prompt: Label
+var trail_status: Label
+var _marker_time: float = 0.0
+var _marker_clock: float = 0.0
 var rifle: RifleEncounter
 var brother: Node2D
 var _points := [
@@ -83,13 +86,39 @@ func _build_hud() -> void:
 	prompt.add_theme_color_override("font_outline_color", Color("#202b29"))
 	prompt.add_theme_constant_override("outline_size", 4)
 	layer.add_child(prompt)
+	trail_status = Label.new()
+	trail_status.position = Vector2(24, 156)
+	trail_status.add_theme_font_size_override("font_size", 15)
+	trail_status.add_theme_color_override("font_color", Color("#e9ddbb"))
+	trail_status.add_theme_color_override("font_outline_color", Color("#202b29"))
+	trail_status.add_theme_constant_override("outline_size", 4)
+	layer.add_child(trail_status)
 
 
 func _process(delta: float) -> void:
+	_marker_time += delta
+	_marker_clock += delta
+	if _marker_clock >= 0.12:
+		_marker_clock = 0.0
+		queue_redraw()
 	if rifle.active:
 		rifle.tick(delta, player.position.x >= 2500.0 and player.position.x <= 2580.0)
 	var point := _nearby_point()
-	prompt.text = "E — " + str(point.get("label", "")) if not point.is_empty() else "A / D — Move    Space — Jump"
+	if rifle.active:
+		if player.position.x >= 2500.0 and player.position.x <= 2580.0:
+			prompt.text = "BEHIND COVER    F — Fire    R — Reload"
+		else:
+			prompt.text = "F — Fire    R — Reload    Seek shelter behind the low rock"
+	elif not point.is_empty():
+		prompt.text = "E — " + str(point.get("label", ""))
+	else:
+		prompt.text = "A / D — Move    Space — Jump"
+	if story.phase == Story.Phase.RAID_REPORT:
+		trail_status.text = "ACT I — THE RAID  |  Speak to the messenger"
+	elif story.phase == Story.Phase.TRACKING:
+		trail_status.text = "TRAIL SIGNS  %d / 5  (optional)" % story.trail_clues.size()
+	else:
+		trail_status.text = "ACT I — THE CRAGS"
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -147,9 +176,23 @@ func _nearby_point() -> Dictionary:
 
 
 func _draw() -> void:
-	# Draw story props only; the landscape lives in reusable decorative nodes.
-	if story.phase >= Story.Phase.BROTHER_FIGHT:
-		draw_rect(Rect2(2500, 390, 80, 50), Color("#696b5d"))
+	# Small, readable clues over the painted terrain. These are not new triggers.
+	if story.phase != Story.Phase.TRACKING:
+		return
 	for point: Dictionary in _points:
-		if point.id not in ["report", "river"]:
-			draw_circle(Vector2(float(point.x), 432), 7.0, Color("#d6bb83"))
+		var clue_id: StringName = StringName(point.id)
+		if clue_id not in [&"dogs", &"hoofprints", &"grass", &"stones", &"birds"]:
+			continue
+		var x: float = float(point.x)
+		var center := Vector2(x, 412.0)
+		if story.trail_clues.has(clue_id):
+			draw_circle(center, 3.2, Color("#8d9d89", 0.57))
+		else:
+			var pulse: float = 0.5 + 0.5 * sin(_marker_time * 2.2 + x * 0.02)
+			draw_arc(center, 10.0 + 3.0 * pulse, 0.0, TAU, 24, Color("#efe0b1", 0.24 + pulse * 0.33), 1.6)
+			draw_colored_polygon(PackedVector2Array([
+				center + Vector2(0.0, -6.0),
+				center + Vector2(5.0, 0.0),
+				center + Vector2(0.0, 6.0),
+				center + Vector2(-5.0, 0.0),
+			]), Color("#e8d4a0", 0.77))
