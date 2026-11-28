@@ -4,12 +4,16 @@ extends Node2D
 const Story = preload("res://scripts/systems/story/act_one_state.gd")
 const ALUDA = preload("res://scenes/actors/player/aluda.tscn")
 const MESSENGER = preload("res://scenes/visuals/actors/characters/messenger/messenger_visual.tscn")
+const RIFLE = preload("res://scripts/levels/aluda/rifle_encounter.gd")
+const BROTHER = preload("res://scenes/visuals/actors/characters/mutsal_brother/mutsal_brother_visual.tscn")
 const SANATA = preload("res://scenes/visuals/actors/characters/sanata/sanata_visual.tscn")
 
 var story = Story.new()
 var player: CharacterBody2D
 var message: Label
 var prompt: Label
+var rifle: RifleEncounter
+var brother: Node2D
 var _points := [
 	{"id": "report", "x": 160.0, "label": "Messenger", "text": "The shepherds were attacked. Raiders took horses, including yours. Follow their trail toward Arkhoti."},
 	{"id": "dogs", "x": 430.0, "label": "Sheepfold", "text": "The dogs are silent now. The attack passed before dawn."},
@@ -31,9 +35,9 @@ func _build_world() -> void:
 	var ground := StaticBody2D.new()
 	var collision := CollisionShape2D.new()
 	var shape := RectangleShape2D.new()
-	shape.size = Vector2(2800, 120)
+	shape.size = Vector2(3500, 120)
 	collision.shape = shape
-	ground.position = Vector2(1300, 500)
+	ground.position = Vector2(1650, 500)
 	ground.add_child(collision)
 	add_child(ground)
 	player = ALUDA.instantiate()
@@ -50,6 +54,14 @@ func _build_world() -> void:
 	var sanata: Node2D = SANATA.instantiate()
 	sanata.position = Vector2(1400, 440)
 	add_child(sanata)
+	brother = BROTHER.instantiate()
+	brother.position = Vector2(2820, 440)
+	brother.visible = false
+	add_child(brother)
+	rifle = RIFLE.new()
+	add_child(rifle)
+	rifle.updated.connect(func(text: String): message.text = text)
+	rifle.defeated.connect(_on_brother_defeated)
 	queue_redraw()
 
 
@@ -73,12 +85,30 @@ func _build_hud() -> void:
 	layer.add_child(prompt)
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
+	if rifle.active:
+		rifle.tick(delta, player.position.x >= 2500.0 and player.position.x <= 2580.0)
 	var point := _nearby_point()
 	prompt.text = "E — " + str(point.get("label", "")) if not point.is_empty() else "A / D — Move    Space — Jump"
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.echo:
+		if event.physical_keycode == KEY_F or event.keycode == KEY_F:
+			rifle.fire(player.position.x > 2580.0 and player.position.x < 2820.0 and player.facing > 0.0)
+			return
+		if event.physical_keycode == KEY_R or event.keycode == KEY_R:
+			if story.phase == Story.Phase.BROTHER_FIGHT and not rifle.active:
+				player.position = Vector2(2510, 440)
+				rifle.player_health = 2
+				rifle.enemy_health = 1
+				rifle.loaded = true
+				rifle.reload_step = 0
+				rifle.enemy_timer = rifle.ENEMY_FIRE_INTERVAL
+				rifle.start()
+			else:
+				rifle.reload_next()
+			return
 	if not event.is_action_pressed("talk") or event.is_echo():
 		return
 	var point := _nearby_point()
@@ -94,10 +124,19 @@ func _unhandled_input(event: InputEvent) -> void:
 		story.visit_river()
 		story.meet_sanata()
 	elif id == "crags":
-		story.reach_crags()
+		if story.reach_crags():
+			brother.visible = true
+			rifle.start()
+			queue_redraw()
+			return
 	else:
 		story.inspect_trail(StringName(id))
 	message.text = str(point.text)
+
+
+func _on_brother_defeated() -> void:
+	story.defeat_brother()
+	brother.visible = false
 
 
 func _nearby_point() -> Dictionary:
@@ -112,6 +151,8 @@ func _draw() -> void:
 	draw_colored_polygon(PackedVector2Array([Vector2(-200,380), Vector2(100,130), Vector2(350,310), Vector2(700,30), Vector2(1050,290), Vector2(1450,70), Vector2(1850,330), Vector2(2300,100), Vector2(2800,350), Vector2(2800,500), Vector2(-200,500)]), Color("#788778"))
 	draw_rect(Rect2(-200, 440, 3000, 200), Color("#565b47"))
 	draw_line(Vector2(-200, 440), Vector2(2800, 440), Color("#a99b78"), 4.0)
+	if story.phase >= Story.Phase.BROTHER_FIGHT:
+		draw_rect(Rect2(2500, 390, 80, 50), Color("#696b5d"))
 	for point: Dictionary in _points:
 		if point.id not in ["report", "river"]:
 			draw_circle(Vector2(float(point.x), 432), 7.0, Color("#d6bb83"))
