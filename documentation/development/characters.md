@@ -33,6 +33,10 @@ Shared motion (walk, attack, block, jump) is in `scripts/visuals/actors/characte
 | aiza | Aiza | Mutsal's sister, Chechen woman: dark dress, silver bib and belt, black mourning shawl. Act 4. |
 | elmurza | Elmurza | Mutsal's kinsman, Chechen: blue-grey cherkeska with silver gazyri and belt, black papakha, dark beard, drawn kinzhal. Act 4. |
 | gigia | Gigia | Keeper at Anatori: grey coat, brown hooded cloak, grey beard, lantern and pick. Preparation side quest. |
+| young_khevsur_1 | Bero | Young Khevsur who mocks Aluda (with Gela): loud one: pale coat with blue cross, black cap, sword. Name is a placeholder. |
+| young_khevsur_2 | Torgva | Young Khevsur who mocks Aluda (with Gela): red coat with cream cross, brown cap, stick; laughs the loudest. Name is a placeholder. |
+| young_khevsur_3 | Khvtisia | Young Khevsur who mocks Aluda (with Gela): dark blue coat with red cross, pale cap, short sword and small shield. Name is a placeholder. |
+| young_khevsur_4 | Gugua | Young Khevsur who mocks Aluda (with Gela): youngest: plain brown coat, black cap, sling; follows the others. Name is a placeholder. |
 
 ## Adding a character
 
