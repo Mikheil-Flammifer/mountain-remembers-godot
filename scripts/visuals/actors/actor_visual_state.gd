@@ -16,6 +16,9 @@ var is_dashing: bool = false
 var is_climbing: bool = false
 var climb_phase: float = 0.0
 var is_crouching: bool = false
+var is_mounted: bool = false
+## Rider bob from the horse's stride, 0 when on foot.
+var ride_bounce: float = 0.0
 
 
 # Combat

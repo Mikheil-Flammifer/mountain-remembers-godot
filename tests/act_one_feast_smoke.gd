@@ -24,6 +24,7 @@ func _check() -> void:
 	root.add_child(tracking)
 	await process_frame
 	assert(tracking.story.phase == tracking.Story.Phase.TRACKING)
+	assert(tracking.player.mounted and tracking.horse_gate == null)
 	assert(not has_meta("act_one_feast_report"))
 	tracking.queue_free()
 	await process_frame
