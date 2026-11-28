@@ -10,8 +10,10 @@ const SANATA = preload("res://scenes/visuals/actors/characters/sanata/sanata_vis
 const DIALOGUE_PANEL = preload("res://scripts/ui/aluda_dialogue_panel.gd")
 const SUBAREAS = preload("res://scripts/levels/aluda/act_one_subareas.gd")
 const AREA_BANNER = preload("res://scripts/ui/act_one_area_banner.gd")
+const FOLD_INVESTIGATION = preload("res://scripts/levels/aluda/shepherds_fold_investigation.gd")
 
 var story = Story.new()
+var fold_investigation: ShepherdsFoldInvestigation = FOLD_INVESTIGATION.new()
 var player: CharacterBody2D
 var dialogue_panel: AludaDialoguePanel
 var area_banner: ActOneAreaBanner
@@ -24,7 +26,9 @@ var rifle: RifleEncounter
 var brother: Node2D
 var _points := [
 	{"id": "report", "x": 160.0, "label": "Messenger", "text": "The shepherds were attacked. Raiders took horses, including yours. Follow their trail toward Arkhoti."},
-	{"id": "dogs", "x": 430.0, "label": "Sheepfold", "text": "The dogs are silent now. The attack passed before dawn."},
+	{"id": "halter", "x": 295.0, "label": "Cut halter", "text": ""},
+	{"id": "dogs", "x": 430.0, "label": "Silent sheepdog", "text": ""},
+	{"id": "gate", "x": 570.0, "label": "Broken gate", "text": ""},
 	{"id": "hoofprints", "x": 750.0, "label": "Hoofprints", "text": "Fresh hoofprints climb away from the sheepfold toward the high pasture."},
 	{"id": "grass", "x": 1060.0, "label": "Bent grass", "text": "Bent grass and disturbed earth mark a hurried passage."},
 	{"id": "river", "x": 1400.0, "label": "River detour", "text": "The river stones are wet with fresh prints. The raiders may reach cover while you take this longer path."},
@@ -163,7 +167,12 @@ func _process(delta: float) -> void:
 	if story.phase == Story.Phase.RAID_REPORT:
 		trail_status.text = "ACT I — THE RAID  |  Speak to the messenger"
 	elif story.phase == Story.Phase.TRACKING:
-		trail_status.text = "TRAIL SIGNS  %d / 5  (optional)" % story.trail_clues.size()
+		if current_subarea == 0:
+			trail_status.text = "TRAIL SIGNS  %d / 5    |    SHEEPFOLD  %d / 3" % [
+				story.trail_clues.size(), fold_investigation.evidence_count()
+			]
+		else:
+			trail_status.text = "TRAIL SIGNS  %d / 5  (optional)" % story.trail_clues.size()
 	else:
 		trail_status.text = "ACT I — THE CRAGS"
 
@@ -207,6 +216,17 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif story.phase == Story.Phase.RAID_REPORT:
 		_show_dialogue("The trail", "Speak to the messenger at the sheepfold first.")
 		return
+	elif id in ["halter", "dogs", "gate"]:
+		if id == "dogs":
+			story.inspect_trail(&"dogs")
+		var observation: Dictionary = fold_investigation.examine(StringName(id))
+		if bool(observation.get("soothed", false)):
+			var dog := get_node_or_null("Subareas/ShepherdsFold/SilentSheepdog") as SilentSheepdog
+			if dog != null:
+				dog.soothe()
+		_show_dialogue(str(observation.get("speaker", "The trail")), str(observation.get("text", "")))
+		queue_redraw()
+		return
 	elif id == "river":
 		story.visit_river()
 		story.meet_sanata()
@@ -227,10 +247,17 @@ func _on_brother_defeated() -> void:
 
 
 func _nearby_point() -> Dictionary:
+	# Use the nearest sign so closely placed evidence does not mask another clue.
+	var best: Dictionary = {}
+	var closest: float = 75.0
+	if absf(player.position.y - 440.0) >= 100.0:
+		return best
 	for point: Dictionary in _points:
-		if absf(player.position.x - float(point.x)) < 75.0 and absf(player.position.y - 440.0) < 100.0:
-			return point
-	return {}
+		var distance: float = absf(player.position.x - float(point.x))
+		if distance < closest:
+			closest = distance
+			best = point
+	return best
 
 
 func _draw() -> void:
@@ -239,11 +266,12 @@ func _draw() -> void:
 		return
 	for point: Dictionary in _points:
 		var clue_id: StringName = StringName(point.id)
-		if clue_id not in [&"dogs", &"hoofprints", &"grass", &"stones", &"birds"]:
+		if clue_id not in [&"halter", &"dogs", &"gate", &"hoofprints", &"grass", &"stones", &"birds"]:
 			continue
 		var x: float = float(point.x)
 		var center := Vector2(x, 412.0)
-		if story.trail_clues.has(clue_id):
+		var examined: bool = fold_investigation.inspected.has(clue_id) if clue_id in [&"halter", &"dogs", &"gate"] else story.trail_clues.has(clue_id)
+		if examined:
 			draw_circle(center, 3.2, Color("#8d9d89", 0.57))
 		else:
 			var pulse: float = 0.5 + 0.5 * sin(_marker_time * 2.2 + x * 0.02)

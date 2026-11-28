@@ -1,8 +1,17 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://scripts/levels/aluda/act_one_subarea_art.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/levels/aluda/shepherds_fold_props.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/levels/aluda/silent_sheepdog.gd" id="3"]
 
 [node name="ShepherdsFold" type="Node2D"]
 script = ExtResource("1")
 region_id = 0
-region_width = 800
+region_width = 800.0
+
+[node name="RaidEvidenceProps" type="Node2D" parent="."]
+script = ExtResource("2")
+
+[node name="SilentSheepdog" type="Node2D" parent="."]
+position = Vector2(580, 440)
+script = ExtResource("3")
