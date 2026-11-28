@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ActorVisualData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/visuals/actor_visual_data.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/visuals/actors/characters/mutsal/mutsal_visual.tscn" id="2"]
+
+[resource]
+script = ExtResource("1")
+appearance_id = &"mutsal_default"
+display_name = "Mutsal"
+description = "Default appearance of Mutsal. The Kist warrior Aluda duels in the poem."
+visual_scene = ExtResource("2")

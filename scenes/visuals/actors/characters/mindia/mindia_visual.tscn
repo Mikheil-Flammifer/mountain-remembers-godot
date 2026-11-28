@@ -1,0 +1,97 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/visuals/actors/characters/mindia/mindia_visual.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/visuals/equipment/khevsur_sword.tscn" id="2"]
+
+[node name="MindiaVisual" type="Node2D"]
+script = ExtResource("1")
+
+[node name="BackLeg" type="Node2D" parent="."]
+position = Vector2(-6, -31)
+
+[node name="Trouser" type="Polygon2D" parent="BackLeg"]
+color = Color(0.31, 0.27, 0.22, 1)
+polygon = PackedVector2Array(-7,0, 7,0, 6,25, 4,30, -6,30)
+
+[node name="Boot" type="Polygon2D" parent="BackLeg"]
+color = Color(0.36, 0.25, 0.16, 1)
+polygon = PackedVector2Array(-6,23, 5,23, 8,30, 13,31, 13,34, -7,34)
+
+[node name="FrontLeg" type="Node2D" parent="."]
+position = Vector2(6, -31)
+
+[node name="Trouser" type="Polygon2D" parent="FrontLeg"]
+color = Color(0.38, 0.33, 0.27, 1)
+polygon = PackedVector2Array(-7,0, 7,0, 6,25, 4,30, -6,30)
+
+[node name="Wrap" type="Polygon2D" parent="FrontLeg"]
+color = Color(0.68, 0.6, 0.47, 1)
+polygon = PackedVector2Array(-6,12, 7,10, 7,17, -6,19)
+
+[node name="Boot" type="Polygon2D" parent="FrontLeg"]
+color = Color(0.4, 0.28, 0.18, 1)
+polygon = PackedVector2Array(-6,23, 5,23, 8,30, 13,31, 13,34, -7,34)
+
+[node name="Body" type="Node2D" parent="."]
+
+[node name="BackArm" type="Node2D" parent="Body"]
+position = Vector2(-12,-70)
+
+[node name="Sleeve" type="Polygon2D" parent="Body/BackArm"]
+color = Color(0.4, 0.33, 0.25, 1)
+polygon = PackedVector2Array(-5,0, 5,0, 6,29, -4,30)
+
+[node name="Hand" type="Polygon2D" parent="Body/BackArm"]
+color = Color(0.78, 0.62, 0.49, 1)
+polygon = PackedVector2Array(-4,27, 6,27, 6,35, -4,35)
+
+[node name="Coat" type="Polygon2D" parent="Body"]
+color = Color(0.5, 0.41, 0.3, 1)
+polygon = PackedVector2Array(-12,-82, 9,-82, 18,-68, 15,-45, 21,-24, 3,-20, -3,-27, -11,-20, -21,-25, -15,-48, -18,-68)
+
+[node name="CoatPanel" type="Polygon2D" parent="Body"]
+color = Color(0.6, 0.51, 0.38, 1)
+polygon = PackedVector2Array(-7,-75, 7,-75, 9,-27, 0,-24, -9,-27)
+
+[node name="Embroidery" type="Polygon2D" parent="Body"]
+color = Color(0.2, 0.32, 0.44, 1)
+polygon = PackedVector2Array(-9,-74, 9,-74, 9,-70, 2,-70, 2,-58, -2,-58, -2,-70, -9,-70)
+
+[node name="Belt" type="Polygon2D" parent="Body"]
+color = Color(0.24, 0.17, 0.12, 1)
+polygon = PackedVector2Array(-16,-46, 16,-46, 16,-41, -16,-41)
+
+[node name="Head" type="Polygon2D" parent="Body"]
+color = Color(0.78, 0.62, 0.49, 1)
+polygon = PackedVector2Array(-9,-99, 8,-99, 11,-92, 8,-81, 1,-77, -8,-81, -12,-91)
+
+[node name="Hair" type="Polygon2D" parent="Body"]
+color = Color(0.45, 0.31, 0.19, 1)
+polygon = PackedVector2Array(-12,-99, 9,-99, 10,-94, 3,-92, -5,-94, -10,-88, -13,-91)
+
+[node name="Moustache" type="Polygon2D" parent="Body"]
+color = Color(0.42, 0.29, 0.18, 1)
+polygon = PackedVector2Array(1,-86, 10,-87, 9,-84, 2,-84)
+
+[node name="Cap" type="Polygon2D" parent="Body"]
+color = Color(0.82, 0.77, 0.66, 1)
+polygon = PackedVector2Array(-13,-97, -9,-108, 9,-108, 13,-98, 9,-95, -11,-95)
+
+[node name="CapBand" type="Polygon2D" parent="Body"]
+color = Color(0.2, 0.32, 0.44, 1)
+polygon = PackedVector2Array(-12,-99, 12,-99, 13,-96, -12,-96)
+
+[node name="FrontArm" type="Node2D" parent="Body"]
+position = Vector2(12,-70)
+
+[node name="Sleeve" type="Polygon2D" parent="Body/FrontArm"]
+color = Color(0.46, 0.38, 0.28, 1)
+polygon = PackedVector2Array(-5,0, 6,0, 8,29, -3,30)
+
+[node name="Hand" type="Polygon2D" parent="Body/FrontArm"]
+color = Color(0.78, 0.62, 0.49, 1)
+polygon = PackedVector2Array(-2,26, 8,26, 8,35, -2,35)
+
+[node name="Sword" parent="Body/FrontArm" instance=ExtResource("2")]
+position = Vector2(5, 30)
+rotation = 0.55
