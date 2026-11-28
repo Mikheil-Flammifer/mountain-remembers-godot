@@ -1,0 +1,19 @@
+[gd_scene format=3]
+
+[node name="TrouserLeg" type="Node2D"]
+
+[node name="Fabric" type="Polygon2D" parent="."]
+color = Color(0.24, 0.25, 0.23, 1)
+polygon = PackedVector2Array(-8,0, 7,0, 6,25, 4,30, -7,30)
+
+[node name="Light" type="Polygon2D" parent="."]
+color = Color(0.33, 0.33, 0.29, 1)
+polygon = PackedVector2Array(-5,2, 2,2, 1,23, -4,27)
+
+[node name="Wrap" type="Polygon2D" parent="."]
+color = Color(0.47, 0.41, 0.33, 1)
+polygon = PackedVector2Array(-7,15, 6,12, 6,18, -7,21)
+
+[node name="WrapShade" type="Polygon2D" parent="."]
+color = Color(0.32, 0.28, 0.23, 1)
+polygon = PackedVector2Array(-7,21, 6,18, 6,21, -7,24)

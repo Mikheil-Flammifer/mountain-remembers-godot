@@ -1,0 +1,15 @@
+[gd_scene format=3]
+
+[node name="Boot" type="Node2D"]
+
+[node name="Leather" type="Polygon2D" parent="."]
+color = Color(0.18, 0.14, 0.12, 1)
+polygon = PackedVector2Array(-7,23, 5,23, 8,30, 14,31, 14,34, -8,34)
+
+[node name="Light" type="Polygon2D" parent="."]
+color = Color(0.35, 0.25, 0.19, 1)
+polygon = PackedVector2Array(-5,24, 4,24, 6,30, -5,30)
+
+[node name="Sole" type="Polygon2D" parent="."]
+color = Color(0.12, 0.10, 0.09, 1)
+polygon = PackedVector2Array(-8,32, 14,32, 14,35, -8,35)
