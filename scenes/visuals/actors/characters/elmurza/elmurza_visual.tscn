@@ -1,0 +1,88 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/visuals/actors/characters/elmurza/elmurza_visual.gd" id="1"]
+
+[node name="ElmurzaVisual" type="Node2D"]
+script = ExtResource("1")
+
+[node name="BackLeg" type="Node2D" parent="."]
+position = Vector2(-7, -31)
+
+[node name="Boot" type="Polygon2D" parent="BackLeg"]
+color = Color(0.08, 0.08, 0.09, 1)
+polygon = PackedVector2Array(-7,18, 6,18, 7,30, 13,31, 13,34, -8,34)
+
+[node name="FrontLeg" type="Node2D" parent="."]
+position = Vector2(7, -31)
+
+[node name="Boot" type="Polygon2D" parent="FrontLeg"]
+color = Color(0.08, 0.08, 0.09, 1)
+polygon = PackedVector2Array(-7,18, 6,18, 7,30, 13,31, 13,34, -8,34)
+
+[node name="Body" type="Node2D" parent="."]
+
+[node name="BackArm" type="Node2D" parent="Body"]
+position = Vector2(-14, -74)
+
+[node name="Sleeve" type="Polygon2D" parent="Body/BackArm"]
+color = Color(0.24, 0.26, 0.3, 1)
+polygon = PackedVector2Array(-6,0, 5,0, 8,32, -4,34)
+
+[node name="Hand" type="Polygon2D" parent="Body/BackArm"]
+color = Color(0.66, 0.5, 0.4, 1)
+polygon = PackedVector2Array(-3,32, 7,32, 7,39, -3,39)
+
+[node name="Cherkeska" type="Polygon2D" parent="Body"]
+color = Color(0.24, 0.26, 0.3, 1)
+polygon = PackedVector2Array(-13,-88, 11,-88, 20,-72, 18,-48, 25,-10, -26,-10, -18,-48, -21,-72)
+
+[node name="Beshmet" type="Polygon2D" parent="Body"]
+color = Color(0.12, 0.1, 0.1, 1)
+polygon = PackedVector2Array(-5,-88, 5,-88, 3,-50, -3,-50)
+
+[node name="GazyriL" type="Polygon2D" parent="Body"]
+color = Color(0.78, 0.78, 0.8, 1)
+polygon = PackedVector2Array(-15,-80, -7,-80, -7,-64, -15,-64)
+
+[node name="GazyriR" type="Polygon2D" parent="Body"]
+color = Color(0.78, 0.78, 0.8, 1)
+polygon = PackedVector2Array(7,-80, 15,-80, 15,-64, 7,-64)
+
+[node name="Belt" type="Polygon2D" parent="Body"]
+color = Color(0.78, 0.78, 0.8, 1)
+polygon = PackedVector2Array(-18,-50, 18,-50, 18,-45, -18,-45)
+
+[node name="Kinzhal" type="Polygon2D" parent="Body"]
+color = Color(0.3, 0.2, 0.12, 1)
+polygon = PackedVector2Array(-2,-45, 2,-45, 1,-24, -1,-24)
+
+[node name="Head" type="Polygon2D" parent="Body"]
+color = Color(0.66, 0.5, 0.4, 1)
+polygon = PackedVector2Array(-10,-106, 8,-106, 12,-99, 9,-85, 2,-81, -9,-86, -13,-97)
+
+[node name="Beard" type="Polygon2D" parent="Body"]
+color = Color(0.18, 0.12, 0.08, 1)
+polygon = PackedVector2Array(-10,-95, -3,-91, 5,-92, 11,-96, 9,-86, 1,-80, -8,-86)
+
+[node name="Papakha" type="Polygon2D" parent="Body"]
+color = Color(0.1, 0.09, 0.09, 1)
+polygon = PackedVector2Array(-15,-100, 14,-100, 15,-124, -14,-124)
+
+[node name="FrontArm" type="Node2D" parent="Body"]
+position = Vector2(14, -74)
+
+[node name="Sleeve" type="Polygon2D" parent="Body/FrontArm"]
+color = Color(0.24, 0.26, 0.3, 1)
+polygon = PackedVector2Array(-5,0, 7,0, 9,32, -3,33)
+
+[node name="Hand" type="Polygon2D" parent="Body/FrontArm"]
+color = Color(0.66, 0.5, 0.4, 1)
+polygon = PackedVector2Array(-2,30, 9,30, 9,38, -2,38)
+
+[node name="Blade" type="Polygon2D" parent="Body/FrontArm"]
+color = Color(0.78, 0.78, 0.8, 1)
+polygon = PackedVector2Array(2,30, 6,30, 6,4, 4,-2, 2,4)
+
+[node name="Hilt" type="Polygon2D" parent="Body/FrontArm"]
+color = Color(0.08, 0.08, 0.09, 1)
+polygon = PackedVector2Array(0,30, 8,30, 8,33, 0,33)

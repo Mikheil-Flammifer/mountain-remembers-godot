@@ -31,6 +31,8 @@ Shared motion (walk, attack, block, jump) is in `scripts/visuals/actors/characte
 | murana | Murana | Dog. Four-legged rig: Body/FrontArm is the tail. Prologue. |
 | berdia | Berdia | Khevisberi (priest-elder): white robe with red cross and sash, tall white felt hat, grey beard, staff with red shrine banner. Act 3, Act 5. |
 | aiza | Aiza | Mutsal's sister, Chechen woman: dark dress, silver bib and belt, black mourning shawl. Act 4. |
+| elmurza | Elmurza | Mutsal's kinsman, Chechen: blue-grey cherkeska with silver gazyri and belt, black papakha, dark beard, drawn kinzhal. Act 4. |
+| gigia | Gigia | Keeper at Anatori: grey coat, brown hooded cloak, grey beard, lantern and pick. Preparation side quest. |
 
 ## Adding a character
 
