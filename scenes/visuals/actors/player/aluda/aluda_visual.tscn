@@ -1,8 +1,10 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://scripts/visuals/actors/implementations/aluda_visual.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/visuals/equipment/khevsur_sword.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/visuals/equipment/khevsur_shield.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/visuals/equipment/khevsur_hat.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/visuals/equipment/khevsur_garment.tscn" id="5"]
 
 [node name="AludaVisual" type="Node2D"]
 script = ExtResource("1")
@@ -35,21 +37,7 @@ polygon = PackedVector2Array(-7,23, 5,23, 8,30, 14,31, 14,34, -8,34)
 
 [node name="Body" type="Node2D" parent="."]
 
-[node name="Coat" type="Polygon2D" parent="Body"]
-color = Color(0.19, 0.24, 0.24, 1)
-polygon = PackedVector2Array(-13,-86, 10,-86, 21,-71, 17,-45, 24,-23, 4,-19, -3,-27, -12,-19, -24,-24, -17,-50, -20,-71)
-
-[node name="CoatPanel" type="Polygon2D" parent="Body"]
-color = Color(0.28, 0.31, 0.29, 1)
-polygon = PackedVector2Array(-8,-78, 8,-78, 10,-27, 0,-24, -10,-27)
-
-[node name="Embroidery" type="Polygon2D" parent="Body"]
-color = Color(0.73, 0.34, 0.24, 1)
-polygon = PackedVector2Array(-3,-78, 3,-78, 3,-68, 12,-68, 12,-63, 3,-63, 3,-53, -3,-53, -3,-63, -12,-63, -12,-68, -3,-68)
-
-[node name="Belt" type="Polygon2D" parent="Body"]
-color = Color(0.42, 0.27, 0.16, 1)
-polygon = PackedVector2Array(-18,-46, 18,-46, 18,-40, -18,-40)
+[node name="Garment" parent="Body" instance=ExtResource("5")]
 
 [node name="Head" type="Polygon2D" parent="Body"]
 color = Color(0.72, 0.55, 0.43, 1)
@@ -63,13 +51,7 @@ polygon = PackedVector2Array(-12,-104, 9,-104, 10,-99, 4,-96, -4,-99, -11,-94, -
 color = Color(0.23, 0.18, 0.15, 1)
 polygon = PackedVector2Array(-9,-92, -4,-89, 4,-90, 10,-94, 9,-84, 2,-79, -8,-84)
 
-[node name="Hat" type="Polygon2D" parent="Body"]
-color = Color(0.26, 0.25, 0.23, 1)
-polygon = PackedVector2Array(-15,-102, -12,-115, 11,-115, 15,-103, 11,-99, -13,-99)
-
-[node name="HatBand" type="Polygon2D" parent="Body"]
-color = Color(0.66, 0.36, 0.25, 1)
-polygon = PackedVector2Array(-14,-104, 14,-104, 15,-100, -14,-100)
+[node name="Hat" parent="Body" instance=ExtResource("4")]
 
 [node name="ShieldArm" type="Node2D" parent="Body"]
 position = Vector2(-14,-72)

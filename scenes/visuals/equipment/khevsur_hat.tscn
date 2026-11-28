@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/2d/characters/aluda/equipment/khevsur_hat.png" id="1"]
+
+[node name="KhevsurHat" type="Node2D"]
+
+[node name="Artwork" type="Sprite2D" parent="."]
+position = Vector2(0, -108)
+scale = Vector2(0.0205, 0.019)
+texture = ExtResource("1")

@@ -4,6 +4,6 @@ The current game starts in a character preview for Aluda, a Khevsur warrior insp
 
 The six-ending design is recorded in `documentation/game_design/six_ending_development_plan.md`.
 
-Aluda's reusable actor is `scenes/actors/player/aluda.tscn`. Gameplay state is sent to `ActorVisualSlot`, which loads `resources/visuals/actors/aluda/default_appearance.tres`. Replace its visual scene to change appearance without rewriting movement. The default visual uses separate sword and shield scenes under `scenes/visuals/equipment/`. Runtime animation state remains on each actor instance.
+Aluda's reusable actor is `scenes/actors/player/aluda.tscn`. Gameplay state is sent to `ActorVisualSlot`, which loads `resources/visuals/actors/aluda/default_appearance.tres`. Replace its visual scene to change appearance without rewriting movement. The default visual uses separate hat, garment, sword and shield scenes under `scenes/visuals/equipment/`. Their painted textures are in `assets/2d/characters/aluda/equipment/`. Runtime animation state remains on each actor instance.
 
 Older Mountain Remembers files are retained for reference and are not instantiated by the new starting scene. The story acts, other characters, ending choices and combat systems are planned work.

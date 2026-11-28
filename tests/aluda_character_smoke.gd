@@ -15,6 +15,13 @@ func _check() -> void:
 	if not slot.has_visual() or not player.is_on_floor():
 		_fail("Aluda or the preview ground did not load")
 		return
+	var visual := slot.get_active_visual()
+	var items := ["Body/Hat/Artwork", "Body/Garment/Artwork", "Body/FrontArm/Sword/Artwork", "Body/ShieldArm/Shield/Artwork"]
+	for item_path: String in items:
+		var item := visual.get_node_or_null(item_path) as Sprite2D
+		if item == null or item.texture == null:
+			_fail("Missing equipment artwork: " + item_path)
+			return
 	Input.action_press("move_right")
 	for i in 12:
 		await physics_frame
