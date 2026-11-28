@@ -1,0 +1,2 @@
+class_name MutsalNephewVisual
+extends HumanoidRigVisual
