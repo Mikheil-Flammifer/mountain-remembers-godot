@@ -8,10 +8,14 @@ const RIFLE = preload("res://scripts/levels/aluda/rifle_encounter.gd")
 const BROTHER = preload("res://scenes/visuals/actors/characters/mutsal_brother/mutsal_brother_visual.tscn")
 const SANATA = preload("res://scenes/visuals/actors/characters/sanata/sanata_visual.tscn")
 const DIALOGUE_PANEL = preload("res://scripts/ui/aluda_dialogue_panel.gd")
+const SUBAREAS = preload("res://scripts/levels/aluda/act_one_subareas.gd")
+const AREA_BANNER = preload("res://scripts/ui/act_one_area_banner.gd")
 
 var story = Story.new()
 var player: CharacterBody2D
 var dialogue_panel: AludaDialoguePanel
+var area_banner: ActOneAreaBanner
+var current_subarea: int = -1
 var prompt: Label
 var trail_status: Label
 var _marker_time: float = 0.0
@@ -33,6 +37,7 @@ var _points := [
 func _ready() -> void:
 	_build_world()
 	_build_hud()
+	_update_subarea()
 
 
 func _build_world() -> void:
@@ -74,6 +79,9 @@ func _build_hud() -> void:
 	dialogue_panel = DIALOGUE_PANEL.new()
 	dialogue_panel.name = "DialoguePanel"
 	add_child(dialogue_panel)
+	area_banner = AREA_BANNER.new()
+	area_banner.name = "AreaBanner"
+	add_child(area_banner)
 
 	var layer := CanvasLayer.new()
 	layer.name = "ExplorationHUD"
@@ -117,7 +125,23 @@ func _show_dialogue(speaker: String, text: String) -> void:
 	dialogue_panel.show_line(speaker, text)
 
 
+func _update_subarea() -> void:
+	# One continuous level: the region identity is visual and informational.
+	if player == null or area_banner == null:
+		return
+	var next_index: int = SUBAREAS.index_at(player.position.x)
+	if next_index == current_subarea:
+		return
+	current_subarea = next_index
+	var details: Dictionary = SUBAREAS.region(current_subarea)
+	if details.is_empty():
+		return
+	area_banner.announce(str(details["title"]), str(details["subtitle"]))
+	dialogue_panel.set_location(str(details["short_name"]))
+
+
 func _process(delta: float) -> void:
+	_update_subarea()
 	_marker_time += delta
 	_marker_clock += delta
 	if _marker_clock >= 0.12:

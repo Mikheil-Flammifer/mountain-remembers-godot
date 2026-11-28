@@ -13,6 +13,7 @@ var current_text: String = ""
 
 var _panel: PanelContainer
 var _speaker: Label
+var _chapter: Label
 var _body: RichTextLabel
 var _continue_hint: Label
 var _reveal_progress: float = 0.0
@@ -72,9 +73,9 @@ func _ready() -> void:
 	_speaker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(_speaker)
 
-	var chapter := _make_label("ACT I   /   THE HIGH PASTURE", 12, Color("#839a99"))
-	chapter.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	header.add_child(chapter)
+	_chapter = _make_label("ACT I   /   THE HIGH PASTURE", 12, Color("#839a99"))
+	_chapter.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	header.add_child(_chapter)
 
 	var divider := HSeparator.new()
 	divider.modulate = Color("#b09c77", 0.36)
@@ -99,6 +100,11 @@ func _ready() -> void:
 
 	_panel.visible = false
 	set_process(false)
+
+
+func set_location(location_name: String) -> void:
+	if is_instance_valid(_chapter):
+		_chapter.text = "ACT I   /   " + location_name.to_upper()
 
 
 func _make_label(value: String, size: int, tint: Color) -> Label:
