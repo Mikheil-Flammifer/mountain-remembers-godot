@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/actors/player/aluda.tscn" id="1"]
 [ext_resource type="Script" path="res://scripts/levels/aluda/khevsureti_background.gd" id="2"]
@@ -6,6 +6,9 @@
 
 [sub_resource type="RectangleShape2D" id="floor"]
 size = Vector2(2400, 100)
+
+[sub_resource type="RectangleShape2D" id="boundary"]
+size = Vector2(40, 1200)
 
 [node name="AludaCharacterPreview" type="Node2D"]
 
@@ -23,6 +26,18 @@ position = Vector2(0, 490)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Ground"]
 shape = SubResource("floor")
+
+[node name="LeftBoundary" type="StaticBody2D" parent="."]
+position = Vector2(-1180, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftBoundary"]
+shape = SubResource("boundary")
+
+[node name="RightBoundary" type="StaticBody2D" parent="."]
+position = Vector2(1180, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightBoundary"]
+shape = SubResource("boundary")
 
 [node name="Aluda" parent="." instance=ExtResource("1")]
 position = Vector2(0, 440)

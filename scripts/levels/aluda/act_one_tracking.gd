@@ -58,6 +58,12 @@ func _build_world() -> void:
 	ground.position = Vector2(1650, 500)
 	ground.add_child(collision)
 	add_child(ground)
+	# Keep the player on the authored route, including while jumping.
+	_add_route_barrier(Vector2(-75, 0), Vector2(40, 1200), false)
+	_add_route_barrier(Vector2(3375, 0), Vector2(40, 1200), false)
+	# Low stones create short, readable jumps between investigation areas.
+	_add_route_barrier(Vector2(635, 426), Vector2(38, 28), true)
+	_add_route_barrier(Vector2(1870, 423), Vector2(48, 34), true)
 	player = ALUDA.instantiate()
 	player.position = Vector2(50, 440)
 	add_child(player)
@@ -81,6 +87,22 @@ func _build_world() -> void:
 	rifle.updated.connect(func(text: String): _show_dialogue("The crags", text))
 	rifle.defeated.connect(_on_brother_defeated)
 	queue_redraw()
+
+
+func _add_route_barrier(center: Vector2, size: Vector2, visible_stone: bool) -> void:
+	var body := StaticBody2D.new()
+	body.position = center
+	var collision := CollisionShape2D.new()
+	var shape := RectangleShape2D.new()
+	shape.size = size
+	collision.shape = shape
+	body.add_child(collision)
+	if visible_stone:
+		var stone := Polygon2D.new()
+		stone.polygon = PackedVector2Array([Vector2(-size.x / 2, size.y / 2), Vector2(-size.x / 2, -size.y / 2), Vector2(size.x / 2, -size.y / 2), Vector2(size.x / 2, size.y / 2)])
+		stone.color = Color("#717b6d")
+		body.add_child(stone)
+	add_child(body)
 
 
 func _build_hud() -> void:
