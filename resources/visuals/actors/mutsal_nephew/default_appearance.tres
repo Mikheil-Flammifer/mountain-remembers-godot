@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ActorVisualData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/visuals/actor_visual_data.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/visuals/actors/characters/mutsal_nephew/mutsal_nephew_visual.tscn" id="2"]
+
+[resource]
+script = ExtResource("1")
+appearance_id = &"mutsal_nephew_default"
+display_name = "Mutsal's Nephew"
+description = "Mutsal's young nephew. Shows how the feud passes to children. Needs a researched name."
+visual_scene = ExtResource("2")
