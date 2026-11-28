@@ -1,0 +1,143 @@
+[gd_scene load_steps=24 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/visuals/environment/castle/stone_wall.tscn" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/visuals/environment/castle/stone_floor.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/visuals/environment/castle/arrow_window.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/visuals/environment/castle/shield_and_swords.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/visuals/environment/castle/wall_torch.tscn" id="5"]
+[ext_resource type="PackedScene" path="res://scenes/visuals/environment/castle/hearth.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://scenes/visuals/environment/castle/castle_door.tscn" id="7"]
+[ext_resource type="PackedScene" path="res://scenes/visuals/environment/castle/chief_chair.tscn" id="8"]
+[ext_resource type="PackedScene" path="res://scenes/visuals/environment/castle/bench.tscn" id="9"]
+[ext_resource type="PackedScene" path="res://scenes/visuals/actors/player/aluda/aluda_visual.tscn" id="10"]
+[ext_resource type="PackedScene" path="res://scenes/visuals/actors/characters/ushisha/ushisha_visual.tscn" id="11"]
+[ext_resource type="PackedScene" path="res://scenes/visuals/actors/characters/aluda_brother/aluda_brother_visual.tscn" id="12"]
+[ext_resource type="PackedScene" path="res://scenes/visuals/actors/characters/gela/gela_visual.tscn" id="13"]
+[ext_resource type="PackedScene" path="res://scenes/visuals/actors/characters/young_khevsur_1/young_khevsur_1_visual.tscn" id="14"]
+[ext_resource type="PackedScene" path="res://scenes/visuals/actors/characters/young_khevsur_2/young_khevsur_2_visual.tscn" id="15"]
+[ext_resource type="PackedScene" path="res://scenes/visuals/actors/characters/young_khevsur_3/young_khevsur_3_visual.tscn" id="16"]
+[ext_resource type="PackedScene" path="res://scenes/visuals/environment/castle/feast_table.tscn" id="17"]
+[ext_resource type="PackedScene" path="res://scenes/visuals/environment/castle/bread.tscn" id="18"]
+[ext_resource type="PackedScene" path="res://scenes/visuals/environment/castle/wine_jug.tscn" id="19"]
+[ext_resource type="PackedScene" path="res://scenes/visuals/environment/castle/meat_platter.tscn" id="20"]
+[ext_resource type="PackedScene" path="res://scenes/visuals/environment/castle/drinking_horn.tscn" id="21"]
+[ext_resource type="PackedScene" path="res://scenes/visuals/actors/characters/messenger/messenger_visual.tscn" id="22"]
+[ext_resource type="PackedScene" path="res://scenes/visuals/actors/characters/murana/murana_visual.tscn" id="23"]
+
+[node name="ShatiliCastleFeast" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(640, 400)
+
+[node name="StoneWall" parent="." instance=ExtResource("1")]
+position = Vector2(640, 660)
+
+[node name="StoneFloor" parent="." instance=ExtResource("2")]
+position = Vector2(640, 750)
+
+[node name="ArrowWindowLeft" parent="." instance=ExtResource("3")]
+position = Vector2(400, 330)
+
+[node name="ArrowWindowRight" parent="." instance=ExtResource("3")]
+position = Vector2(880, 330)
+prop_seed = 2
+
+[node name="ShieldAndSwords" parent="." instance=ExtResource("4")]
+position = Vector2(640, 250)
+
+[node name="WallTorchLeft" parent="." instance=ExtResource("5")]
+position = Vector2(250, 420)
+
+[node name="WallTorchRight" parent="." instance=ExtResource("5")]
+position = Vector2(1030, 420)
+prop_seed = 2
+
+[node name="Hearth" parent="." instance=ExtResource("6")]
+position = Vector2(135, 700)
+
+[node name="Door" parent="." instance=ExtResource("7")]
+position = Vector2(1180, 680)
+
+[node name="ChiefChair" parent="." instance=ExtResource("8")]
+position = Vector2(640, 680)
+
+[node name="BenchLeft" parent="." instance=ExtResource("9")]
+position = Vector2(420, 680)
+length = 300.0
+
+[node name="BenchRight" parent="." instance=ExtResource("9")]
+position = Vector2(860, 680)
+length = 300.0
+prop_seed = 2
+
+[node name="Aluda" parent="." instance=ExtResource("10")]
+position = Vector2(640, 662)
+visual_scale = Vector2(1.8, 1.8)
+
+[node name="GuestUshisha" parent="." instance=ExtResource("11")]
+position = Vector2(530, 662)
+visual_scale = Vector2(1.8, 1.8)
+
+[node name="GuestAludaBrother" parent="." instance=ExtResource("12")]
+position = Vector2(430, 662)
+visual_scale = Vector2(1.8, 1.8)
+
+[node name="GuestGela" parent="." instance=ExtResource("13")]
+position = Vector2(330, 662)
+visual_scale = Vector2(1.8, 1.8)
+
+[node name="GuestBero" parent="." instance=ExtResource("14")]
+position = Vector2(750, 662)
+visual_scale = Vector2(1.8, 1.8)
+default_facing = -1.0
+
+[node name="GuestTorgva" parent="." instance=ExtResource("15")]
+position = Vector2(850, 662)
+visual_scale = Vector2(1.8, 1.8)
+default_facing = -1.0
+
+[node name="GuestKhvtisia" parent="." instance=ExtResource("16")]
+position = Vector2(950, 662)
+visual_scale = Vector2(1.8, 1.8)
+default_facing = -1.0
+
+[node name="FeastTable" parent="." instance=ExtResource("17")]
+position = Vector2(640, 710)
+length = 820.0
+
+[node name="BreadLeft" parent="." instance=ExtResource("18")]
+position = Vector2(380, 605)
+prop_seed = 3
+
+[node name="WineJugLeft" parent="." instance=ExtResource("19")]
+position = Vector2(470, 605)
+prop_seed = 2
+
+[node name="MeatPlatter" parent="." instance=ExtResource("20")]
+position = Vector2(560, 605)
+prop_seed = 1
+
+[node name="DrinkingHorn" parent="." instance=ExtResource("21")]
+position = Vector2(655, 605)
+prop_seed = 5
+
+[node name="WineJugRight" parent="." instance=ExtResource("19")]
+position = Vector2(740, 605)
+prop_seed = 6
+
+[node name="MeatPlatterRight" parent="." instance=ExtResource("20")]
+position = Vector2(830, 605)
+prop_seed = 5
+
+[node name="BreadRight" parent="." instance=ExtResource("18")]
+position = Vector2(930, 605)
+prop_seed = 7
+
+[node name="Messenger" parent="." instance=ExtResource("22")]
+position = Vector2(1110, 735)
+visual_scale = Vector2(1.9, 1.9)
+default_facing = -1.0
+
+[node name="Murana" parent="." instance=ExtResource("23")]
+position = Vector2(220, 740)
+visual_scale = Vector2(1.6, 1.6)
