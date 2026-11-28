@@ -147,10 +147,7 @@ func _nearby_point() -> Dictionary:
 
 
 func _draw() -> void:
-	draw_rect(Rect2(-200, -1000, 3100, 1600), Color("#b9b7a2"))
-	draw_colored_polygon(PackedVector2Array([Vector2(-200,380), Vector2(100,130), Vector2(350,310), Vector2(700,30), Vector2(1050,290), Vector2(1450,70), Vector2(1850,330), Vector2(2300,100), Vector2(2800,350), Vector2(2800,500), Vector2(-200,500)]), Color("#788778"))
-	draw_rect(Rect2(-200, 440, 3000, 200), Color("#565b47"))
-	draw_line(Vector2(-200, 440), Vector2(2800, 440), Color("#a99b78"), 4.0)
+	# Draw story props only; the landscape lives in reusable decorative nodes.
 	if story.phase >= Story.Phase.BROTHER_FIGHT:
 		draw_rect(Rect2(2500, 390, 80, 50), Color("#696b5d"))
 	for point: Dictionary in _points:
