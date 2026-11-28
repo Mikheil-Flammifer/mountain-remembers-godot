@@ -187,7 +187,7 @@ func shade_attack() -> void:
 	if _is_guarding():
 		story.parry()
 		if story.phase == Story.Phase.DREAM_DAGGER:
-			_dialogue("Mutsal", "Enough. Take my dagger, Aluda, and finish what the custom asks. Or set it down.")
+			_dialogue("Mutsal", "I want to die, and I do not die. Kill me! Let this passing world stay with you, and let me leave the land. Live on, sons of the Khevsurs, with raids and the swing of swords.")
 
 
 func _is_guarding() -> bool:
@@ -233,14 +233,14 @@ func _interact() -> void:
 			if _near(FIRE_X) and story.sleep():
 				player.position = Vector2(560, 440)
 				dialogue_panel.set_chapter_location("ACT II", "THE DREAM")
-				_dialogue("Narrator", "Aluda sleeps. Warriors gather around the dead, as if at a shrine feast.")
+				_dialogue("Narrator", "Darkness falls, the waters weep, the skirt of night covers us. It is the hour when stars flicker, dew falls on the grass, and the souls of the dead come out of their graves.")
 		Story.Phase.DREAM_GATHERING:
 			if not story.feast_witnessed and _near(FEAST_X):
 				story.witness_feast()
-				_dialogue("Narrator", "Bowls are passed in silence. Aluda sees what is served and will not eat.")
+				_dialogue("Aluda", "A dead man lay before us; Khevsurs sat at the wake, ready for a raid, some stood at the door. I sat, and someone set a bowl before me: a man's flesh in broth. 'Eat!' something called. 'Don't stand there dumbstruck. Bring Aluda more hot broth and meat.'")
 			elif story.feast_witnessed and _near(SHADE_X, 120.0) and story.face_mutsal():
 				_shade_timer = SHADE_ATTACK_INTERVAL
-				_dialogue("Mutsal", "Once more, Aluda, as among the crags. Guard yourself.")
+				_dialogue("Aluda", "All at once someone seized my hand and laid a dagger's hilt in it. I looked: it was Mutsal, in bronze chain mail, the mark of our fight on his chest. He stood like a rock, unbroken; no tear fell from his eye.")
 		Story.Phase.DREAM_DAGGER:
 			if _near(LOWER_X, 85.0):
 				_resolve_dream(Story.DreamChoice.LOWER_DAGGER)
@@ -264,9 +264,9 @@ func _resolve_dream(choice: int) -> void:
 	dialogue_panel.set_chapter_location("ACT II", "NIGHT CAMP")
 	player.position = Vector2(510, 440)
 	if choice == Story.DreamChoice.LOWER_DAGGER:
-		_dialogue("Aluda", "I turned the dagger away. Dawn has not yet come, but I know what the dream demanded.")
+		_dialogue("Aluda", "Bad dreams tormented me; that is why my heart is troubled. In the dream I turned his dagger aside.")
 	else:
-		_dialogue("Aluda", "In the dream my hand obeyed the old custom. I woke with the weight of it.")
+		_dialogue("Aluda", "Bad dreams tormented me; that is why my heart is troubled. In the dream my hand did what he begged.")
 
 
 func _finish_act() -> void:

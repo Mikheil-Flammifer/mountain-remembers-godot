@@ -28,3 +28,15 @@ godot --headless --path . --script res://tests/act_two_night_camp_smoke.gd
 ```
 
 Both passed headless on Godot 4.6.3 (4.7 was not available). Not checked: in-editor play, visuals, feel of the duel timing.
+
+## Dialogue source
+
+The dream lines follow Vazha-Pshavela's poem *Aluda Ketelauri* (1888, public
+domain), Canto III, in a close English translation made for this game:
+the nightfall narration, the wake for the dead, Mutsal putting a dagger in
+Aluda's hand and begging "I want to die, and I do not die. Kill me!", the
+bowl of human flesh, and "Bad dreams tormented me". In the poem the feast
+comes after Mutsal speaks, and Aluda tells the dream at home to his mother and
+sister, who beg him to eat bread. The game moves the dream to the night camp
+and plays the feast first. The camp chores (fire, rifle, watch), the
+dream duel and Aluda's arrival and reflection lines are new and not in the poem.
