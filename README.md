@@ -1,160 +1,23 @@
-# The Mountain Remembers
+# Aluda Ketelauri
 
-**The Mountain Remembers** is a 2D action-adventure RPG set in a fictionalized medieval Georgian world inspired by Georgian landscapes, architecture, folklore, and mountain culture.
+A 2D game prototype inspired by Vazha-Pshavela's poem *Aluda Ketelauri*. The current build opens a small character preview featuring Aluda in Khevsur-inspired clothing with a felt hat, sword and round shield.
 
-The player controls **Xizane**, who leaves Mtskheta and travels north in search of his missing sister, **Samdzivari**.
+## Run
 
-The game is being developed in **Godot 4 with GDScript**.
+Open `project.godot` in Godot 4.7 and run the project. Use A / D to move, Space to jump, H to swing the sword and G to raise the shield. Sword and shield actions currently show poses; combat effects and protection are not implemented yet.
 
----
+## Project layout
 
-## Current Playable Route
+- `scenes/actors/player/aluda.tscn` contains the reusable character and gameplay collision.
+- `scripts/actors/player/aluda_player.gd` handles movement and input.
+- `scenes/visuals/actors/player/aluda/` contains the replaceable character rig.
+- `scenes/visuals/equipment/` contains reusable sword and shield visuals.
+- `resources/visuals/actors/aluda/` configures the default appearance.
+- `scenes/levels/aluda/character_preview.tscn` is the starting preview.
+- `documentation/game_design/six_ending_development_plan.md` contains the supplied story and ending plan.
 
-```text
-Mtskheta → Jvari → Zhinvali
-```
+Aluda communicates movement and action state through `ActorVisualSlot`. A compatible visual scene can replace the default appearance without changing his controller. Existing Mountain Remembers content remains in the repository for reference and is not loaded by the new starting scene.
 
-Implemented regions include:
+## Verification
 
-- Mtskheta
-- Jvari
-- Zhinvali
-- Ananuri Approach
-- Dusheti Approach
-
-Zhinvali introduces branching mountain routes, vertical traversal, ladders, forests, rivers, ruins, and optional areas.
-
----
-
-## Gameplay
-
-Current systems include:
-
-- running and jumping
-- double jump
-- dashing
-- coyote time and jump buffering
-- Mountain Blade sword combat
-- directional attacks
-- two-hit combos
-- shield blocking
-- stamina
-- poise and stagger
-- healing stones
-- checkpoints
-- upgrades
-- score rewards
-- death and score recovery
-- branching exploration
-
----
-
-## Combat
-
-Enemies use different combat styles instead of only changing health and damage.
-
-### Mtskheta
-
-- Mountain Wolf
-- Shield Guard
-- Swordsman
-
-### Jvari
-
-- Sentry
-- Raider
-- Wraith
-- Warden
-- Wild Boar
-
-Jvari enemies can use mechanics such as:
-
-- blocking
-- guard breaking
-- backstepping
-- counterattacks
-- dodging
-- poise
-- heavy attacks
-
-### Zhinvali
-
-Enemies include:
-
-- raiders
-- archers
-- mountain hawks
-
-Enemy attacks use actual attack windows instead of simple contact damage.
-
----
-
-## Progression
-
-Defeated enemies award score.
-
-Score can be spent at rest points to improve:
-
-- maximum HP
-- maximum energy
-- Mountain Blade
-- Shield
-- Healing Stones
-
-When Xizane dies, carried score is left behind as a recoverable memory.
-
----
-
-## Current Controls
-
-| Action | Key |
-| --- | --- |
-| Move | A / D |
-| Jump | Space |
-| Dash | Shift |
-| Mountain Blade | H |
-| Shield | G / Right Mouse |
-| Healing Stone | R |
-| Interact / Rest | E |
-| Item Interaction | Q |
-
----
-
-## World Design
-
-The game is moving toward connected, layered environments rather than simple horizontal levels.
-
-Current areas can contain:
-
-- upper and lower routes
-- slopes
-- ladders
-- cliffs
-- platforms
-- forests
-- rivers
-- ruins
-- hidden areas
-- environmental storytelling
-
-The goal is to make travelling through the world feel like moving through a connected Georgian mountain landscape.
-
----
-
-## Technology
-
-- Godot 4.x
-- GDScript
-- 2D physics
-- procedural environment drawing
-- reusable enemy scenes
-- reusable level components
-- persistent progression
-
----
-
-## Main Goal
-
-The main story is about **Xizane searching for Samdzivari and discovering what happened to her**.
-
-Combat and platforming support the journey, while exploration, atmosphere, and story discovery remain central to the game.
+Run `godot --headless --path . --script res://tests/aluda_character_smoke.gd` to exercise movement, attack presentation and visual replacement. The six endings and other characters are future work.
