@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Aluda Ketelauri"
-run/main_scene="res://scenes/levels/aluda/act_one/tracking.tscn"
+run/main_scene="res://scenes/ui/act_select_menu.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 

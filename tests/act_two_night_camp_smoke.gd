@@ -10,6 +10,9 @@ func _initialize() -> void:
 
 
 func _run() -> void:
+	var Progress = load("res://scripts/systems/story/act_progress.gd")
+	Progress.save_path = "user://test_act_progress_camp.cfg"
+	Progress.reset()
 	var saved := {}
 	for key in META:
 		if has_meta(key):
@@ -25,6 +28,7 @@ func _run() -> void:
 	await process_frame
 	assert(locked.locked)
 	assert(locked.story.phase == locked.story.Phase.LOCKED)
+	assert(not Progress.is_complete(1))
 	locked.queue_free()
 	await process_frame
 
@@ -79,6 +83,9 @@ func _run() -> void:
 			assert(scene.story.phase == P.COMPLETE)
 			assert(get_meta("aluda_act_two_complete") == true)
 			assert(get_meta("aluda_act_one_hand_choice") == hand)
+			assert(Progress.is_complete(1) and Progress.is_complete(2))
+			assert(int(Progress.get_value(1, "hand_choice")) == hand)
+			assert(int(Progress.get_value(2, "dream_choice")) == dream)
 			scene.queue_free()
 			await process_frame
 

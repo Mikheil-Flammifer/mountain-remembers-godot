@@ -8,7 +8,8 @@ const Story = preload("res://scripts/systems/story/act_two_state.gd")
 const ALUDA = preload("res://scenes/actors/player/aluda.tscn")
 const DIALOGUE = preload("res://scripts/ui/aluda_dialogue_panel.gd")
 const BANNER = preload("res://scripts/ui/act_one_area_banner.gd")
-const ACT_ONE_SCENE := "res://scenes/levels/aluda/act_one/tracking.tscn"
+const Progress = preload("res://scripts/systems/story/act_progress.gd")
+const MENU_SCENE := "res://scenes/ui/act_select_menu.tscn"
 
 const WEAPON_X := 380.0
 const FIRE_X := 540.0
@@ -43,8 +44,10 @@ func _ready() -> void:
 	_build_hud()
 	if not story.begin(hand_choice, act_one_done):
 		locked = true
-		_dialogue("Narrator", "Act II begins only after Act I is finished. Press E to return to Act I.")
+		_dialogue("Narrator", "Act II opens only after Act I is finished. Press E to return to the act menu.")
 		return
+	# Arriving here with a hand choice means Act I was finished: remember it.
+	Progress.mark_complete(1, {"hand_choice": hand_choice})
 	story.phase_changed.connect(func(_p) -> void: _sync_art())
 	var banner := BANNER.new()
 	banner.name = "ActTwoBanner"
@@ -125,7 +128,7 @@ func _near(x: float, reach: float = 88.0) -> bool:
 func _process(delta: float) -> void:
 	if locked:
 		_objective.text = "ACT II   ·   Locked until Act I is complete"
-		_hint.text = "E — Return to Act I"
+		_hint.text = "E — Return to the act menu"
 		return
 	match story.phase:
 		Story.Phase.ARRIVAL:
@@ -158,7 +161,7 @@ func _process(delta: float) -> void:
 			else:
 				_set_text("Dawn on the road home", "E — Break camp and go home" if _near(ROAD_X, 110.0) else "Walk east to the road")
 		Story.Phase.COMPLETE:
-			_set_text("Act II complete", "Act III is not built yet")
+			_set_text("Act II complete", "E — Return to the act menu")
 	_hint.visible = not dialogue_panel.is_open
 
 
@@ -210,10 +213,10 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _interact() -> void:
-	if locked:
+	if locked or story.phase == Story.Phase.COMPLETE:
 		if not _leaving:
 			_leaving = true
-			get_tree().change_scene_to_file(ACT_ONE_SCENE)
+			get_tree().change_scene_to_file(MENU_SCENE)
 		return
 	match story.phase:
 		Story.Phase.ARRIVAL:
@@ -270,9 +273,10 @@ func _finish_act() -> void:
 	if not story.break_camp():
 		return
 	get_tree().set_meta("aluda_act_two_complete", true)
+	Progress.mark_complete(2, {"dream_choice": int(story.dream_choice)})
 	var banner := BANNER.new()
 	add_child(banner)
-	banner.announce("ACT II COMPLETE", "The road leads home to Shatili. Act III comes next.")
+	banner.announce("ACT II COMPLETE", "Act II is saved as finished. Press E for the act menu.")
 
 
 func _sync_art() -> void:
