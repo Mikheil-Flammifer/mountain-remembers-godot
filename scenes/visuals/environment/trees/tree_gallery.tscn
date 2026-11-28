@@ -1,0 +1,40 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/visuals/environment/trees/oak_tree.tscn" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/visuals/environment/trees/beech_tree.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/visuals/environment/trees/birch_tree.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/visuals/environment/trees/pine_tree.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/visuals/environment/trees/spruce_tree.tscn" id="5"]
+[ext_resource type="PackedScene" path="res://scenes/visuals/environment/trees/dead_tree.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://scenes/visuals/environment/trees/autumn_oak_tree.tscn" id="7"]
+[ext_resource type="PackedScene" path="res://scenes/visuals/environment/trees/autumn_birch_tree.tscn" id="8"]
+
+[node name="TreeGallery" type="Node2D"]
+
+[node name="Ground" type="Polygon2D" parent="."]
+color = Color(0.36, 0.42, 0.26, 1)
+polygon = PackedVector2Array(0, 600, 2600, 600, 2600, 720, 0, 720)
+
+[node name="oak" parent="." instance=ExtResource("1")]
+position = Vector2(150, 610)
+
+[node name="beech" parent="." instance=ExtResource("2")]
+position = Vector2(450, 610)
+
+[node name="birch" parent="." instance=ExtResource("3")]
+position = Vector2(750, 610)
+
+[node name="pine" parent="." instance=ExtResource("4")]
+position = Vector2(1050, 610)
+
+[node name="spruce" parent="." instance=ExtResource("5")]
+position = Vector2(1350, 610)
+
+[node name="dead" parent="." instance=ExtResource("6")]
+position = Vector2(1650, 610)
+
+[node name="autumn_oak" parent="." instance=ExtResource("7")]
+position = Vector2(1950, 610)
+
+[node name="autumn_birch" parent="." instance=ExtResource("8")]
+position = Vector2(2250, 610)

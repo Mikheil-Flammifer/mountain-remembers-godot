@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/visuals/environment/trees/kinds/pine_tree.gd" id="1"]
+
+[node name="PineTree" type="Node2D"]
+script = ExtResource("1")
+kind = 3
+tree_seed = 4
+height = 380.0
