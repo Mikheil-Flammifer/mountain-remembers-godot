@@ -15,6 +15,12 @@ const WIND_TRACKING = preload("res://scripts/levels/aluda/wind_pasture_tracking.
 const MUTSAL = preload("res://scenes/visuals/actors/characters/mutsal/mutsal_visual.tscn")
 const MUTSAL_DUEL = preload("res://scripts/levels/aluda/act_one_mutsal_duel.gd")
 const ACT_TWO_CAMP = preload("res://scenes/levels/aluda/act_two/night_camp.tscn")
+const HORSE = preload("res://scripts/visuals/actors/horse/horse_visual.gd")
+## Past this point the trail runs too fast to follow on foot.
+const HORSE_GATE_X := 650.0
+## The slate field of the crags is too narrow for hooves.
+const CRAGS_DISMOUNT_X := 2330.0
+const HORSE_START := Vector2(0, 440)
 
 var story = Story.new()
 var fold_investigation: ShepherdsFoldInvestigation = FOLD_INVESTIGATION.new()
@@ -39,8 +45,11 @@ var _target_zoom: Vector2 = Vector2(1.6, 1.6)
 var _target_tint: Color = Color.WHITE
 var _hand_hold: float = 0.0
 var _leaving_act_one: bool = false
+var horse: HorseVisual
+var horse_gate: StaticBody2D
+var _gate_warned: bool = false
 var _points := [
-	{"id": "report", "x": 160.0, "label": "Messenger", "text": "The shepherds were attacked. Raiders took horses, including yours. Follow their trail toward Arkhoti."},
+	{"id": "report", "x": 160.0, "label": "Messenger", "text": "The shepherds were attacked. Raiders took horses, including yours. Take my horse and ride after them toward Arkhoti."},
 	{"id": "halter", "x": 295.0, "label": "Cut halter", "text": ""},
 	{"id": "dogs", "x": 430.0, "label": "Silent sheepdog", "text": ""},
 	{"id": "gate", "x": 570.0, "label": "Broken gate", "text": ""},
@@ -81,6 +90,21 @@ func _build_world() -> void:
 	world_tint.name = "Atmosphere"
 	world_tint.color = Color.WHITE
 	add_child(world_tint)
+	horse = HORSE.new()
+	horse.name = "Horse"
+	horse.position = HORSE_START
+	add_child(horse)
+	horse.update_gait(0.0, 1.0, false, 0.0)
+	# An invisible wall keeps Aluda in the sheepfold until he is in the saddle.
+	horse_gate = StaticBody2D.new()
+	horse_gate.name = "HorseGate"
+	var gate_shape := CollisionShape2D.new()
+	var gate_rect := RectangleShape2D.new()
+	gate_rect.size = Vector2(20, 600)
+	gate_shape.shape = gate_rect
+	horse_gate.position = Vector2(HORSE_GATE_X, 200)
+	horse_gate.add_child(gate_shape)
+	add_child(horse_gate)
 	player = ALUDA.instantiate()
 	player.position = Vector2(50, 440)
 	add_child(player)
@@ -225,6 +249,7 @@ func _process(delta: float) -> void:
 		player.position = checkpoint_position
 		player.velocity = Vector2.ZERO
 	_update_subarea()
+	_update_horse(delta)
 	# The camera and atmospheric tint blend across seamless area boundaries.
 	if camera != null:
 		camera.zoom = camera.zoom.lerp(_target_zoom, clampf(delta * 1.7, 0.0, 1.0))
@@ -267,8 +292,12 @@ func _process(delta: float) -> void:
 			prompt.text = "BEHIND COVER    F — Fire    R — Reload"
 		else:
 			prompt.text = "F — Fire    R — Reload    Seek shelter behind the low rock"
+	elif can_mount_horse():
+		prompt.text = "E — Mount the messenger's horse"
 	elif not point.is_empty():
 		prompt.text = "E — " + str(point.get("label", ""))
+	elif player.mounted:
+		prompt.text = "A / D — Gallop    Space — Jump"
 	else:
 		prompt.text = "A / D — Move    Space — Jump"
 	prompt.visible = not dialogue_panel.is_open
@@ -343,6 +372,9 @@ func _unhandled_input(event: InputEvent) -> void:
 			_enter_act_two()
 		return
 	if story.phase in [Story.Phase.MUTSAL_RIFLE, Story.Phase.MUTSAL_COVER, Story.Phase.MUTSAL_FINAL]:
+		return
+	if can_mount_horse():
+		mount_horse()
 		return
 	var point := _nearby_point()
 	if point.is_empty():
@@ -491,3 +523,33 @@ func _draw() -> void:
 				center + Vector2(0.0, 6.0),
 				center + Vector2(-5.0, 0.0),
 			]), Color("#e8d4a0", 0.77))
+
+
+func can_mount_horse() -> bool:
+	if player == null or player.mounted or horse == null or horse.get_parent() != self:
+		return false
+	if story.phase != Story.Phase.TRACKING or player.position.x >= CRAGS_DISMOUNT_X:
+		return false
+	return absf(player.position.x - horse.position.x) < 70.0
+
+
+func mount_horse() -> bool:
+	if not can_mount_horse():
+		return false
+	player.mount(horse)
+	if horse_gate != null:
+		horse_gate.queue_free()
+		horse_gate = null
+	_show_dialogue("Aluda", "Easy, easy. Now run — the raiders' tracks are still warm.")
+	return true
+
+
+func _update_horse(_delta: float) -> void:
+	if player.mounted and player.position.x >= CRAGS_DISMOUNT_X:
+		player.dismount(self)
+		_show_dialogue("Aluda", "The slate is too narrow for hooves. Wait here — I go on foot.")
+		return
+	if not player.mounted and horse_gate != null and not _gate_warned:
+		if player.position.x > HORSE_GATE_X - 30.0 and story.phase == Story.Phase.TRACKING:
+			_gate_warned = true
+			_show_dialogue("Aluda", "On foot I will never catch them. The messenger's horse is back at the fold.")
