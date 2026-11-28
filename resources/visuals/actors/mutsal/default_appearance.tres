@@ -7,5 +7,5 @@
 script = ExtResource("1")
 appearance_id = &"mutsal_default"
 display_name = "Mutsal"
-description = "Default appearance of Mutsal. The Kist warrior Aluda duels in the poem."
+description = "Default appearance of Mutsal. The Chechen warrior Aluda duels in the poem, in traditional Chechen dress."
 visual_scene = ExtResource("2")

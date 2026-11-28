@@ -17,7 +17,7 @@ Shared motion (walk, attack, block, jump) is in `scripts/visuals/actors/characte
 | aluda | Aluda Ketelauri | Player. Older layout: `scenes/visuals/actors/player/aluda/`, `scripts/visuals/actors/implementations/aluda_visual.gd`. |
 | xizane | Xizane | Older layout under `player/xizane/`. |
 | mindia | Mindia | Young Khevsur, sword, light coat with blue embroidery. |
-| mutsal | Mutsal | Kist warrior, tall papakha, dark cherkeska, dagger (`scenes/visuals/equipment/kist_dagger.tscn`). |
+| mutsal | Mutsal | Chechen warrior in traditional dress: grey astrakhan papakha, black cherkeska with silver-capped gazyri, white beshmet, silver belt with sheathed kinzhal, soft high boots, dagger (`scenes/visuals/equipment/kist_dagger.tscn`). |
 
 ## Adding a character
 

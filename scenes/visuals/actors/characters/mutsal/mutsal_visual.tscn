@@ -10,56 +10,108 @@ script = ExtResource("1")
 position = Vector2(-7, -31)
 
 [node name="Trouser" type="Polygon2D" parent="BackLeg"]
-color = Color(0.12, 0.12, 0.13, 1)
-polygon = PackedVector2Array(-8,0, 7,0, 6,25, 4,30, -7,30)
+color = Color(0.1, 0.1, 0.11, 1)
+polygon = PackedVector2Array(-7,0, 6,0, 5,14, -6,14)
 
 [node name="Boot" type="Polygon2D" parent="BackLeg"]
-color = Color(0.07, 0.06, 0.06, 1)
-polygon = PackedVector2Array(-7,14, 6,14, 8,30, 14,31, 14,34, -8,34)
+color = Color(0.05, 0.05, 0.05, 1)
+polygon = PackedVector2Array(-7,4, 6,4, 6,30, 14,31, 14,34, -8,34)
+
+[node name="BootTop" type="Polygon2D" parent="BackLeg"]
+color = Color(0.2, 0.18, 0.16, 1)
+polygon = PackedVector2Array(-7,4, 6,4, 6,6, -7,6)
 
 [node name="FrontLeg" type="Node2D" parent="."]
 position = Vector2(7, -31)
 
 [node name="Trouser" type="Polygon2D" parent="FrontLeg"]
-color = Color(0.16, 0.16, 0.17, 1)
-polygon = PackedVector2Array(-8,0, 7,0, 6,25, 4,30, -7,30)
+color = Color(0.14, 0.14, 0.15, 1)
+polygon = PackedVector2Array(-7,0, 6,0, 5,14, -6,14)
 
 [node name="Boot" type="Polygon2D" parent="FrontLeg"]
-color = Color(0.09, 0.08, 0.07, 1)
-polygon = PackedVector2Array(-7,14, 6,14, 8,30, 14,31, 14,34, -8,34)
+color = Color(0.07, 0.07, 0.07, 1)
+polygon = PackedVector2Array(-7,4, 6,4, 6,30, 14,31, 14,34, -8,34)
+
+[node name="BootTop" type="Polygon2D" parent="FrontLeg"]
+color = Color(0.2, 0.18, 0.16, 1)
+polygon = PackedVector2Array(-7,4, 6,4, 6,6, -7,6)
 
 [node name="Body" type="Node2D" parent="."]
 
 [node name="BackArm" type="Node2D" parent="Body"]
-position = Vector2(-14,-74)
+position = Vector2(-14, -74)
 
 [node name="Sleeve" type="Polygon2D" parent="Body/BackArm"]
-color = Color(0.13, 0.13, 0.15, 1)
-polygon = PackedVector2Array(-6,0, 5,0, 8,32, -4,34)
+color = Color(0.08, 0.08, 0.09, 1)
+polygon = PackedVector2Array(-6,0, 5,0, 9,34, -5,35)
+
+[node name="Cuff" type="Polygon2D" parent="Body/BackArm"]
+color = Color(0.85, 0.83, 0.76, 1)
+polygon = PackedVector2Array(-4,31, 8,30, 8,33, -4,34)
 
 [node name="Hand" type="Polygon2D" parent="Body/BackArm"]
 color = Color(0.68, 0.52, 0.4, 1)
-polygon = PackedVector2Array(-3,31, 7,31, 7,39, -3,39)
+polygon = PackedVector2Array(-3,33, 7,33, 7,40, -3,40)
 
-[node name="Coat" type="Polygon2D" parent="Body"]
-color = Color(0.17, 0.17, 0.19, 1)
-polygon = PackedVector2Array(-14,-88, 11,-88, 22,-73, 18,-46, 25,-12, 3,-10, -3,-22, -10,-10, -26,-12, -18,-50, -21,-73)
+[node name="Cherkeska" type="Polygon2D" parent="Body"]
+color = Color(0.1, 0.1, 0.11, 1)
+polygon = PackedVector2Array(-14,-88, 11,-88, 21,-73, 18,-48, 27,-16, 2,-14, -2,-26, -6,-14, -28,-16, -18,-48, -21,-73)
 
-[node name="Shirt" type="Polygon2D" parent="Body"]
-color = Color(0.52, 0.12, 0.12, 1)
-polygon = PackedVector2Array(-5,-86, 5,-86, 3,-52, -3,-52)
+[node name="Beshmet" type="Polygon2D" parent="Body"]
+color = Color(0.86, 0.84, 0.78, 1)
+polygon = PackedVector2Array(-5,-88, 5,-88, 2,-60, 0,-56, -2,-60)
 
-[node name="GaziriLeft" type="Polygon2D" parent="Body"]
-color = Color(0.74, 0.7, 0.6, 1)
-polygon = PackedVector2Array(-15,-78, -8,-78, -8,-76, -15,-76, -15,-74, -8,-74, -8,-72, -15,-72, -15,-70, -8,-70, -8,-68, -15,-68)
+[node name="BeshmetCollar" type="Polygon2D" parent="Body"]
+color = Color(0.86, 0.84, 0.78, 1)
+polygon = PackedVector2Array(-6,-90, 6,-90, 5,-85, -5,-85)
 
-[node name="GaziriRight" type="Polygon2D" parent="Body"]
-color = Color(0.74, 0.7, 0.6, 1)
-polygon = PackedVector2Array(8,-78, 15,-78, 15,-76, 8,-76, 8,-74, 15,-74, 15,-72, 8,-72, 8,-70, 15,-70, 15,-68, 8,-68)
+[node name="SilverButtons" type="Polygon2D" parent="Body"]
+color = Color(0.78, 0.78, 0.8, 1)
+polygon = PackedVector2Array(-1,-80, 1,-80, 1,-78, -1,-78, -1,-72, 1,-72, 1,-70, -1,-70)
+
+[node name="GazyriPocketLeft" type="Polygon2D" parent="Body"]
+color = Color(0.15, 0.15, 0.16, 1)
+polygon = PackedVector2Array(-16,-80, -7,-80, -7,-64, -16,-64)
+
+[node name="GazyriLeft" type="Polygon2D" parent="Body"]
+color = Color(0.82, 0.8, 0.72, 1)
+polygon = PackedVector2Array(-15,-84, -8,-84, -8,-79, -15,-79)
+
+[node name="GazyriCapsLeft" type="Polygon2D" parent="Body"]
+color = Color(0.75, 0.76, 0.8, 1)
+polygon = PackedVector2Array(-15,-86, -8,-86, -8,-84, -15,-84)
+
+[node name="GazyriPocketRight" type="Polygon2D" parent="Body"]
+color = Color(0.15, 0.15, 0.16, 1)
+polygon = PackedVector2Array(7,-80, 16,-80, 16,-64, 7,-64)
+
+[node name="GazyriRight" type="Polygon2D" parent="Body"]
+color = Color(0.82, 0.8, 0.72, 1)
+polygon = PackedVector2Array(8,-84, 15,-84, 15,-79, 8,-79)
+
+[node name="GazyriCapsRight" type="Polygon2D" parent="Body"]
+color = Color(0.75, 0.76, 0.8, 1)
+polygon = PackedVector2Array(8,-86, 15,-86, 15,-84, 8,-84)
 
 [node name="Belt" type="Polygon2D" parent="Body"]
-color = Color(0.55, 0.47, 0.32, 1)
-polygon = PackedVector2Array(-18,-48, 18,-48, 18,-44, -18,-44)
+color = Color(0.05, 0.05, 0.05, 1)
+polygon = PackedVector2Array(-18,-49, 18,-49, 18,-46, -18,-46)
+
+[node name="BeltSilver" type="Polygon2D" parent="Body"]
+color = Color(0.78, 0.78, 0.82, 1)
+polygon = PackedVector2Array(-12,-49, -9,-49, -9,-46, -12,-46, -3,-50, 3,-50, 3,-45, -3,-45, 9,-49, 12,-49, 12,-46, 9,-46)
+
+[node name="KinzhalSheath" type="Polygon2D" parent="Body"]
+color = Color(0.12, 0.08, 0.06, 1)
+polygon = PackedVector2Array(-2,-45, 3,-45, 2,-24, 0,-20, -1,-24)
+
+[node name="KinzhalSilver" type="Polygon2D" parent="Body"]
+color = Color(0.78, 0.78, 0.82, 1)
+polygon = PackedVector2Array(-2,-45, 3,-45, 3,-42, -2,-42, -1,-26, 2,-26, 0,-20)
+
+[node name="KinzhalHilt" type="Polygon2D" parent="Body"]
+color = Color(0.2, 0.15, 0.1, 1)
+polygon = PackedVector2Array(-1,-52, 2,-52, 2,-46, -1,-46)
 
 [node name="Head" type="Polygon2D" parent="Body"]
 color = Color(0.68, 0.52, 0.4, 1)
@@ -69,25 +121,113 @@ polygon = PackedVector2Array(-10,-106, 8,-106, 12,-99, 9,-85, 2,-81, -9,-86, -13
 color = Color(0.08, 0.07, 0.07, 1)
 polygon = PackedVector2Array(-10,-95, -3,-91, 5,-92, 11,-96, 10,-84, 1,-76, -9,-83)
 
+[node name="Moustache" type="Polygon2D" parent="Body"]
+color = Color(0.06, 0.05, 0.05, 1)
+polygon = PackedVector2Array(-4,-94, 9,-95, 10,-92, 2,-92, -4,-92)
+
 [node name="Papakha" type="Polygon2D" parent="Body"]
-color = Color(0.1, 0.09, 0.09, 1)
-polygon = PackedVector2Array(-15,-102, -16,-114, -12,-124, 12,-124, 16,-114, 15,-102)
+color = Color(0.42, 0.41, 0.4, 1)
+polygon = PackedVector2Array(-14,-102, -15,-118, -13,-128, 13,-128, 15,-118, 14,-102)
+
+[node name="Curl0" type="Polygon2D" parent="Body/Papakha"]
+color = Color(0.55, 0.54, 0.52, 1)
+polygon = PackedVector2Array(-12,-125, -10,-126, -9,-124, -11,-123)
+
+[node name="Curl1" type="Polygon2D" parent="Body/Papakha"]
+color = Color(0.55, 0.54, 0.52, 1)
+polygon = PackedVector2Array(-6,-125, -4,-126, -3,-124, -5,-123)
+
+[node name="Curl2" type="Polygon2D" parent="Body/Papakha"]
+color = Color(0.55, 0.54, 0.52, 1)
+polygon = PackedVector2Array(0,-125, 2,-126, 3,-124, 1,-123)
+
+[node name="Curl3" type="Polygon2D" parent="Body/Papakha"]
+color = Color(0.55, 0.54, 0.52, 1)
+polygon = PackedVector2Array(6,-125, 8,-126, 9,-124, 7,-123)
+
+[node name="Curl4" type="Polygon2D" parent="Body/Papakha"]
+color = Color(0.55, 0.54, 0.52, 1)
+polygon = PackedVector2Array(-9,-120, -7,-121, -6,-119, -8,-118)
+
+[node name="Curl5" type="Polygon2D" parent="Body/Papakha"]
+color = Color(0.55, 0.54, 0.52, 1)
+polygon = PackedVector2Array(-3,-120, -1,-121, 0,-119, -2,-118)
+
+[node name="Curl6" type="Polygon2D" parent="Body/Papakha"]
+color = Color(0.55, 0.54, 0.52, 1)
+polygon = PackedVector2Array(3,-120, 5,-121, 6,-119, 4,-118)
+
+[node name="Curl7" type="Polygon2D" parent="Body/Papakha"]
+color = Color(0.55, 0.54, 0.52, 1)
+polygon = PackedVector2Array(9,-120, 11,-121, 12,-119, 10,-118)
+
+[node name="Curl8" type="Polygon2D" parent="Body/Papakha"]
+color = Color(0.55, 0.54, 0.52, 1)
+polygon = PackedVector2Array(-12,-115, -10,-116, -9,-114, -11,-113)
+
+[node name="Curl9" type="Polygon2D" parent="Body/Papakha"]
+color = Color(0.55, 0.54, 0.52, 1)
+polygon = PackedVector2Array(-6,-115, -4,-116, -3,-114, -5,-113)
+
+[node name="Curl10" type="Polygon2D" parent="Body/Papakha"]
+color = Color(0.55, 0.54, 0.52, 1)
+polygon = PackedVector2Array(0,-115, 2,-116, 3,-114, 1,-113)
+
+[node name="Curl11" type="Polygon2D" parent="Body/Papakha"]
+color = Color(0.55, 0.54, 0.52, 1)
+polygon = PackedVector2Array(6,-115, 8,-116, 9,-114, 7,-113)
+
+[node name="Curl12" type="Polygon2D" parent="Body/Papakha"]
+color = Color(0.55, 0.54, 0.52, 1)
+polygon = PackedVector2Array(-9,-110, -7,-111, -6,-109, -8,-108)
+
+[node name="Curl13" type="Polygon2D" parent="Body/Papakha"]
+color = Color(0.55, 0.54, 0.52, 1)
+polygon = PackedVector2Array(-3,-110, -1,-111, 0,-109, -2,-108)
+
+[node name="Curl14" type="Polygon2D" parent="Body/Papakha"]
+color = Color(0.55, 0.54, 0.52, 1)
+polygon = PackedVector2Array(3,-110, 5,-111, 6,-109, 4,-108)
+
+[node name="Curl15" type="Polygon2D" parent="Body/Papakha"]
+color = Color(0.55, 0.54, 0.52, 1)
+polygon = PackedVector2Array(9,-110, 11,-111, 12,-109, 10,-108)
+
+[node name="Curl16" type="Polygon2D" parent="Body/Papakha"]
+color = Color(0.55, 0.54, 0.52, 1)
+polygon = PackedVector2Array(-12,-105, -10,-106, -9,-104, -11,-103)
+
+[node name="Curl17" type="Polygon2D" parent="Body/Papakha"]
+color = Color(0.55, 0.54, 0.52, 1)
+polygon = PackedVector2Array(-6,-105, -4,-106, -3,-104, -5,-103)
+
+[node name="Curl18" type="Polygon2D" parent="Body/Papakha"]
+color = Color(0.55, 0.54, 0.52, 1)
+polygon = PackedVector2Array(0,-105, 2,-106, 3,-104, 1,-103)
+
+[node name="Curl19" type="Polygon2D" parent="Body/Papakha"]
+color = Color(0.55, 0.54, 0.52, 1)
+polygon = PackedVector2Array(6,-105, 8,-106, 9,-104, 7,-103)
 
 [node name="PapakhaTop" type="Polygon2D" parent="Body"]
-color = Color(0.45, 0.13, 0.12, 1)
-polygon = PackedVector2Array(-11,-124, 11,-124, 9,-127, -9,-127)
+color = Color(0.2, 0.2, 0.22, 1)
+polygon = PackedVector2Array(-12,-128, 12,-128, 11,-130, -11,-130)
 
 [node name="FrontArm" type="Node2D" parent="Body"]
-position = Vector2(14,-74)
+position = Vector2(14, -74)
 
 [node name="Sleeve" type="Polygon2D" parent="Body/FrontArm"]
-color = Color(0.2, 0.2, 0.22, 1)
-polygon = PackedVector2Array(-5,0, 7,0, 9,32, -3,33)
+color = Color(0.13, 0.13, 0.14, 1)
+polygon = PackedVector2Array(-5,0, 7,0, 10,34, -4,35)
+
+[node name="Cuff" type="Polygon2D" parent="Body/FrontArm"]
+color = Color(0.85, 0.83, 0.76, 1)
+polygon = PackedVector2Array(-3,31, 10,30, 10,33, -3,34)
 
 [node name="Hand" type="Polygon2D" parent="Body/FrontArm"]
 color = Color(0.68, 0.52, 0.4, 1)
-polygon = PackedVector2Array(-2,29, 9,29, 9,38, -2,38)
+polygon = PackedVector2Array(-2,32, 9,32, 9,40, -2,40)
 
 [node name="Dagger" parent="Body/FrontArm" instance=ExtResource("2")]
-position = Vector2(4, 32)
+position = Vector2(4, 34)
 rotation = 0.5
