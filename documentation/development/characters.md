@@ -18,6 +18,17 @@ Shared motion (walk, attack, block, jump) is in `scripts/visuals/actors/characte
 | xizane | Xizane | Older layout under `player/xizane/`. |
 | mindia | Mindia | Young Khevsur, sword, light coat with blue embroidery. |
 | mutsal | Mutsal | Chechen warrior in traditional dress: grey astrakhan papakha, black cherkeska with silver-capped gazyri, white beshmet, silver belt with sheathed kinzhal, soft high boots, dagger (`scenes/visuals/equipment/kist_dagger.tscn`). |
+| gela | Gela | Young Khevsur, red coat with cross, black cap, flat-blade sword. Prologue, Act 3. |
+| zezva | Zezva | Boy (drawn at 0.68 size), plain coat, stick. Prologue. |
+| ushisha | Ushisha | Old man, white beard, sheepskin hat, staff. Prologue, Act 3. |
+| lela | Lela | Aluda's wife, red embroidered dress, white headscarf, braid. Prologue. |
+| aluda_mother | Aluda's Mother | Black dress and scarf, carries bread. Prologue. |
+| aluda_brother | Aluda's Brother | Blue-grey coat, pale cap, staff. Prologue. |
+| aluda_nephew | Aluda's Nephew | Smaller (0.8), staff. One rig for the three nephews; recolour copies if needed. |
+| messenger | Messenger | Shepherd in sheepskin vest. Act 1 opening. |
+| sanata | Sanata | Herb woman with basket. Act 1 river detour. |
+| mutsal_brother | Mutsal's Brother | Chechen raider, brown cherkeska, black papakha, rifle. Act 1 combat 1. |
+| murana | Murana | Dog. Four-legged rig: Body/FrontArm is the tail. Prologue. |
 
 ## Adding a character
 

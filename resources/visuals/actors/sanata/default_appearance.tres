@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ActorVisualData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/visuals/actor_visual_data.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/visuals/actors/characters/sanata/sanata_visual.tscn" id="2"]
+
+[resource]
+script = ExtResource("1")
+appearance_id = &"sanata_default"
+display_name = "Sanata"
+description = "Herb woman met on the river detour. Gives marked stones and treatment."
+visual_scene = ExtResource("2")

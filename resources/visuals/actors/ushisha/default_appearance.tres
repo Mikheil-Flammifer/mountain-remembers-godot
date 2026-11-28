@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ActorVisualData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/visuals/actor_visual_data.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/visuals/actors/characters/ushisha/ushisha_visual.tscn" id="2"]
+
+[resource]
+script = ExtResource("1")
+appearance_id = &"ushisha_default"
+display_name = "Ushisha"
+description = "Old man of Shatili who asks for Aluda's account and once spared a man himself."
+visual_scene = ExtResource("2")

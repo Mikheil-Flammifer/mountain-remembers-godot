@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ActorVisualData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/visuals/actor_visual_data.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/visuals/actors/characters/messenger/messenger_visual.tscn" id="2"]
+
+[resource]
+script = ExtResource("1")
+appearance_id = &"messenger_default"
+display_name = "Messenger"
+description = "Shepherd who brings news of the raid on the sheepfolds and the stolen horses."
+visual_scene = ExtResource("2")
